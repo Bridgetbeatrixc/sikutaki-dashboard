@@ -50,11 +50,11 @@ npm run typecheck
 npm run build      # hasil statis di folder out/
 ```
 
-## Deploy ke GitHub Pages
+## Deploy ke Vercel
 
-Workflow `.github/workflows/deploy.yml` membangun dan men-deploy setiap push ke `main`.
+1. Buka [vercel.com/new](https://vercel.com/new) dan login dengan GitHub.
+2. Pilih repo **sikutaki-dashboard**, lalu klik **Deploy**. Vercel otomatis mengenali Next.js, pengaturan bawaan sudah cukup.
 
-Satu kali saja: buka **Settings > Pages** di repo, lalu pilih **Source: GitHub Actions**.
+Setiap push ke `main` akan ter-deploy ulang otomatis. Workflow `.github/workflows/ci.yml` menjalankan typecheck dan build di setiap push dan pull request.
 
-Situs akan tersedia di `https://<username>.github.io/<nama-repo>/`, misalnya
-`/dashboard-hr/` dan `/dashboard-employee/` di bawah alamat itu.
+Untuk hosting di sub-path (misalnya GitHub Pages di `/<nama-repo>/`), set `NEXT_PUBLIC_BASE_PATH=/<nama-repo>` saat build.
