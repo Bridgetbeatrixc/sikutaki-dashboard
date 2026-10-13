@@ -28,7 +28,10 @@ export function EmployeeShell({ children }: { children: ReactNode }) {
   const screenRef = useRef<HTMLDivElement>(null);
 
   // Each route starts at the top of the phone screen.
-  useEffect(() => screenRef.current?.scrollTo({ top: 0 }), [path]);
+  // Braces matter: some browsers return a Promise from scrollTo, and React would call it as the cleanup.
+  useEffect(() => {
+    screenRef.current?.scrollTo({ top: 0 });
+  }, [path]);
 
   return (
     <div className="min-h-screen bg-[radial-gradient(1200px_700px_at_15%_10%,#ddf1e7,transparent_60%),radial-gradient(900px_600px_at_90%_90%,#eef3df,transparent_60%),#f1f7f4] pb-10 sm:px-6 sm:pt-[18px]">
