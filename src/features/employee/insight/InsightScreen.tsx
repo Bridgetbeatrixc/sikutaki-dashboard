@@ -1,0 +1,122 @@
+"use client";
+import Link from "next/link";
+import { MOOD_COLORS } from "@/components/charts/MoodBar";
+import { areaById } from "@/lib/data";
+import { decimal, hours, listJoin } from "@/lib/format";
+import { cn } from "@/lib/cn";
+import { ROUTES } from "@/lib/paths";
+import { appButton, Lead, Note, Screen, Section, Title } from "../components/ui";
+import { CHECKIN_AREAS, level, MOODS, moodById, PAST_DAYS, TODAY, type Level } from "../content";
+import { useEmployee } from "../EmployeeProvider";
+
+/** Bar height scale: 9 hours fills the track. */
+const MAX_SLEEP = 9;
+
+const LEVEL_CLASS: Record<Level, string> = {
+  lo: "bg-mint text-app-dark",
+  mid: "bg-warn-bg text-[#8a5300]",
+  hi: "bg-bad-bg text-[#a2341f]",
+};
+
+const average = (days: { sleep: number }[]) => Math.round((days.reduce((s, d) => s + d.sleep, 0) / days.length) * 10) / 10;
+
+export function InsightScreen() {
+  return (
+    <Screen>
+      <Title>Insight-mu</Title>
+      <Lead>Dari catatan harian dan check-in. <b>Hanya kamu yang bisa melihat halaman ini.</b></Lead>
+      <SleepAndMood />
+      <CheckinResult />
+    </Screen>
+  );
+}
+
+/** Seven bars: height is hours slept, color is that day's mood. */
+function SleepAndMood() {
+  const { mood, sleep, saved } = useEmployee();
+  const week = [...PAST_DAYS, ...(saved && mood ? [{ day: TODAY.day, sleep, mood, today: true }] : [])];
+  const good = week.filter((d) => d.mood >= 4);
+  const low = week.filter((d) => d.mood <= 2);
+
+  return (
+    <section className="mt-1.5">
+      <Section>Tidur dan mood minggu ini</Section>
+      {good.length > 0 && low.length > 0 && (
+        <p className="mb-2 text-sm leading-normal text-body">
+          Di hari mood-mu baik, kamu tidur rata-rata <b>{hours(average(good))}</b>. Di hari yang berat, hanya <b>{hours(average(low))}</b>.
+        </p>
+      )}
+      <div className="mt-2 grid h-[190px] grid-cols-7 gap-2" role="img"
+        aria-label={week.map((d) => `${d.day}: tidur ${hours(d.sleep)}, mood ${moodById(d.mood).label}`).join("; ")}>
+        {week.map((d) => (
+          <div key={d.day} className="grid grid-rows-[auto_1fr_auto] justify-items-center gap-1">
+            <small className="num text-[11px] text-muted">{decimal(d.sleep)}</small>
+            <div className="flex h-full w-full max-w-[30px] items-end overflow-hidden rounded-full bg-track">
+              <div className="w-full rounded-full" style={{ height: `${(d.sleep / MAX_SLEEP) * 100}%`, background: MOOD_COLORS[d.mood - 1] }} />
+            </div>
+            <small className={cn("text-[11.5px]", "today" in d ? "font-bold text-ink" : "text-muted")}>{d.day}</small>
+          </div>
+        ))}
+        {!saved && (
+          <Link href={ROUTES.employee.home} aria-label="Catat hari ini di Beranda" className="grid grid-rows-[auto_1fr_auto] justify-items-center gap-1">
+            <small className="text-[11px] text-muted">?</small>
+            <div className="h-full w-full max-w-[30px] rounded-full bg-[repeating-linear-gradient(135deg,#eef3f0_0_6px,#e1eae5_6px_12px)] outline-[1.5px] -outline-offset-[1.5px] outline-[#b9ccc2] outline-dashed" />
+            <small className="text-[11.5px] text-muted">{TODAY.day}</small>
+          </Link>
+        )}
+      </div>
+      <ul className="mt-2.5 flex flex-wrap gap-x-3 gap-y-1 text-[11.5px] text-muted">
+        {MOODS.map((m, i) => (
+          <li key={m.id} className="inline-flex items-center gap-[5px]">
+            <i className="size-[9px] rounded-[3px]" style={{ background: MOOD_COLORS[i] }} />{m.label}
+          </li>
+        ))}
+      </ul>
+      <Note>Tinggi batang = jam tidur. Warna = mood hari itu.{!saved && " Hari ini belum dicatat."}</Note>
+    </section>
+  );
+}
+
+function CheckinResult() {
+  const { checkin } = useEmployee();
+  return (
+    <section className="mt-1.5">
+      <Section>Hasil check-in minggu ini</Section>
+      {!checkin ? (
+        <div className="grid gap-1.5 rounded-2xl bg-soft p-3.5">
+          <p className="text-[13.5px] leading-normal text-body">Isi check-in mingguan untuk melihat tingkat stres, burnout, dan kualitas tidurmu.</p>
+          <Link href={ROUTES.employee.checkin} className={appButton("primary", true)}>Mulai check-in · 3 menit</Link>
+        </div>
+      ) : (
+        <CheckinLevels answers={checkin} />
+      )}
+    </section>
+  );
+}
+
+function CheckinLevels({ answers }: { answers: Record<string, number> }) {
+  const high = CHECKIN_AREAS.filter((a) => (answers[a] ?? 0) >= 3);
+  return (
+    <>
+      <ul className="grid gap-2">
+        {CHECKIN_AREAS.map((a) => {
+          const l = level(answers[a] ?? 0);
+          return (
+            <li key={a} className="flex items-center justify-between rounded-[14px] bg-soft px-3.5 py-[11px] text-sm">
+              <span>{areaById(a).name}</span>
+              <span className={cn("rounded-full px-2.5 py-[3px] text-xs font-bold", LEVEL_CLASS[l.tone])}>{l.label}</span>
+            </li>
+          );
+        })}
+      </ul>
+      <Note>Ini gambaran dari jawabanmu, bukan diagnosis.</Note>
+      {high.length > 0 && (
+        <div className="mt-3 grid gap-1 rounded-2xl border border-[#f3ddb8] bg-[#fff7ec] px-3.5 py-3 text-[13px] leading-normal text-[#5b4520]">
+          <b>{listJoin(high.map((a) => areaById(a).name))} sedang tinggi</b>
+          <span>Bicara dengan psikolog bisa membantu. Sesinya rahasia dan perusahaan tidak tahu namamu.</span>
+          <Link href={ROUTES.employee.counseling} className={appButton("primary", true)}>Lihat jadwal psikolog</Link>
+        </div>
+      )}
+    </>
+  );
+}

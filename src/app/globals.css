@@ -1,0 +1,69 @@
+@import "tailwindcss";
+
+/* Design tokens shared by the HR dashboard and the employee app. */
+@theme {
+  --font-sans: "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "DM Mono", ui-monospace, Menlo, monospace;
+
+  --color-ink: #14231d;
+  --color-head: #0b4f3c;
+  --color-muted: #5e716a;
+  --color-body: #33463f;
+  --color-canvas: #f4f8f6;
+  --color-line: #e1eae6;
+  --color-track: #eef3f1;
+  --color-soft: #eef5f1;
+  --color-mint: #e3f4ec;
+
+  --color-brand: #0b6b4f;
+  --color-brand-hover: #0a5d45;
+  --color-brand-2: #13906b;
+  --color-app: #0f7a5a;
+  --color-app-dark: #0b5e46;
+
+  --color-good: #1f7a4d;
+  --color-good-bg: #e6f4ec;
+  --color-warn: #a86a00;
+  --color-warn-bg: #fdf1dc;
+  --color-bad: #c8432f;
+  --color-bad-bg: #fbe9e5;
+  --color-info: #2f5bb8;
+  --color-info-bg: #e8effc;
+  --color-sand: #6b5530;
+  --color-sand-bg: #f1ece4;
+
+  --radius-card: 16px;
+
+  --animate-fade-up: fade-up 0.25s ease-out;
+  @keyframes fade-up {
+    from { opacity: 0; transform: translate(-50%, 8px); }
+    to { opacity: 1; transform: translate(-50%, 0); }
+  }
+}
+
+@layer base {
+  html { -webkit-font-smoothing: antialiased; }
+  body { @apply bg-canvas font-sans text-[14px] leading-normal text-ink; }
+  h1, h2, h3, h4 { @apply leading-tight tracking-tight text-balance text-head; }
+  button { @apply cursor-pointer; }
+  button:disabled { @apply cursor-not-allowed; }
+  :focus-visible { @apply rounded-lg outline-3 outline-offset-2 outline-[#f4a26b]; }
+}
+
+@utility num {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Hatched fill used wherever a value is hidden for privacy (fewer than 5 people). */
+@utility bg-hatch {
+  background: repeating-linear-gradient(135deg, #f6f8f7 0 8px, #eef2f0 8px 16px);
+}
+
+@utility scrollbar-none {
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
