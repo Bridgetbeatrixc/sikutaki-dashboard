@@ -32,9 +32,24 @@
   --color-sand: #6b5530;
   --color-sand-bg: #f1ece4;
 
+  /* Landing page accents */
+  --color-sky: #dcedf7;
+  --color-sun: #f4a26b;
+  --color-mood: #3d7fd9;
+  --color-mind: #7b61d1;
+  --color-energy: #e39b3b;
+
   --radius-card: 16px;
 
   --animate-fade-up: fade-up 0.25s ease-out;
+  --animate-bob: bob 6s ease-in-out infinite;
+  --animate-rise: rise 0.45s ease;
+  @keyframes bob {
+    50% { transform: translateY(-8px); }
+  }
+  @keyframes rise {
+    from { transform: translateY(8px); opacity: 0.4; }
+  }
   @keyframes fade-up {
     from { opacity: 0; transform: translate(-50%, 8px); }
     to { opacity: 1; transform: translate(-50%, 0); }
@@ -42,7 +57,7 @@
 }
 
 @layer base {
-  html { -webkit-font-smoothing: antialiased; }
+  html { -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
   body { @apply bg-canvas font-sans text-[14px] leading-normal text-ink; }
   h1, h2, h3, h4 { @apply leading-tight tracking-tight text-balance text-head; }
   button { @apply cursor-pointer; }
@@ -65,5 +80,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
   *, *::before, *::after { transition: none !important; animation: none !important; }
 }

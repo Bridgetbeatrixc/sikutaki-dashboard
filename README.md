@@ -7,7 +7,7 @@ Semua angka adalah data contoh. HR hanya melihat rata-rata kelompok minimal 5 or
 
 | Route | Isi |
 |---|---|
-| `/` | Halaman pilihan: Dashboard HR atau Aplikasi karyawan |
+| `/` | Landing page Sikutaki (gaya Calm Health) dengan tombol ke kedua dashboard |
 | `/dashboard-hr` | Beranda HR: metrik, mood, fokus per divisi |
 | `/dashboard-hr/divisi`, `/dashboard-hr/divisi/[id]` | Daftar divisi dan detail (fokus, penyebab, catatan HR) |
 | `/dashboard-hr/area`, `/dashboard-hr/area/[id]` | 17 area dan detail per area |
@@ -33,6 +33,7 @@ src/
   features/
     hr/                   Shell, state, dan halaman Dashboard HR
     employee/             Shell (mockup HP), state, konten, dan layar aplikasi karyawan
+    landing/              Landing page: section, mockup HP dan dashboard, konten
   components/
     ui/                   Komponen dasar: Card, Button, Kpi, Icon, dll.
     charts/               Grafik SVG: LineChart, CompareBars, MoodBar, dll.
