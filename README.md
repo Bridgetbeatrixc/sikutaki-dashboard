@@ -42,6 +42,12 @@ src/
 
 Styling memakai Tailwind CSS v4. Token warna dan font ada di `src/app/globals.css` (`@theme`).
 
+## Arsitektur
+
+**Sekarang (prototipe):** front-end Next.js + Tailwind, semua halaman dibuat statis. Data adalah data contoh di `src/lib/data.ts` dan `src/features/*/content.ts`. Isian karyawan disimpan di state React (`EmployeeProvider`), jadi hilang saat halaman di-refresh. GitHub Actions menjalankan typecheck dan build di setiap push, lalu Vercel men-deploy `main`.
+
+**Usulan produksi:** front-end yang sama tersambung ke backend API dengan database dan login akun kantor. Jawaban perorangan disimpan terpisah dari identitas, dan server hanya mengirim rata-rata tim ke HR bila tim berisi minimal 5 orang, sehingga aturan anonim dijaga di server.
+
 ## Menjalankan
 
 ```bash
