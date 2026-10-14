@@ -7,7 +7,7 @@ type Size = "md" | "sm";
 
 const VARIANT: Record<Variant, string> = {
   primary: "bg-brand text-white hover:bg-brand-hover disabled:opacity-45",
-  soft: "border border-[#cfe3da] bg-mint text-brand hover:border-brand-2",
+  soft: "border border-[#cfd8e3] bg-mint text-brand hover:border-brand-2",
   link: "p-0! text-brand hover:underline underline-offset-4",
 };
 const SIZE: Record<Size, string> = {

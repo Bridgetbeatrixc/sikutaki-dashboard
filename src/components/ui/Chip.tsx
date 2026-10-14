@@ -22,7 +22,7 @@ export function StatusChip({ s, small = false }: { s: Status; small?: boolean })
 
 type Tone = "neutral" | "good" | "warn" | "info" | "sand" | "brand";
 const TONE: Record<Tone, string> = {
-  neutral: "bg-[#edf4f1] text-muted",
+  neutral: "bg-[#edeff4] text-muted",
   good: "bg-good-bg text-good",
   warn: "bg-warn-bg text-warn",
   info: "bg-info-bg text-info",

@@ -34,7 +34,7 @@ export function Onboarding() {
             {STEPS.map((s, i) => (
               <li key={s.t} className="grid grid-cols-[30px_1fr_auto] items-center gap-3 border-t border-line py-2.5 first:border-t-0">
                 <button type="button" aria-label={done[i] ? "Tandai belum" : "Tandai selesai"} onClick={() => setDone(done.map((v, k) => (k === i ? !v : v)))}
-                  className={cn("inline-flex size-7 items-center justify-center rounded-full border-2 text-xs font-bold", done[i] ? "border-brand-2 bg-brand-2 text-white" : "border-[#c4d6ce] bg-white text-muted")}>
+                  className={cn("inline-flex size-7 items-center justify-center rounded-full border-2 text-xs font-bold", done[i] ? "border-brand-2 bg-brand-2 text-white" : "border-[#d2d2d7] bg-white text-muted")}>
                   {done[i] ? <Icon name="check" size={14} stroke={2.6} /> : i + 1}
                 </button>
                 <div><b className={cn(done[i] && "text-muted line-through")}>{s.t}</b><small className="block text-muted">{s.d}</small></div>
@@ -44,8 +44,8 @@ export function Onboarding() {
           </ol>
         </Card>
         <Card title="Yang akan muncul di sini">
-          <div className="flex h-[120px] items-end gap-2.5 rounded-xl bg-[repeating-linear-gradient(0deg,transparent_0_29px,#eef3f1_29px_30px)] p-2.5">
-            {GHOST_BARS.map((h) => <span key={h} className={cn("flex-1 rounded-t-md bg-[#e6efeb]", h)} />)}
+          <div className="flex h-[120px] items-end gap-2.5 rounded-xl bg-[repeating-linear-gradient(0deg,transparent_0_29px,#eef0f3_29px_30px)] p-2.5">
+            {GHOST_BARS.map((h) => <span key={h} className={cn("flex-1 rounded-t-md bg-[#e6e9ef]", h)} />)}
           </div>
           <Fine>Setelah check-in pertama ditutup, Beranda menampilkan indeks wellbeing, partisipasi, mood, jam tidur, dan fokus tiap divisi.</Fine>
         </Card>

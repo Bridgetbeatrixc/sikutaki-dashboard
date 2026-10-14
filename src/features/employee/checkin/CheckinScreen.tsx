@@ -43,7 +43,7 @@ export function CheckinScreen() {
   return (
     <div className="grid min-h-full content-start gap-3.5 px-[22px] pt-2 pb-6">
       <FlowBar closeHref={ROUTES.employee.home} title="Check-in mingguan" right={`${Math.min(index + 1, total)}/${total}`} />
-      <div className="h-1.5 overflow-hidden rounded-full bg-[#e5efea]">
+      <div className="h-1.5 overflow-hidden rounded-full bg-[#e5e8ef]">
         <i className="block h-full rounded-full bg-app transition-[width] duration-250" style={{ width: `${(index / total) * 100}%` }} />
       </div>
 
@@ -90,7 +90,7 @@ export function CheckinScreen() {
 function CheckinDone() {
   return (
     <div className="grid min-h-full content-start justify-items-center gap-3.5 px-[22px] pt-14 pb-6 text-center">
-      <MoodFace mood={MOODS[3]} size={96} className="rounded-3xl shadow-[0_12px_26px_rgba(20,80,60,.15)]" />
+      <MoodFace mood={MOODS[3]} size={96} className="rounded-3xl shadow-[0_12px_26px_rgba(0,0,0,.15)]" />
       <Question>Check-in minggu ini selesai</Question>
       <p className="text-sm leading-relaxed text-muted">
         Terima kasih. Hasil pribadimu sudah ada di Insight. Jawabanmu masuk ke rata-rata divisi tanpa nama, dan HR baru melihatnya bila ada minimal 5 penjawab.

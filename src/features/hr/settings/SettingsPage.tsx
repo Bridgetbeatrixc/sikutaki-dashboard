@@ -99,7 +99,7 @@ function EmployeesTab() {
   return (
     <div className="grid items-start gap-[18px] xl:grid-cols-2">
       <Card title="Unggah daftar karyawan" sub="CSV dengan kolom email dan divisi">
-        <label htmlFor="csv" className="relative grid cursor-pointer justify-items-center gap-1.5 rounded-[14px] border-2 border-dashed border-[#c4d6ce] px-4 py-7 text-center text-brand hover:bg-[#f7fbf9]">
+        <label htmlFor="csv" className="relative grid cursor-pointer justify-items-center gap-1.5 rounded-[14px] border-2 border-dashed border-[#d2d2d7] px-4 py-7 text-center text-brand hover:bg-[#f7f8fb]">
           <Icon name="upload" size={22} />
           <b>{file ? file.name : "Pilih atau seret file CSV"}</b>
           <small className="text-muted">{file ? `${file.rows} baris terbaca. Undangan dikirim saat check-in berikutnya.` : "Contoh: email,divisi"}</small>

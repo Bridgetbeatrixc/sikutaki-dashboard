@@ -53,7 +53,7 @@ export function ReportsPage() {
         <div className="flex items-center justify-between border-b-2 border-brand pb-3.5">
           <div><small className="text-muted">Laporan kesehatan mental karyawan</small><h2 className="text-[22px] font-bold">{COMPANY.name} · {month}</h2></div>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={asset("/logo.svg")} alt="" width={36} height={36} />
+          <img src={asset("/logo.png")} alt="" width={36} height={36} />
         </div>
         <div className="grid grid-cols-2 gap-3.5 xl:grid-cols-4">
           <ReportKpi label="Indeks wellbeing" value={wb} foot={`${wb >= wb4 ? "+" : ""}${wb - wb4} vs bulan lalu`} tone={wb >= wb4 ? "good" : "bad"} />
@@ -72,7 +72,7 @@ export function ReportsPage() {
             </ul>
           </Card>
           <Card title="Wellbeing 12 minggu">
-            <LineChart series={[{ name: "Indeks wellbeing", color: "#0B6B4F", values: series }]} labels={WEEKS.map((w) => w.label)} {...fitRange(series)} height={170} />
+            <LineChart series={[{ name: "Indeks wellbeing", color: "#0A66F5", values: series }]} labels={WEEKS.map((w) => w.label)} {...fitRange(series)} height={170} />
           </Card>
           <Card title="Rujukan psikolog per bulan" sub="Jumlah saja, tanpa identitas">
             <MiniBars values={REFERRALS.byMonth} labels={REFERRALS.months} />

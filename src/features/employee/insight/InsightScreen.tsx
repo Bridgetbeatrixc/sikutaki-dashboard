@@ -60,7 +60,7 @@ function SleepAndMood() {
         {!saved && (
           <Link href={ROUTES.employee.home} aria-label="Catat hari ini di Beranda" className="grid grid-rows-[auto_1fr_auto] justify-items-center gap-1">
             <small className="text-[11px] text-muted">?</small>
-            <div className="h-full w-full max-w-[30px] rounded-full bg-[repeating-linear-gradient(135deg,#eef3f0_0_6px,#e1eae5_6px_12px)] outline-[1.5px] -outline-offset-[1.5px] outline-[#b9ccc2] outline-dashed" />
+            <div className="h-full w-full max-w-[30px] rounded-full bg-[repeating-linear-gradient(135deg,#eef0f3_0_6px,#e1e5ea_6px_12px)] outline-[1.5px] -outline-offset-[1.5px] outline-[#b9c1cc] outline-dashed" />
             <small className="text-[11.5px] text-muted">{TODAY.day}</small>
           </Link>
         )}

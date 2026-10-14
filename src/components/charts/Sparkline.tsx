@@ -1,4 +1,4 @@
-export function Sparkline({ values, color = "#0B6B4F", w = 96, h = 28, className }: { values: number[]; color?: string; w?: number; h?: number; className?: string }) {
+export function Sparkline({ values, color = "#0A66F5", w = 96, h = 28, className }: { values: number[]; color?: string; w?: number; h?: number; className?: string }) {
   const lo = Math.min(...values) - 2, hi = Math.max(...values) + 2;
   const x = (i: number) => 2 + (i * (w - 6)) / (values.length - 1);
   const y = (v: number) => 2 + ((hi - v) * (h - 4)) / (hi - lo || 1);

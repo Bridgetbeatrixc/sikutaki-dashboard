@@ -38,7 +38,7 @@ export function FocusCard({ team, focus, onIdea }: { team: string; focus: Focus;
                 <li key={row.cause.id} className="grid grid-cols-[1fr_40px] items-center gap-x-2.5 gap-y-1 text-[13px] sm:grid-cols-[minmax(140px,220px)_1fr_40px]">
                   <span className={cn(i === 0 && "font-bold")}>{row.cause.label}</span>
                   <span className="col-span-2 row-start-2 h-2.5 overflow-hidden rounded-full bg-track sm:col-span-1 sm:row-start-auto">
-                    <i className={cn("block h-full rounded-full", i === 0 ? "bg-brand" : "bg-[#9fb9ae]")} style={{ width: `${row.pct}%` }} />
+                    <i className={cn("block h-full rounded-full", i === 0 ? "bg-brand" : "bg-[#9faab9]")} style={{ width: `${row.pct}%` }} />
                   </span>
                   <b className="num text-right">{row.pct}%</b>
                 </li>
@@ -51,7 +51,7 @@ export function FocusCard({ team, focus, onIdea }: { team: string; focus: Focus;
           <span className="text-xs font-bold tracking-wider text-muted uppercase">Ide langkah</span>
           <ul className="grid gap-2.5">
             {shares.rows.slice(0, 2).map((row) => (
-              <li key={row.cause.id} className="grid gap-1 rounded-[10px] bg-[#f6faf8] px-3 py-2.5 text-[13.5px]">
+              <li key={row.cause.id} className="grid gap-1 rounded-[10px] bg-[#f6f7fa] px-3 py-2.5 text-[13.5px]">
                 <span>{row.cause.idea}</span>
                 <button type="button" onClick={() => onIdea(row.cause.idea, focus.area)} className="justify-self-start text-[12.5px] font-semibold text-brand hover:underline">Jadikan catatan</button>
               </li>

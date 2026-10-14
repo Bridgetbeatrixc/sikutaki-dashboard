@@ -12,12 +12,12 @@ export function TrendChart({ w = 520, h = 200, lines = TREND, weeks = TREND_WEEK
     <svg viewBox={`0 0 ${w} ${h}`} className="block h-auto w-full" role="img" aria-label="Grafik tren skor per minggu (data contoh)">
       {[30, 40, 50, 60, 70].map((v) => (
         <g key={v}>
-          <line x1={PAD.l} x2={w - PAD.r} y1={y(v)} y2={y(v)} stroke="#E6EEEA" />
-          <text x={PAD.l - 8} y={y(v) + 3} textAnchor="end" className="fill-[#8b9b95] font-mono text-[10px]">{v}</text>
+          <line x1={PAD.l} x2={w - PAD.r} y1={y(v)} y2={y(v)} stroke="#E8E8ED" />
+          <text x={PAD.l - 8} y={y(v) + 3} textAnchor="end" className="fill-[#86868b] font-mono text-[10px]">{v}</text>
         </g>
       ))}
       {weeks.map((wk, i) => (i % 2 === 0 || i === weeks.length - 1) && (
-        <text key={wk} x={x(i)} y={h - 6} textAnchor="middle" className="fill-[#8b9b95] font-mono text-[10px]">{wk}</text>
+        <text key={wk} x={x(i)} y={h - 6} textAnchor="middle" className="fill-[#86868b] font-mono text-[10px]">{wk}</text>
       ))}
       {lines.map((l, li) => {
         const d = l.values.map((v, i) => `${i ? "L" : "M"}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(" ");

@@ -13,7 +13,7 @@ import { container, pillButton, textLink } from "../components/ui";
 function Float({ className, block = false, children }: { className: string; block?: boolean; children: ReactNode }) {
   return (
     <div className={cn(
-      "absolute z-[3] hidden animate-bob rounded-2xl bg-white px-4 py-3 shadow-[0_18px_40px_rgba(14,42,35,.14)]",
+      "absolute z-[3] hidden animate-bob rounded-2xl bg-white px-4 py-3 shadow-[0_18px_40px_rgba(0,0,0,.14)]",
       block ? "sm:block" : "items-center gap-2.5 sm:flex",
       className,
     )}>
@@ -24,20 +24,20 @@ function Float({ className, block = false, children }: { className: string; bloc
 
 export function Hero() {
   return (
-    <section className="overflow-hidden bg-[linear-gradient(180deg,#e9f6f1_0%,#eef7fb_55%,#fff_100%)] pt-6 pb-[50px] sm:pt-10 sm:pb-[70px]">
-      <div className={`${container} grid items-center gap-10 lg:grid-cols-[0.9fr_1.1fr]`}>
-        <div className="grid gap-[22px]">
-          <span className="font-mono text-[13px] tracking-[.06em] text-brand uppercase">Untuk HR dan tim People</span>
-          <h1 className="text-[clamp(42px,5.6vw,72px)] font-light">Tim yang sehat mental, terukur setiap minggu.</h1>
-          <p className="max-w-[470px] text-[17px] text-muted sm:text-[19px]">Check-in 3 menit untuk karyawan. Dashboard anonim untuk HR. 17 area, bukan cuma stres.</p>
-          <div className="flex flex-wrap items-center gap-[18px]">
+    <section className="overflow-hidden bg-white pt-12 pb-[50px] sm:pt-20 sm:pb-[70px]">
+      <div className={`${container} grid justify-items-center gap-12`}>
+        <div className="grid max-w-[860px] justify-items-center gap-5 text-center">
+          <span className="text-[17px] font-semibold text-brand sm:text-[19px]">Untuk HR dan tim People</span>
+          <h1 className="text-[clamp(44px,7vw,88px)] font-semibold tracking-[-0.035em]">Tim yang sehat mental, terukur setiap minggu.</h1>
+          <p className="max-w-[620px] text-[19px] text-muted sm:text-[23px] sm:leading-snug">Check-in 3 menit untuk karyawan. Dashboard anonim untuk HR. 17 area, bukan cuma stres.</p>
+          <div className="mt-2 flex flex-wrap items-center justify-center gap-x-7 gap-y-4">
             <a href="#demo" className={pillButton("primary", true)}>Jadwalkan demo</a>
-            <Link href={ROUTES.hr.root} className={textLink}>Coba dashboard HR <Icon name="arrow" size={16} /></Link>
+            <Link href={ROUTES.hr.root} className={`${textLink} text-[17px]`}>Coba dashboard HR <Icon name="chevron" size={16} /></Link>
           </div>
         </div>
 
-        <div className="mx-auto grid w-full max-w-[600px] justify-items-center gap-4 pt-2.5 sm:relative sm:block sm:h-[660px] sm:pt-0 lg:max-w-none">
-          <div className="size-[300px] max-w-full overflow-hidden rounded-full shadow-[0_30px_70px_rgba(14,42,35,.18)] sm:absolute sm:top-5 sm:right-2.5 sm:size-[470px]">
+        <div className="mx-auto grid w-full max-w-[680px] justify-items-center gap-4 sm:relative sm:block sm:h-[660px]">
+          <div className="size-[300px] max-w-full overflow-hidden rounded-full shadow-[0_30px_70px_rgba(0,0,0,.14)] sm:absolute sm:top-5 sm:right-2.5 sm:size-[470px]">
             <img src={asset("/img/hero-rina.jpg")} alt="Karyawan tersenyum sambil memegang ponsel" className="size-full object-cover object-[50%_30%]" />
           </div>
           <Link href={ROUTES.employee.root} aria-label="Buka aplikasi karyawan" className="-mt-[90px] block sm:absolute sm:top-[50px] sm:left-0 sm:z-[2] sm:mt-0">

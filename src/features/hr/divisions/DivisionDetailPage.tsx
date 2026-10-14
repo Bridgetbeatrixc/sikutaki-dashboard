@@ -63,7 +63,7 @@ export function DivisionDetailPage({ id }: { id: string }) {
       </KpiGrid>
 
       <h2 className="mt-1.5 flex items-center gap-2 text-[17px] font-bold">
-        Fokus divisi ini <span className="rounded-full bg-[#edf4f1] px-2.5 py-0.5 text-xs font-bold text-muted">{focus.length}</span>
+        Fokus divisi ini <span className="rounded-full bg-[#edeff4] px-2.5 py-0.5 text-xs font-bold text-muted">{focus.length}</span>
       </h2>
       {focus.length === 0
         ? <Card><div className="flex items-center gap-2 py-3 font-semibold text-good"><Icon name="check" size={20} />Semua area di divisi ini berada di level baik.</div></Card>
@@ -73,7 +73,7 @@ export function DivisionDetailPage({ id }: { id: string }) {
         <NotesPanel notes={myNotes} draft={draft} setDraft={setDraft} onSave={save} />
         <Card title="Wellbeing 12 minggu" sub="Divisi ini dibanding perusahaan. Garis putus-putus = catatan HR.">
           <LineChart labels={WEEKS.map((w) => w.label)} {...fitRange([...series, ...company])} height={220}
-            series={[{ name: team.name, color: status === "perhatian" ? "#B03424" : "#0B6B4F", values: series }, { name: "Perusahaan", color: "#8A9B95", values: company }]}
+            series={[{ name: team.name, color: status === "perhatian" ? "#B03424" : "#0A66F5", values: series }, { name: "Perusahaan", color: "#86868B", values: company }]}
             markers={myNotes.filter((n) => n.week <= NOW).sort((a, b) => a.week - b.week).map((n) => ({ i: n.week, label: NOTE_LABEL[n.type] }))} />
         </Card>
       </div>

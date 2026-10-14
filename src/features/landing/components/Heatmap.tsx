@@ -3,7 +3,7 @@ import { ALL_AREAS, HEAT, HEAT_TEAMS } from "../content";
 
 /** Green (sehat) to amber to coral (perlu perhatian). */
 const cellColor = (v: number) => {
-  if (v < 35) return `rgba(19,144,107,${0.18 + v / 140})`;
+  if (v < 35) return `rgba(59,142,247,${0.18 + v / 140})`;
   if (v < 60) return `rgba(227,155,59,${0.25 + (v - 35) / 90})`;
   return `rgba(226,94,72,${0.45 + (v - 60) / 80})`;
 };
@@ -30,7 +30,7 @@ export function Heatmap() {
       </div>
       <div className="mt-2 flex items-center justify-end gap-2 text-[11px] text-muted">
         <span>Sehat</span>
-        <i className="h-2 w-[120px] rounded-full bg-[linear-gradient(90deg,rgba(19,144,107,.35),rgba(227,155,59,.6),rgba(226,94,72,.9))]" />
+        <i className="h-2 w-[120px] rounded-full bg-[linear-gradient(90deg,rgba(59,142,247,.35),rgba(227,155,59,.6),rgba(226,94,72,.9))]" />
         <span>Perlu perhatian</span>
       </div>
     </div>

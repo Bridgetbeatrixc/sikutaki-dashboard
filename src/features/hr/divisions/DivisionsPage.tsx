@@ -45,7 +45,7 @@ export function DivisionsPage() {
       <div className="overflow-hidden rounded-card border border-line bg-white">
         <table className="w-full border-collapse">
           <thead className="hidden md:table-header-group">
-            <tr className="border-b border-line bg-[#fafcfb] text-left text-xs whitespace-nowrap text-muted">
+            <tr className="border-b border-line bg-[#fafbfc] text-left text-xs whitespace-nowrap text-muted">
               <SortTh k="name" label="Divisi" /><SortTh k="status" label="Status" /><SortTh k="wb" label="Wellbeing" />
               <th className="px-4 py-3 font-semibold">12 minggu</th><SortTh k="part" label="Partisipasi" />
               <th className="px-4 py-3 font-semibold">Fokus utama</th><th />
@@ -54,7 +54,7 @@ export function DivisionsPage() {
           <tbody>
             {rows.map((r) => (
               <tr key={r.t.id} onClick={() => router.push(ROUTES.hr.division(r.t.id))}
-                className="grid cursor-pointer grid-cols-2 gap-x-3 gap-y-1.5 border-t border-line px-3.5 py-3 first:border-t-0 hover:bg-[#f7fbf9] md:table-row md:p-0 [&>td]:md:px-4 [&>td]:md:py-3">
+                className="grid cursor-pointer grid-cols-2 gap-x-3 gap-y-1.5 border-t border-line px-3.5 py-3 first:border-t-0 hover:bg-[#f7f8fb] md:table-row md:p-0 [&>td]:md:px-4 [&>td]:md:py-3">
                 <td className="col-span-2">
                   <Link href={ROUTES.hr.division(r.t.id)} onClick={(e) => e.stopPropagation()} className="font-bold hover:underline">{r.t.name}</Link>
                   <small className="block text-muted">{r.t.size} orang · {respondents(r.t.id)} menjawab</small>
@@ -63,7 +63,7 @@ export function DivisionsPage() {
                   <>
                     <td><StatusChip s={r.st} small /></td>
                     <td><b className="num">{r.wb}</b> <Delta d={r.wbD} goodWhenUp /></td>
-                    <td><Sparkline values={wellbeingSeries(r.t.id)} color={r.st === "perhatian" ? "#B03424" : "#0B6B4F"} /></td>
+                    <td><Sparkline values={wellbeingSeries(r.t.id)} color={r.st === "perhatian" ? "#B03424" : "#0A66F5"} /></td>
                     <td><b className="num">{r.part}%</b>{r.part < 60 && <Tag tone="warn" className="ml-1.5">data terbatas</Tag>}</td>
                     <td className="col-span-2">{r.focus
                       ? <span className="inline-flex items-center gap-1.5"><Dot color={groupOf(areaById(r.focus.area).group).color} />{areaById(r.focus.area).name} <span className="num text-muted">{r.focus.v}</span></span>

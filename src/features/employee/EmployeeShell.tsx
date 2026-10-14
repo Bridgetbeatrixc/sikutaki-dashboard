@@ -34,7 +34,7 @@ export function EmployeeShell({ children }: { children: ReactNode }) {
   }, [path]);
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(1200px_700px_at_15%_10%,#ddf1e7,transparent_60%),radial-gradient(900px_600px_at_90%_90%,#eef3df,transparent_60%),#f1f7f4] pb-10 sm:px-6 sm:pt-[18px]">
+    <div className="min-h-screen bg-[radial-gradient(1200px_700px_at_15%_10%,#dde4f1,transparent_60%),radial-gradient(900px_600px_at_90%_90%,#eef3df,transparent_60%),#f1f3f7] pb-10 sm:px-6 sm:pt-[18px]">
       <header className="sticky top-0 z-20 flex items-center justify-between border-b border-line bg-white/90 px-3.5 py-2.5 backdrop-blur sm:static sm:mx-auto sm:mb-[18px] sm:max-w-[1080px] sm:border-0 sm:bg-transparent sm:p-0 sm:backdrop-blur-none">
         <div className="flex items-center gap-1">
           <Logo size={24} />
@@ -73,7 +73,7 @@ function FlowGuide({ path }: { path: string }) {
               <Link href={step.href} aria-current={on ? "step" : undefined}
                 className={cn(
                   "relative grid grid-cols-[30px_1fr] items-center gap-3.5 rounded-2xl border border-transparent px-3 py-2.5 text-ink hover:bg-white/60",
-                  on && "border-line bg-white shadow-[0_6px_18px_rgba(20,80,60,.08)] hover:bg-white",
+                  on && "border-line bg-white shadow-[0_6px_18px_rgba(0,0,0,.08)] hover:bg-white",
                 )}>
                 <span className={cn(
                   "z-10 grid size-7 place-items-center rounded-full border-2 text-[13px] font-bold",
@@ -103,7 +103,7 @@ function FlowGuide({ path }: { path: string }) {
 function Phone({ children, path, screenRef }: { children: ReactNode; path: string; screenRef: React.RefObject<HTMLDivElement | null> }) {
   const fullScreen = isFullScreen(path);
   return (
-    <div className="rounded-[46px] bg-[#1b2a24] p-2 shadow-[0_40px_80px_rgba(20,60,45,.28),inset_0_0_0_2px_#31443c] sm:rounded-[54px] sm:p-3">
+    <div className="rounded-[46px] bg-[#1d1d1f] p-2 shadow-[0_40px_80px_rgba(0,0,0,.28),inset_0_0_0_2px_#313944] sm:rounded-[54px] sm:p-3">
       <div className="relative flex h-[min(720px,calc(100dvh_-_110px))] min-h-[560px] w-[calc(100vw_-_48px)] max-w-[375px] flex-col overflow-hidden rounded-[38px] bg-white text-ink sm:h-[min(780px,calc(100vh_-_120px))] sm:min-h-[620px] sm:w-[375px] sm:rounded-[42px]">
         <StatusBar />
         <div ref={screenRef} className="relative min-h-0 flex-1 overflow-y-auto scrollbar-none">{children}</div>
@@ -117,7 +117,7 @@ function StatusBar() {
   return (
     <div className="relative flex flex-none items-center justify-between px-7 pt-3.5 pb-1.5 text-sm font-semibold" aria-hidden="true">
       <span>9:41</span>
-      <span className="absolute top-[9px] left-1/2 h-7 w-[104px] -translate-x-1/2 rounded-full bg-[#1b2a24]" />
+      <span className="absolute top-[9px] left-1/2 h-7 w-[104px] -translate-x-1/2 rounded-full bg-[#1d1d1f]" />
       <span className="inline-flex items-end gap-0.5">
         {[4, 6, 8, 10].map((h) => <i key={h} className="w-[3px] rounded-[1px] bg-ink" style={{ height: h }} />)}
       </span>
@@ -128,15 +128,15 @@ function StatusBar() {
 function AppNav({ path }: { path: string }) {
   return (
     <nav aria-label="Menu aplikasi"
-      className="absolute inset-x-2.5 bottom-2.5 z-10 grid h-[70px] grid-cols-4 items-center rounded-3xl bg-[#f2f8f5]/90 px-1 shadow-[0_10px_30px_rgba(20,80,60,.15),inset_0_0_0_1px_rgba(255,255,255,.8)] backdrop-blur-md">
+      className="absolute inset-x-2.5 bottom-2.5 z-10 grid h-[70px] grid-cols-4 items-center rounded-3xl bg-[#f2f4f8]/90 px-1 shadow-[0_10px_30px_rgba(0,0,0,.15),inset_0_0_0_1px_rgba(255,255,255,.8)] backdrop-blur-md">
       {APP_NAV.map((item) => {
         const on = within(path, item.href);
         return (
           <Link key={item.href} href={item.href} aria-current={on ? "page" : undefined}
-            className={cn("grid justify-items-center gap-[3px] py-1.5", on ? "text-app-dark" : "text-[#6f8e81]")}>
+            className={cn("grid justify-items-center gap-[3px] py-1.5", on ? "text-app-dark" : "text-[#6f7c8e]")}>
             <span className={cn(
               "grid h-[30px] w-11 place-items-center rounded-xl transition-colors",
-              on && "bg-app text-white shadow-[0_6px_14px_rgba(11,94,70,.3)]",
+              on && "bg-app text-white shadow-[0_6px_14px_rgba(8,87,214,.3)]",
             )}>
               <Icon name={item.icon} size={22} />
             </span>

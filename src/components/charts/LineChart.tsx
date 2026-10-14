@@ -1,8 +1,8 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 
-const GRID = "#E7EEEB", AXIS = "#8A9B95", INK = "#14231D";
-const axisText = "fill-[#8a9b95] font-mono text-[10.5px]";
+const GRID = "#E8E8ED", AXIS = "#86868B", INK = "#1D1D1F";
+const axisText = "fill-[#86868b] font-mono text-[10.5px]";
 
 export type Series = { name: string; color: string; values: number[] };
 export type Marker = { i: number; label: string };
@@ -41,7 +41,7 @@ export function LineChart({ series, labels, min = 0, max = 100, height = 220, ma
   return (
     <div className="relative" ref={box}>
       <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} className="block h-auto w-full overflow-visible" role="img" aria-label={series.map((s) => s.name).join(", ")}>
-        {band && <rect x={pl} width={W - pl - pr} y={y(band.to)} height={y(band.from) - y(band.to)} fill="#F2F7F5" />}
+        {band && <rect x={pl} width={W - pl - pr} y={y(band.to)} height={y(band.from) - y(band.to)} fill="#F2F4F7" />}
         {ticks.map((t) => (
           <g key={t}>
             <line x1={pl} x2={W - pr} y1={y(t)} y2={y(t)} stroke={GRID} />
@@ -88,7 +88,7 @@ export function LineChart({ series, labels, min = 0, max = 100, height = 220, ma
       {narrow && markers.length > 0 && (
         <ol className="mt-1.5 flex flex-wrap gap-x-3.5 gap-y-1.5 text-xs text-muted">
           {markers.map((m, k) => (
-            <li key={`${m.label}-${k}`}><b className="mr-1.5 inline-grid size-[18px] place-items-center rounded-full border border-[#8a9b95] text-[11px] text-ink">{k + 1}</b>{m.label}</li>
+            <li key={`${m.label}-${k}`}><b className="mr-1.5 inline-grid size-[18px] place-items-center rounded-full border border-[#86868b] text-[11px] text-ink">{k + 1}</b>{m.label}</li>
           ))}
         </ol>
       )}

@@ -55,7 +55,7 @@ export function FlowBar({ closeHref, title, right }: { closeHref: string; title:
 export function CheckCircle({ on }: { on: boolean }) {
   return (
     <span aria-label={on ? "Selesai" : "Belum"}
-      className={cn("grid size-7 shrink-0 place-items-center rounded-full text-white", on ? "bg-app" : "bg-white shadow-[inset_0_0_0_1.5px_#c3d6cc]")}>
+      className={cn("grid size-7 shrink-0 place-items-center rounded-full text-white", on ? "bg-app" : "bg-white shadow-[inset_0_0_0_1.5px_#c3cbd6]")}>
       {on && <Icon name="check" size={14} />}
     </span>
   );

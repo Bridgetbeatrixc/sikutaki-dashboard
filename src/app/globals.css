@@ -1,25 +1,25 @@
 @import "tailwindcss";
 
-/* Design tokens shared by the HR dashboard and the employee app. */
+/* Design tokens shared by the HR dashboard and the employee app. Blue comes from the Sikutaki logo; neutrals follow Apple-style greys. */
 @theme {
-  --font-sans: "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "Segoe UI", system-ui, sans-serif;
   --font-mono: "DM Mono", ui-monospace, Menlo, monospace;
 
-  --color-ink: #14231d;
-  --color-head: #0b4f3c;
-  --color-muted: #5e716a;
-  --color-body: #33463f;
-  --color-canvas: #f4f8f6;
-  --color-line: #e1eae6;
-  --color-track: #eef3f1;
-  --color-soft: #eef5f1;
-  --color-mint: #e3f4ec;
+  --color-ink: #1d1d1f;
+  --color-head: #1d1d1f;
+  --color-muted: #6e6e73;
+  --color-body: #424245;
+  --color-canvas: #f5f5f7;
+  --color-line: #e3e3e8;
+  --color-track: #ececf0;
+  --color-soft: #f0f5fd;
+  --color-mint: #e6f0fe;
 
-  --color-brand: #0b6b4f;
-  --color-brand-hover: #0a5d45;
-  --color-brand-2: #13906b;
-  --color-app: #0f7a5a;
-  --color-app-dark: #0b5e46;
+  --color-brand: #0a66f5;
+  --color-brand-hover: #0857d6;
+  --color-brand-2: #3b8ef7;
+  --color-app: #0a66f5;
+  --color-app-dark: #0857d6;
 
   --color-good: #1f7a4d;
   --color-good-bg: #e6f4ec;
@@ -33,7 +33,7 @@
   --color-sand-bg: #f1ece4;
 
   /* Landing page accents */
-  --color-sky: #dcedf7;
+  --color-sky: #e3effd;
   --color-sun: #f4a26b;
   --color-mood: #3d7fd9;
   --color-mind: #7b61d1;
@@ -59,10 +59,10 @@
 @layer base {
   html { -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
   body { @apply bg-canvas font-sans text-[14px] leading-normal text-ink; }
-  h1, h2, h3, h4 { @apply leading-tight tracking-tight text-balance text-head; }
+  h1, h2, h3, h4 { @apply leading-[1.08] tracking-[-0.022em] text-balance text-head; }
   button { @apply cursor-pointer; }
   button:disabled { @apply cursor-not-allowed; }
-  :focus-visible { @apply rounded-lg outline-3 outline-offset-2 outline-[#f4a26b]; }
+  :focus-visible { @apply rounded-lg outline-3 outline-offset-2 outline-brand-2/60; }
 }
 
 @utility num {
@@ -71,7 +71,7 @@
 
 /* Hatched fill used wherever a value is hidden for privacy (fewer than 5 people). */
 @utility bg-hatch {
-  background: repeating-linear-gradient(135deg, #f6f8f7 0 8px, #eef2f0 8px 16px);
+  background: repeating-linear-gradient(135deg, #f7f7f9 0 8px, #eeeef2 8px 16px);
 }
 
 @utility scrollbar-none {

@@ -60,7 +60,7 @@ export function OverviewPage() {
 
       <div className="grid items-start gap-[18px] xl:grid-cols-[1.6fr_1fr]">
         <Card title="Indeks wellbeing 12 minggu" sub="Makin tinggi makin baik. Garis putus-putus = catatan HR yang sudah dilakukan.">
-          <LineChart series={[{ name: "Indeks wellbeing", color: "#0B6B4F", values: wbs }]} labels={weekLabels} {...fitRange(wbs)} height={230} markers={doneMarkers} />
+          <LineChart series={[{ name: "Indeks wellbeing", color: "#0A66F5", values: wbs }]} labels={weekLabels} {...fitRange(wbs)} height={230} markers={doneMarkers} />
         </Card>
         <Card title="Mood harian minggu ini" sub="Dari check-in mood harian di aplikasi karyawan">
           <div className="flex items-baseline gap-2.5"><b className="num text-[40px] font-bold text-head">{decimal(mood)}</b><span className="text-[13px] text-muted">rata-rata dari 5</span></div>
@@ -74,14 +74,14 @@ export function OverviewPage() {
         <div className="overflow-x-auto">
           <table className="w-full border-collapse">
             <thead className="hidden md:table-header-group">
-              <tr className="border-y border-line bg-[#fafcfb] text-left text-xs text-muted">
+              <tr className="border-y border-line bg-[#fafbfc] text-left text-xs text-muted">
                 {["Divisi", "Wellbeing", "Fokus utama", "Penyebab teratas", "Catatan HR terakhir", ""].map((h) => <th key={h} className="px-4 py-3 font-semibold whitespace-nowrap">{h}</th>)}
               </tr>
             </thead>
             <tbody>
               {rows.map((r) => (
                 <tr key={r.t.id} onClick={() => router.push(ROUTES.hr.division(r.t.id))}
-                  className="grid cursor-pointer grid-cols-2 gap-x-3 gap-y-1.5 border-t border-line px-3.5 py-3 align-top hover:bg-[#f7fbf9] md:table-row md:p-0 [&>td]:md:px-4 [&>td]:md:py-3 [&>td]:md:align-top">
+                  className="grid cursor-pointer grid-cols-2 gap-x-3 gap-y-1.5 border-t border-line px-3.5 py-3 align-top hover:bg-[#f7f8fb] md:table-row md:p-0 [&>td]:md:px-4 [&>td]:md:py-3 [&>td]:md:align-top">
                   <td className="col-span-2">
                     <Link href={ROUTES.hr.division(r.t.id)} onClick={(e) => e.stopPropagation()} className="font-bold hover:underline">{r.t.name}</Link>
                     <small className="block text-muted">{r.t.size} orang</small>
@@ -109,7 +109,7 @@ export function OverviewPage() {
       <div className="grid items-start gap-[18px] xl:grid-cols-2">
         <Card title="Wellbeing per divisi" sub="Garis kecil = rata-rata perusahaan. Makin panjang makin baik.">
           <CompareBars onSelect={(id) => router.push(ROUTES.hr.division(id))}
-            items={visible.map((t) => ({ id: t.id, label: t.name, color: "#13906B", v: wellbeing(t.id), ref: wb })).sort((a, b) => a.v - b.v)} />
+            items={visible.map((t) => ({ id: t.id, label: t.name, color: "#3B8EF7", v: wellbeing(t.id), ref: wb })).sort((a, b) => a.v - b.v)} />
           {hiddenTeams.length > 0 && <HiddenNote text={`${hiddenTeams.map((t) => t.name).join(", ")}: disembunyikan, kurang dari 5 orang`} />}
         </Card>
         <Card title="Area tertinggi di perusahaan" sub="Skor 0 sampai 100, makin tinggi makin perlu perhatian. Perubahan dibanding 4 minggu lalu."

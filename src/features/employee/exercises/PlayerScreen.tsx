@@ -51,7 +51,7 @@ export function PlayerScreen({ exercise }: { exercise: Exercise }) {
       <FlowBar closeHref={ROUTES.employee.exercises} title={exercise.title} />
       <div className="relative mx-auto mt-7 mb-1.5 grid size-[250px] grid-rows-2 justify-items-center text-center" aria-live="polite">
         <i className={cn(
-          "absolute inset-0 rounded-full bg-[radial-gradient(circle_at_35%_30%,#fff,#a9dcc5_55%,#4fbf95)] shadow-[0_20px_50px_rgba(20,120,85,.25)] transition-transform ease-in-out",
+          "absolute inset-0 rounded-full bg-[radial-gradient(circle_at_35%_30%,#fff,#a9bfdc_55%,#4f80bf)] shadow-[0_20px_50px_rgba(0,0,0,.25)] transition-transform ease-in-out",
           big ? "scale-100" : "scale-[.62]",
         )} style={{ transitionDuration: `${seconds}s` }} />
         <b className="relative self-end text-xl text-app-dark">{label}</b>

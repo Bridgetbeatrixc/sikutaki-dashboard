@@ -21,7 +21,7 @@ export function HomeScreen() {
             <span className="block text-[15px] font-bold">Hai, Dimas</span>
             <small className="block text-xs text-muted">{TODAY.long}</small>
           </div>
-          <span className="grid size-10 place-items-center rounded-full bg-[linear-gradient(135deg,#cdebdd,#f1e6c8)] font-bold text-app-dark">D</span>
+          <span className="grid size-10 place-items-center rounded-full bg-[linear-gradient(135deg,#cddaeb,#f1e6c8)] font-bold text-app-dark">D</span>
         </div>
         <DailyNote />
       </div>
@@ -82,7 +82,7 @@ function DailyNote() {
 function StepButton({ label, onClick, children }: { label: string; onClick: () => void; children: string }) {
   return (
     <button type="button" aria-label={label} onClick={onClick}
-      className="size-[30px] rounded-full bg-white text-lg text-app-dark shadow-[0_2px_6px_rgba(20,80,60,.15)]">
+      className="size-[30px] rounded-full bg-white text-lg text-app-dark shadow-[0_2px_6px_rgba(0,0,0,.15)]">
       {children}
     </button>
   );
@@ -94,7 +94,7 @@ type PlanItem = { id: string; title: string; meta: string; icon: BlobIcon; hue: 
 function TodayPlan() {
   const { saved, checkin, done } = useEmployee();
   const plan: PlanItem[] = [
-    { id: "mood", title: "Catat mood harian", meta: "10 detik", icon: "smile", hue: "#13906B", done: saved },
+    { id: "mood", title: "Catat mood harian", meta: "10 detik", icon: "smile", hue: "#3B8EF7", done: saved },
     { id: "checkin", title: "Check-in mingguan", meta: "6 pertanyaan · 3 menit · tutup Minggu", icon: "clip", hue: "#2F8F9D", done: !!checkin, href: ROUTES.employee.checkin },
     { id: "napas", title: "Latihan Napas 4-7-8", meta: "3 menit", icon: "lungs", hue: "#C27510", done: done.includes("napas"), href: ROUTES.employee.exercise("napas") },
   ];
@@ -130,6 +130,6 @@ function PlanRow({ item }: { item: PlanItem }) {
       {item.done || !item.href ? <CheckCircle on={item.done} /> : <StartPill />}
     </>
   );
-  const row = "grid w-full grid-cols-[52px_1fr_auto] items-center gap-3 rounded-2xl bg-[#f1f7f4] py-2 pr-3 pl-2 text-left text-ink";
+  const row = "grid w-full grid-cols-[52px_1fr_auto] items-center gap-3 rounded-2xl bg-[#f1f3f7] py-2 pr-3 pl-2 text-left text-ink";
   return item.href && !item.done ? <Link href={item.href} className={row}>{body}</Link> : <div className={row}>{body}</div>;
 }

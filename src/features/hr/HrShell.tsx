@@ -33,7 +33,7 @@ export function HrShell({ children }: { children: ReactNode }) {
             <div key={n.href} className={cn(i === NAV_DIVIDER_AFTER && "mb-2.5 border-b border-line pb-2.5")}>
               <Link href={n.href} title={n.label}
                 className={cn("relative flex items-center justify-center gap-3 rounded-xl p-[11px] font-medium xl:justify-start xl:px-3 xl:py-2.5",
-                  isActive(pathname, n.href) ? "bg-mint font-bold text-brand" : "text-muted hover:bg-[#f1f6f4] hover:text-ink")}>
+                  isActive(pathname, n.href) ? "bg-mint font-bold text-brand" : "text-muted hover:bg-[#f1f3f6] hover:text-ink")}>
                 <Icon name={n.icon} size={19} />
                 <span className="hidden xl:inline">{n.label}</span>
                 {n.href === ROUTES.hr.divisions && teamsWithAlerts > 0 && (
@@ -78,7 +78,7 @@ export function HrShell({ children }: { children: ReactNode }) {
                 <div className="absolute top-[46px] right-0 z-40 grid w-[min(320px,calc(100vw-32px))] gap-0.5 rounded-[14px] border border-line bg-white p-2 shadow-xl">
                   <b className="px-2.5 py-1.5 text-[13px]">Notifikasi</b>
                   {al.length === 0 ? <span className="p-2.5 text-[13px] text-muted">Belum ada notifikasi.</span> : al.slice(0, 5).map((a) => (
-                    <Link key={a.id} href={ROUTES.hr.division(a.team)} onClick={() => setBellOpen(false)} className="flex items-start gap-2 rounded-[10px] px-2.5 py-2 text-[13px] hover:bg-[#f1f6f4]">
+                    <Link key={a.id} href={ROUTES.hr.division(a.team)} onClick={() => setBellOpen(false)} className="flex items-start gap-2 rounded-[10px] px-2.5 py-2 text-[13px] hover:bg-[#f1f3f6]">
                       <Icon name="flag" size={14} className="mt-0.5 shrink-0 text-bad" />{a.text}
                     </Link>
                   ))}
@@ -86,7 +86,7 @@ export function HrShell({ children }: { children: ReactNode }) {
               )}
             </div>
             <button type="button" onClick={() => setEmpty(!empty)} title="Ganti tampilan contoh"
-              className={cn("hidden rounded-full border border-dashed px-3 py-1.5 text-xs font-semibold sm:inline-flex", empty ? "border-warn bg-warn-bg text-warn" : "border-[#b9cbc3] text-muted")}>
+              className={cn("hidden rounded-full border border-dashed px-3 py-1.5 text-xs font-semibold sm:inline-flex", empty ? "border-warn bg-warn-bg text-warn" : "border-[#c7c7cc] text-muted")}>
               {empty ? "Mode: organisasi baru" : "Mode: data contoh"}
             </button>
             <span className="inline-flex size-9 items-center justify-center rounded-full bg-brand text-[13px] font-bold text-white" title="Rina A., HR">RA</span>

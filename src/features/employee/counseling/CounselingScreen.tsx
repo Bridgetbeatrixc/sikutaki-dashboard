@@ -39,7 +39,7 @@ export function CounselingScreen() {
           <div className="mb-1.5 grid gap-2">
             {SLOTS.map((s) => (
               <button key={s} type="button" onClick={() => setSlot(s)} aria-pressed={slot === s}
-                className={cn("rounded-[14px] border-[1.5px] px-3.5 py-3 text-left text-sm text-ink", slot === s ? "border-app bg-[#eef7f2] font-semibold" : "border-line bg-white")}>
+                className={cn("rounded-[14px] border-[1.5px] px-3.5 py-3 text-left text-sm text-ink", slot === s ? "border-app bg-[#eef1f7] font-semibold" : "border-line bg-white")}>
                 {s}
               </button>
             ))}

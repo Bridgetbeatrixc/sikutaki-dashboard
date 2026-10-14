@@ -16,7 +16,7 @@ export function WelcomeScreen() {
     <div className="grid gap-1 px-6 pt-[18px] pb-7">
       <div className="mt-5 mb-1.5 flex items-end justify-center gap-2.5">
         {[MOODS[1], MOODS[3], MOODS[4]].map((m) => (
-          <MoodFace key={m.id} mood={m} size={m.id === 4 ? 96 : 70} className="rounded-[20px] shadow-[0_10px_24px_rgba(20,80,60,.14)]" />
+          <MoodFace key={m.id} mood={m} size={m.id === 4 ? 96 : 70} className="rounded-[20px] shadow-[0_10px_24px_rgba(0,0,0,.14)]" />
         ))}
       </div>
       <h1 className="mt-3.5 mb-1.5 text-center text-[28px] font-semibold text-ink">Ruang aman untuk cek kondisimu</h1>

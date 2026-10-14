@@ -15,7 +15,7 @@ export function Audiences() {
     <section className={`${container} relative z-[2] grid gap-5 sm:grid-cols-3`}>
       {AUDIENCES.map((a) => (
         <Link key={a.title} href={a.href}
-          className="grid gap-1.5 overflow-hidden rounded-[20px] bg-white px-6 pb-6 shadow-[0_10px_30px_rgba(14,42,35,.08)] transition-transform hover:-translate-y-[3px]">
+          className="grid gap-1.5 overflow-hidden rounded-[20px] bg-white px-6 pb-6 shadow-[0_10px_30px_rgba(0,0,0,.08)] transition-transform hover:-translate-y-[3px]">
           <img src={asset(`/img/${a.img}`)} alt="" className="-mx-6 mb-[18px] h-[190px] w-[calc(100%+48px)] max-w-none object-cover" />
           <span className="relative -mt-11 mb-2 inline-flex size-11 items-center justify-center rounded-xl border-3 border-white bg-mint text-brand">
             <Icon name={a.icon} size={22} />

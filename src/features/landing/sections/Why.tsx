@@ -25,8 +25,8 @@ export function Why() {
       <SectionHead title="Kenapa Sikutaki?" />
       <div className="grid items-center gap-14 lg:grid-cols-2">
         <div className="relative grid min-h-[300px] place-items-center sm:min-h-[380px]">
-          <div className="absolute top-1/2 left-1/2 size-[290px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle_at_40%_40%,#fff_0%,#fbe7da_55%,#f6d0b8_100%)] sm:size-[380px]" />
-          <div key={active} className="relative z-[1] grid w-[min(360px,100%)] animate-rise gap-3.5 rounded-[20px] bg-white p-5 shadow-[0_20px_50px_rgba(14,42,35,.14)]">
+          <div className="absolute top-1/2 left-1/2 size-[290px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle_at_40%_40%,#fff_0%,#e3efff_55%,#c9defd_100%)] sm:size-[380px]" />
+          <div key={active} className="relative z-[1] grid w-[min(360px,100%)] animate-rise gap-3.5 rounded-[20px] bg-white p-5 shadow-[0_20px_50px_rgba(0,0,0,.14)]">
             <WhyPanel id={active} />
           </div>
         </div>
@@ -34,7 +34,7 @@ export function Why() {
           {WHY.map((w) => (
             <button key={w.id} type="button" aria-pressed={active === w.id}
               onClick={() => { setAuto(false); setActive(w.id); }}
-              className={cn("grid gap-1 rounded-2xl px-[18px] py-4 text-left transition-colors", active === w.id ? "bg-mint" : "hover:bg-[#f4f8f6]")}>
+              className={cn("grid gap-1 rounded-2xl px-[18px] py-4 text-left transition-colors", active === w.id ? "bg-mint" : "hover:bg-[#f4f5f8]")}>
               <b className={cn("text-lg font-semibold", active === w.id ? "text-head" : "text-muted")}>{w.title}</b>
               <span className={cn("text-[15px]", active === w.id ? "text-ink" : "text-muted")}>{w.text}</span>
             </button>
@@ -49,7 +49,7 @@ function LockLine({ children }: { children: string }) {
   return <div className="flex items-center gap-1.5 text-[12.5px] font-medium text-brand"><Icon name="lock" size={14} /> {children}</div>;
 }
 
-const AVATAR_TONES = ["bg-[linear-gradient(135deg,#d6def5,#a9b8e6)]", "bg-[linear-gradient(135deg,#cfe7dc,#9fcfb9)]", "bg-[linear-gradient(135deg,#f6d6c0,#eeb48f)]"];
+const AVATAR_TONES = ["bg-[linear-gradient(135deg,#d6def5,#a9b8e6)]", "bg-[linear-gradient(135deg,#cfd9e7,#9fb4cf)]", "bg-[linear-gradient(135deg,#f6d6c0,#eeb48f)]"];
 
 function WhyPanel({ id }: { id: WhyId }) {
   switch (id) {

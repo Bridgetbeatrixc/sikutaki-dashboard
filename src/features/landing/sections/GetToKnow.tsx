@@ -16,7 +16,7 @@ export function GetToKnow() {
   return (
     <section className={`${container} grid items-center gap-10 pt-[70px] pb-[50px] sm:pt-[110px] sm:pb-[90px] lg:grid-cols-[0.8fr_1.2fr]`}>
       <div>
-        <h2 className="mb-[26px] text-[clamp(34px,4vw,52px)] font-light">Kenali Sikutaki</h2>
+        <h2 className="mb-[26px] text-[clamp(34px,4vw,52px)] font-semibold">Kenali Sikutaki</h2>
         <ul className="grid gap-3.5 text-[17px]">
           {KNOW_POINTS.map((p) => (
             <li key={p} className="flex items-center gap-3">

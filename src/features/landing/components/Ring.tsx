@@ -1,5 +1,5 @@
 /** Progress ring with a centered label. */
-export function Ring({ value, size = 64, color = "#0B6B4F", track = "#E6EEEA", textColor = "var(--color-ink)", label }: {
+export function Ring({ value, size = 64, color = "#0A66F5", track = "#E8E8ED", textColor = "var(--color-ink)", label }: {
   value: number; size?: number; color?: string; track?: string; textColor?: string; label?: string;
 }) {
   const r = size / 2 - 6;

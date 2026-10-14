@@ -57,7 +57,7 @@ export const SOURCES = [
 ];
 
 export const STATS: { icon: IconName; value: string; text: string; source: number; halo: string }[] = [
-  { icon: "people", value: "12 miliar", text: "hari kerja hilang setiap tahun karena depresi dan kecemasan", source: 1, halo: "bg-[radial-gradient(circle,#13906b_0_38%,#b9e4d2_39%_52%,#e3f4ec_53%_100%)]" },
+  { icon: "people", value: "12 miliar", text: "hari kerja hilang setiap tahun karena depresi dan kecemasan", source: 1, halo: "bg-[radial-gradient(circle,#3b8ef7_0_38%,#cfe2fd_39%_52%,#eaf2fe_53%_100%)]" },
   { icon: "trend", value: "US$1 triliun", text: "kerugian produktivitas global per tahun", source: 1, halo: "bg-[radial-gradient(circle,#7b61d1_0_38%,#d3c9f1_39%_52%,#efeafb_53%_100%)]" },
   { icon: "chat", value: "2,6%", text: "remaja Indonesia dengan masalah kesehatan mental yang mengakses layanan", source: 2, halo: "bg-[radial-gradient(circle,#f4a26b_0_38%,#f9d3b8_39%_52%,#fdeee3_53%_100%)]" },
 ];

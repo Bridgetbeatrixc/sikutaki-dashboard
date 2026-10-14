@@ -46,7 +46,7 @@ export function ExercisesScreen() {
             className="relative h-[140px] overflow-hidden rounded-[20px] shadow-[inset_0_0_0_1px_rgba(255,255,255,.6)]">
             <span className="absolute inset-x-0 bottom-0 bg-white/50 px-3 py-2.5 text-ink backdrop-blur-sm">
               <b className="block text-[13px] font-semibold">{e.title}</b>
-              <small className="text-[11px] text-[#3e5149]">{e.minutes}</small>
+              <small className="text-[11px] text-[#3e4651]">{e.minutes}</small>
             </span>
           </Link>
         ))}
