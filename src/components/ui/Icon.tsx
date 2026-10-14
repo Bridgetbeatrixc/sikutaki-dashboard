@@ -35,6 +35,11 @@ const PATHS = {
   clock: (<><circle cx="12" cy="12" r="8.5" /><path d="M12 7.5V12l3 2" /></>),
   bars: (<path d="M5 20V12M10 20V6M15 20v-9M20 20V9" />),
   lotus: (<><circle cx="12" cy="12" r="2.6" /><path d="M12 3.5c2 2 2 4.5 0 6-2-1.5-2-4 0-6zM12 20.5c-2-2-2-4.5 0-6 2 1.5 2 4 0 6zM3.5 12c2-2 4.5-2 6 0-1.5 2-4 2-6 0zM20.5 12c-2 2-4.5 2-6 0 1.5-2 4-2 6 0z" /></>),
+  menu: (<path d="M4 7h16M4 12h16M4 17h16" />),
+  shield: (<><path d="M12 3l8 3v6c0 4.5-3.4 8.2-8 9-4.6-.8-8-4.5-8-9V6z" /><path d="M8.5 12l2.5 2.5 4.5-5" /></>),
+  heart: (<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z" />),
+  eye: (<><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z" /><circle cx="12" cy="12" r="3" /></>),
+  phone: (<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z" />),
 } satisfies Record<string, ReactNode>;
 
 export type IconName = keyof typeof PATHS;

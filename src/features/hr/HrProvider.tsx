@@ -1,5 +1,5 @@
 "use client";
-import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import type { Scope } from "@/lib/data";
 import { INITIAL_NOTES, type Note } from "@/lib/focus";
 
@@ -22,6 +22,11 @@ export function HrProvider({ children }: { children: ReactNode }) {
   const [notes, setNotes] = useState<Note[]>(INITIAL_NOTES);
   const [empty, setEmpty] = useState(false);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
+
+  // Sign-up sends people to ?mode=baru so the dashboard opens as a brand-new organisation.
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get("mode") === "baru") setEmpty(true);
+  }, []);
 
   const toast = useCallback((msg: string) => {
     setToastMsg(msg);

@@ -1,8 +1,18 @@
 /** Route map for the whole site. Keep every link here so routes change in one place. */
 export const ROUTES = {
   home: "/",
+  about: "/tentang",
+  pricing: "/harga",
+  security: "/keamanan",
+  contact: "/kontak",
+  privacy: "/privasi",
+  terms: "/syarat",
+  login: "/masuk",
+  signup: "/daftar",
   hr: {
     root: "/dashboard-hr",
+    /** Opens the dashboard as a brand-new organisation (used right after sign-up). */
+    newOrg: "/dashboard-hr?mode=baru",
     divisions: "/dashboard-hr/divisi",
     division: (id: string) => `/dashboard-hr/divisi/${id}`,
     areas: "/dashboard-hr/area",
