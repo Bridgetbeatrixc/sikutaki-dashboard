@@ -98,5 +98,45 @@ export const FLOW = [
   { href: ROUTES.employee.checkin, title: "Check-in mingguan", text: "6 pertanyaan, 3 menit. Tutup setiap Minggu." },
   { href: ROUTES.employee.insight, title: "Lihat insight-mu", text: "Tidur vs mood, dan hasil check-in. Hanya untukmu." },
   { href: ROUTES.employee.exercises, title: "Latihan singkat", text: "Napas dan relaksasi dengan panduan, 3 sampai 8 menit." },
+  { href: ROUTES.employee.calm, title: "Saat cemas atau panik", text: "Napas terpandu, grounding 5-4-3-2-1, dan jalur bantuan." },
   { href: ROUTES.employee.counseling, title: "Konseling bila perlu", text: "Pesan sesi psikolog secara rahasia." },
+];
+
+/* Calm-down tool for moments of anxiety or panic. */
+
+/** One breathing step: what to do, for how many seconds, and how big the circle should be at the end of it. */
+export type CalmStep = [label: string, seconds: number, scale: number];
+export type CalmPattern = { id: string; name: string; rhythm: string; text: string; steps: CalmStep[] };
+
+export const CALM_PATTERNS: CalmPattern[] = [
+  {
+    id: "lega",
+    name: "Napas lega",
+    rhythm: "2 + 1 tarik, 6 buang",
+    text: "Dua tarikan lewat hidung, satu buangan panjang lewat mulut.",
+    steps: [["Tarik napas lewat hidung", 2, 0.86], ["Tarik sedikit lagi", 1, 1], ["Buang pelan lewat mulut", 6, 0.5]],
+  },
+  {
+    id: "panjang",
+    name: "Buang panjang",
+    rhythm: "4 tarik, 6 buang",
+    text: "Tanpa menahan napas, kalau menahan terasa sesak.",
+    steps: [["Tarik napas", 4, 1], ["Buang perlahan", 6, 0.5]],
+  },
+  {
+    id: "kotak",
+    name: "Napas kotak",
+    rhythm: "4 tarik, 4 tahan, 4 buang, 4 tahan",
+    text: "Ritme rata yang mudah dihitung.",
+    steps: [["Tarik napas", 4, 1], ["Tahan", 4, 1], ["Buang perlahan", 4, 0.5], ["Tahan", 4, 0.5]],
+  },
+];
+
+/** 5-4-3-2-1 grounding: name things around you, one sense at a time. */
+export const GROUNDING = [
+  { count: 5, sense: "lihat", prompt: "Sebutkan 5 hal yang bisa kamu lihat", hint: "Warna dinding, layar, tanganmu sendiri." },
+  { count: 4, sense: "sentuh", prompt: "Rasakan 4 hal yang bisa kamu sentuh", hint: "Kursi di bawahmu, kain baju, permukaan meja." },
+  { count: 3, sense: "dengar", prompt: "Dengarkan 3 suara di sekitarmu", hint: "AC, langkah orang, napasmu sendiri." },
+  { count: 2, sense: "cium", prompt: "Cari 2 bau yang bisa kamu cium", hint: "Kopi, sabun di tangan, udara ruangan." },
+  { count: 1, sense: "rasa", prompt: "Perhatikan 1 rasa di mulutmu", hint: "Sisa minuman, atau minum seteguk air." },
 ];

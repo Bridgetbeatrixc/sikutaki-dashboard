@@ -16,8 +16,9 @@ const within = (path: string, href: string) => path === href || path.startsWith(
 /** The exercise player belongs to the Latihan tab. */
 const activeHref = (path: string, href: string) => (href === E.root ? path === href : within(path, href));
 
-/** Welcome, check-in and the exercise player take the whole screen without the bottom nav. */
-const isFullScreen = (path: string) => path === E.root || path === E.checkin || path.startsWith(`${E.exercises}/`);
+/** Welcome, check-in, the calm-down tool and the exercise player take the whole screen without the bottom nav. */
+const isFullScreen = (path: string) =>
+  path === E.root || path === E.checkin || path === E.calm || path.startsWith(`${E.exercises}/`);
 
 /**
  * Stage for the employee app: a flow guide next to a phone mockup. Every screen is its own route

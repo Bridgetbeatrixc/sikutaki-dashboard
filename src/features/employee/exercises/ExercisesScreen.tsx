@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { ROUTES } from "@/lib/paths";
+import { CalmCard } from "../calm/CalmCard";
 import { Chip, Lead, Note, Screen, Section, StartPill, Title } from "../components/ui";
 import { EXERCISES, exerciseById, FEELINGS, suggestedExercises, type Exercise } from "../content";
 import { useEmployee } from "../EmployeeProvider";
@@ -19,6 +20,7 @@ export function ExercisesScreen() {
     <Screen>
       <Title>Latihan</Title>
       <Lead>Latihan singkat dengan panduan. Pilih sesuai yang kamu butuhkan sekarang.</Lead>
+      <CalmCard className="mt-3" />
 
       <Section>Disarankan untukmu</Section>
       <div className="grid gap-2">

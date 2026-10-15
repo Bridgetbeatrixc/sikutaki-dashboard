@@ -3,6 +3,7 @@ import Link from "next/link";
 import { hours } from "@/lib/format";
 import { cn } from "@/lib/cn";
 import { ROUTES } from "@/lib/paths";
+import { CalmCard } from "../calm/CalmCard";
 import { Blob, type BlobIcon } from "../components/Blob";
 import { MoodFace, MoodTile } from "../components/MoodFace";
 import { appButton, CheckCircle, linkText, StartPill } from "../components/ui";
@@ -24,6 +25,7 @@ export function HomeScreen() {
           <span className="grid size-10 place-items-center rounded-full bg-[linear-gradient(135deg,#cddaeb,#f1e6c8)] font-bold text-app-dark">D</span>
         </div>
         <DailyNote />
+        <CalmCard className="mt-4" />
       </div>
       <TodayPlan />
     </div>

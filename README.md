@@ -23,6 +23,7 @@ Semua angka adalah data contoh. HR hanya melihat rata-rata kelompok minimal 5 or
 | `/dashboard-employee/insight` | Insight pribadi |
 | `/dashboard-employee/latihan`, `/dashboard-employee/latihan/[id]` | Daftar latihan dan pemutar latihan napas |
 | `/dashboard-employee/konseling` | Pesan sesi psikolog |
+| `/dashboard-employee/tenang` | Alat tenangkan diri saat cemas atau panik: napas terpandu, grounding 5-4-3-2-1, jalur bantuan |
 
 Kedua dashboard saling terhubung lewat tombol di top bar ("Aplikasi karyawan" dan "Dashboard HR").
 

@@ -29,6 +29,7 @@ export const ROUTES = {
     exercises: "/dashboard-employee/latihan",
     exercise: (id: string) => `/dashboard-employee/latihan/${id}`,
     counseling: "/dashboard-employee/konseling",
+    calm: "/dashboard-employee/tenang",
   },
 } as const;
 
