@@ -3,8 +3,7 @@ import Link from "next/link";
 import { useState, type FormEvent } from "react";
 import { Icon } from "@/components/ui/Icon";
 import { ROUTES } from "@/lib/paths";
-import { pillButton } from "@/features/landing/components/ui";
-import { field, fieldInput, fieldLabel } from "../form";
+import { field, fieldInput, fieldLabel, submitButton } from "../form";
 import { ProtoNote } from "../ui";
 import { AuthCard } from "./AuthCard";
 
@@ -20,11 +19,11 @@ export function SignupPage() {
     return (
       <AuthCard title="Akun demo siap" text={`Selamat datang, ${company}.`}
         footer={<Link href={ROUTES.home} className="font-medium text-brand hover:underline">Kembali ke beranda</Link>}>
-        <span className="mx-auto inline-flex size-14 items-center justify-center rounded-full bg-mint text-brand"><Icon name="check" size={28} stroke={2.4} /></span>
-        <p className="text-center text-[15px] text-body">
+        <span className="inline-flex size-14 items-center justify-center rounded-full bg-mint text-brand"><Icon name="check" size={28} stroke={2.4} /></span>
+        <p className="text-[16px] leading-relaxed text-body">
           Dashboard akan terbuka sebagai organisasi baru, belum ada hasil check-in. Ikuti langkah awal untuk mengundang tim pertama.
         </p>
-        <Link href={ROUTES.hr.newOrg} className={`${pillButton("primary", true)} justify-center`}>Buka dashboard HR</Link>
+        <Link href={ROUTES.hr.newOrg} className={submitButton}>Buka dashboard HR</Link>
         <ProtoNote>Prototipe: tidak ada data yang disimpan.</ProtoNote>
       </AuthCard>
     );
@@ -33,7 +32,7 @@ export function SignupPage() {
   return (
     <AuthCard title="Daftarkan perusahaan" text="Mulai dengan pilot 3 bulan bersama satu tim."
       footer={<>Sudah punya akun? <Link href={ROUTES.login} className="font-medium text-brand hover:underline">Masuk</Link></>}>
-      <form onSubmit={submit} className="grid gap-4">
+      <form onSubmit={submit} className="grid gap-5">
         <label className={field}><span className={fieldLabel}>Nama lengkap</span><input name="name" required autoComplete="name" className={fieldInput} /></label>
         <label className={field}><span className={fieldLabel}>Email kerja</span><input name="email" type="email" required autoComplete="email" placeholder="nama@perusahaan.com" className={fieldInput} /></label>
         <label className={field}><span className={fieldLabel}>Nama perusahaan</span><input name="company" required autoComplete="organization" className={fieldInput} /></label>
@@ -47,7 +46,7 @@ export function SignupPage() {
           <input type="checkbox" required className="mt-0.5 size-4 accent-brand" />
           <span>Saya setuju dengan <Link href={ROUTES.terms} className="text-brand hover:underline">Syarat dan ketentuan</Link> serta <Link href={ROUTES.privacy} className="text-brand hover:underline">Kebijakan privasi</Link>.</span>
         </label>
-        <button type="submit" className={`${pillButton("primary", true)} justify-center`}>Buat akun</button>
+        <button type="submit" className={submitButton}>Buat akun</button>
       </form>
       <ProtoNote>Prototipe: akun tidak benar-benar dibuat dan tidak ada data yang dikirim.</ProtoNote>
     </AuthCard>

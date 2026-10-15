@@ -3,7 +3,7 @@ import { Icon } from "@/components/ui/Icon";
 import { cn } from "@/lib/cn";
 import { ROUTES } from "@/lib/paths";
 import { pillButton } from "@/features/landing/components/ui";
-import { Band, BandHead, PageIntro, ProtoNote } from "../ui";
+import { Band, BandHead, CtaBand, PageHero, ProtoNote } from "../ui";
 
 const PLANS = [
   {
@@ -36,18 +36,18 @@ const FAQ = [
 export function PricingPage() {
   return (
     <>
-      <PageIntro eyebrow="Harga" title="Mulai kecil. Lihat hasilnya dulu."
+      <PageHero icon="spark" eyebrow="Harga" title="Mulai kecil. Lihat hasilnya dulu."
         text="Setiap kerja sama dimulai dengan pilot 3 bulan bersama satu tim, lalu laporan hasil yang terbuka.">
         <ProtoNote className="mt-2">Sikutaki masih prototipe. Paket di bawah adalah rencana, dan harga final belum ditetapkan.</ProtoNote>
-      </PageIntro>
+      </PageHero>
 
       <Band tone="grey">
         <div className="grid gap-4 lg:grid-cols-3">
           {PLANS.map((p) => (
-            <div key={p.name} className={cn("grid content-start gap-5 rounded-[28px] bg-white p-7 sm:p-8", p.featured && "ring-2 ring-brand")}>
+            <div key={p.name} className={cn("grid content-start gap-6 rounded-[32px] bg-white p-7 shadow-[0_2px_12px_rgba(0,0,0,.04)] sm:p-9", p.featured && "ring-2 ring-brand")}>
               <div className="grid gap-1.5">
                 <span className={cn("text-[13px] font-semibold", p.featured ? "text-brand" : "text-muted")}>{p.tag}</span>
-                <h2 className="text-[28px] font-semibold">{p.name}</h2>
+                <h2 className="text-[32px] font-semibold tracking-[-0.03em]">{p.name}</h2>
                 <b className="text-[17px] font-medium text-ink">{p.price}</b>
                 <p className="text-[15px] text-muted">{p.text}</p>
               </div>
@@ -65,7 +65,7 @@ export function PricingPage() {
       </Band>
 
       <Band>
-        <BandHead title="Pertanyaan yang sering diajukan" />
+        <BandHead eyebrow="FAQ" title="Pertanyaan yang sering diajukan." />
         <div className="mx-auto grid max-w-[760px] divide-y divide-line border-y border-line">
           {FAQ.map((f) => (
             <details key={f.q} className="group py-5">
@@ -77,6 +77,9 @@ export function PricingPage() {
           ))}
         </div>
       </Band>
+
+      <CtaBand title="Siap mencoba dengan satu tim?" text="Ceritakan tim Anda, dan kami siapkan pilotnya."
+        primary={{ label: "Ajukan pilot", href: ROUTES.contact }} secondary={{ label: "Coba dashboard HR", href: ROUTES.hr.root }} />
     </>
   );
 }

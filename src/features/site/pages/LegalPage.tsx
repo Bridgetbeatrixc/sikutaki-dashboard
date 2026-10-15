@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ROUTES } from "@/lib/paths";
 import { container } from "@/features/landing/components/ui";
 import { DEMO_EMAIL } from "@/features/landing/content";
-import { ProtoNote } from "../ui";
+import { PageHero, ProtoNote } from "../ui";
 
 type Section = { title: string; body: string[] };
 
@@ -47,20 +47,30 @@ export function LegalPage({ kind }: { kind: "privacy" | "terms" }) {
   const other = kind === "privacy" ? { href: ROUTES.terms, label: "Syarat dan ketentuan" } : { href: ROUTES.privacy, label: "Kebijakan privasi" };
 
   return (
-    <article className={`${container} grid max-w-[760px] gap-8 pt-14 pb-20 sm:pt-20`}>
-      <header className="grid gap-4">
-        <h1 className="text-[clamp(36px,5vw,56px)] font-semibold">{title}</h1>
-        <ProtoNote>Draf untuk prototipe, ditulis dalam bahasa sehari-hari. Belum ditinjau ahli hukum dan belum berlaku.</ProtoNote>
-      </header>
-      {sections.map((s, i) => (
-        <section key={s.title} className="grid gap-3">
-          <h2 className="text-[22px] font-semibold">{i + 1}. {s.title}</h2>
-          {s.body.map((p) => <p key={p} className="text-[17px] leading-relaxed text-body">{p}</p>)}
-        </section>
-      ))}
-      <p className="border-t border-line pt-6 text-[15px] text-muted">
-        Lihat juga <Link href={other.href} className="text-brand hover:underline">{other.label}</Link> dan <Link href={ROUTES.security} className="text-brand hover:underline">Keamanan dan privasi</Link>.
-      </p>
-    </article>
+    <>
+      <PageHero icon={kind === "privacy" ? "lock" : "file"} eyebrow="Legal" title={title}>
+        <ProtoNote className="mt-2">Draf untuk prototipe, ditulis dalam bahasa sehari-hari. Belum ditinjau ahli hukum dan belum berlaku.</ProtoNote>
+      </PageHero>
+      <div className={`${container} grid gap-10 pb-24 lg:grid-cols-[220px_1fr] lg:gap-16`}>
+        <nav aria-label="Isi halaman" className="hidden lg:block">
+          <ol className="sticky top-24 grid gap-1 border-l border-line text-[14px]">
+            {sections.map((s, i) => (
+              <li key={s.title}><a href={`#bagian-${i + 1}`} className="-ml-px block border-l border-transparent py-1.5 pl-4 text-muted hover:border-brand hover:text-ink">{s.title}</a></li>
+            ))}
+          </ol>
+        </nav>
+        <article className="grid max-w-[720px] gap-10">
+          {sections.map((s, i) => (
+            <section key={s.title} id={`bagian-${i + 1}`} className="grid scroll-mt-24 gap-3">
+              <h2 className="text-[24px] font-semibold tracking-[-0.02em]"><span className="mr-2 text-brand">{i + 1}.</span>{s.title}</h2>
+              {s.body.map((p) => <p key={p} className="text-[17px] leading-relaxed text-body">{p}</p>)}
+            </section>
+          ))}
+          <p className="border-t border-line pt-6 text-[15px] text-muted">
+            Lihat juga <Link href={other.href} className="text-brand hover:underline">{other.label}</Link> dan <Link href={ROUTES.security} className="text-brand hover:underline">Keamanan & Privasi</Link>.
+          </p>
+        </article>
+      </div>
+    </>
   );
 }

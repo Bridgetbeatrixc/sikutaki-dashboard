@@ -5,11 +5,10 @@ import { ROUTES } from "@/lib/paths";
 export type NavLink = { label: string; href: string };
 
 export const MAIN_NAV: NavLink[] = [
-  { label: "Produk", href: "/#dashboard" },
-  { label: "17 Area", href: "/#area" },
-  { label: "Harga", href: ROUTES.pricing },
-  { label: "Keamanan", href: ROUTES.security },
+  { label: "Beranda", href: ROUTES.home },
   { label: "Tentang kami", href: ROUTES.about },
+  { label: "Keamanan & Privasi", href: ROUTES.security },
+  { label: "Kontak", href: ROUTES.contact },
 ];
 
 export const FOOTER_COLUMNS: { title: string; links: NavLink[] }[] = [
@@ -20,8 +19,9 @@ export const FOOTER_COLUMNS: { title: string; links: NavLink[] }[] = [
     { label: "Harga", href: ROUTES.pricing },
   ] },
   { title: "Perusahaan", links: [
+    { label: "Beranda", href: ROUTES.home },
     { label: "Tentang kami", href: ROUTES.about },
-    { label: "Keamanan dan privasi", href: ROUTES.security },
+    { label: "Keamanan & Privasi", href: ROUTES.security },
     { label: "Kontak", href: ROUTES.contact },
   ] },
   { title: "Akun", links: [
@@ -34,6 +34,8 @@ export const FOOTER_COLUMNS: { title: string; links: NavLink[] }[] = [
   ] },
 ];
 
-/** True when a header link points at the current page (section links never count as active). */
-export const isCurrent = (pathname: string, href: string) =>
-  !href.includes("#") && pathname.replace(/\/$/, "") === href.replace(/\/$/, "");
+/** True when a header link points at the current page. */
+export const isCurrent = (pathname: string, href: string) => {
+  const clean = (p: string) => p.replace(/\/$/, "") || "/";
+  return clean(pathname) === clean(href);
+};
