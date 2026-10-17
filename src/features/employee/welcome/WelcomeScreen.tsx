@@ -7,7 +7,7 @@ import { MOODS } from "../content";
 
 const PROMISES: { icon: IconName; title: string; text: string }[] = [
   { icon: "clock", title: "10 detik sehari", text: "Catat mood dan jam tidurmu." },
-  { icon: "calendar", title: "3 menit seminggu sekali", text: "Check-in 6 pertanyaan, tutup setiap Minggu." },
+  { icon: "calendar", title: "3 menit seminggu sekali", text: "Check-in 8 pertanyaan, tutup setiap Minggu." },
   { icon: "lock", title: "Jawabanmu rahasia", text: "HR tidak pernah melihat jawaban per orang, hanya rata-rata divisi minimal 5 orang." },
 ];
 

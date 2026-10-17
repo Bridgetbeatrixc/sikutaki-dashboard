@@ -97,7 +97,7 @@ function TodayPlan() {
   const { saved, checkin, done } = useEmployee();
   const plan: PlanItem[] = [
     { id: "mood", title: "Catat mood harian", meta: "10 detik", icon: "smile", hue: "#3B8EF7", done: saved },
-    { id: "checkin", title: "Check-in mingguan", meta: "6 pertanyaan · 3 menit · tutup Minggu", icon: "clip", hue: "#2F8F9D", done: !!checkin, href: ROUTES.employee.checkin },
+    { id: "checkin", title: "Check-in mingguan", meta: "8 pertanyaan · 3 menit · tutup Minggu", icon: "clip", hue: "#2F8F9D", done: !!checkin, href: ROUTES.employee.checkin },
     { id: "napas", title: "Latihan Napas 4-7-8", meta: "3 menit", icon: "lungs", hue: "#C27510", done: done.includes("napas"), href: ROUTES.employee.exercise("napas") },
   ];
   const count = plan.filter((p) => p.done).length;

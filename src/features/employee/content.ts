@@ -131,7 +131,7 @@ export const APP_NAV: { href: string; label: string; icon: IconName }[] = [
 export const FLOW = [
   { href: ROUTES.employee.root, title: "Kenalan", text: "Janji privasi dan cara kerja, sekali di awal." },
   { href: ROUTES.employee.home, title: "Catat mood harian", text: "Pilih mood dan jam tidur. 10 detik setiap hari." },
-  { href: ROUTES.employee.checkin, title: "Check-in mingguan", text: "6 pertanyaan, 3 menit. Tutup setiap Minggu." },
+  { href: ROUTES.employee.checkin, title: "Check-in mingguan", text: "8 pertanyaan, 3 menit. Tutup setiap Minggu." },
   { href: ROUTES.employee.insight, title: "Lihat insight-mu", text: "Tidur vs mood, dan hasil check-in. Hanya untukmu." },
   { href: ROUTES.employee.exercises, title: "Latihan singkat", text: "Napas dan relaksasi dengan panduan, 3 sampai 8 menit." },
   { href: ROUTES.employee.calm, title: "Saat cemas atau panik", text: "Napas terpandu, grounding 5-4-3-2-1, dan jalur bantuan." },
