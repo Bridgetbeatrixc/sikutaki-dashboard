@@ -10,11 +10,11 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { CompareBars } from "@/components/charts/CompareBars";
 import { LineChart } from "@/components/charts/LineChart";
 import { SeverityBar } from "@/components/charts/SeverityBar";
-import { AREAS, areaById, areaSeries, areaStatus, areaValue, groupOf, isHidden, NOW, severity, teamById, TEAMS, VAL, WEEKS } from "@/lib/data";
+import { AREA_COUNT, AREAS, areaById, areaSeries, areaStatus, areaValue, groupOf, isHidden, NOW, severity, ROTATION, teamById, TEAMS, VAL, WEEKS } from "@/lib/data";
 import { ROUTES } from "@/lib/paths";
 import { useHr } from "../HrProvider";
 
-const crumbs = [{ label: "17 Area", href: ROUTES.hr.areas }];
+const crumbs = [{ label: `${AREA_COUNT} Area`, href: ROUTES.hr.areas }];
 
 /** Pearson correlation of two equally long series. */
 function correlation(a: number[], b: number[]) {
@@ -44,7 +44,7 @@ export function AreaDetailPage({ id }: { id: string }) {
     <>
       <PageHeader title={area.name} crumbs={crumbs}
         sub={<><span className="inline-flex items-center gap-1.5 font-semibold" style={{ color: g.color }}><Dot color={g.color} />{g.name}</span>
-          {area.alias && <> · {area.alias}</>} · {scope === "all" ? "seluruh perusahaan" : teamById(scope).name} · {area.core ? "diukur setiap minggu" : "bergilir tiap 5 minggu"}</>} />
+          {area.alias && <> · {area.alias}</>} · {scope === "all" ? "seluruh perusahaan" : teamById(scope).name} · {area.core ? "diukur setiap minggu" : `bergilir tiap ${ROTATION.length} minggu`}</>} />
 
       <KpiGrid>
         <Kpi label="Intensitas sekarang" value={v} delta={d2} foot={<StatusChip s={areaStatus(v)} small />} />

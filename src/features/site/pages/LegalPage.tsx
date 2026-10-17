@@ -8,7 +8,7 @@ type Section = { title: string; body: string[] };
 
 const PRIVACY: Section[] = [
   { title: "Data yang kami kumpulkan", body: [
-    "Dari karyawan: mood harian, jam tidur, jawaban check-in mingguan untuk 17 area, dan penyebab yang dipilih.",
+    "Dari karyawan: mood harian, jam tidur, jawaban check-in mingguan untuk 42 area, dan penyebab yang dipilih.",
     "Dari HR: nama perusahaan, struktur divisi, dan catatan tindak lanjut yang ditulis HR.",
   ] },
   { title: "Siapa yang bisa melihat apa", body: [

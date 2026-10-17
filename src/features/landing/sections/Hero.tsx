@@ -29,7 +29,7 @@ export function Hero() {
         <div className="grid max-w-[860px] justify-items-center gap-5 text-center">
           <span className="text-[17px] font-semibold text-brand sm:text-[19px]">Untuk HR dan tim People</span>
           <h1 className="text-[clamp(44px,7vw,88px)] font-semibold tracking-[-0.035em]">Tim yang sehat mental, terukur setiap minggu.</h1>
-          <p className="max-w-[620px] text-[19px] text-muted sm:text-[23px] sm:leading-snug">Check-in 3 menit untuk karyawan. Dashboard anonim untuk HR. 17 area, bukan cuma stres.</p>
+          <p className="max-w-[620px] text-[19px] text-muted sm:text-[23px] sm:leading-snug">Check-in 3 menit untuk karyawan. Dashboard anonim untuk HR. 42 area, bukan cuma stres.</p>
           <div className="mt-2 flex flex-wrap items-center justify-center gap-x-7 gap-y-4">
             <a href="#demo" className={pillButton("primary", true)}>Jadwalkan demo</a>
             <Link href={ROUTES.hr.root} className={`${textLink} text-[17px]`}>Coba dashboard HR <Icon name="chevron" size={16} /></Link>

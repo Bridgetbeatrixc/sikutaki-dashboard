@@ -15,7 +15,7 @@ const PLANS = [
   {
     name: "Tim", tag: "Setelah pilot", price: "Per karyawan per bulan",
     text: "Untuk perusahaan yang ingin memantau beberapa divisi setiap minggu.",
-    features: ["Semua divisi yang berisi minimal 5 orang", "17 area dan tren 12 minggu", "Catatan tindak lanjut HR", "Rujukan rahasia ke psikolog mitra"],
+    features: ["Semua divisi yang berisi minimal 5 orang", "42 area dan tren 12 minggu", "Catatan tindak lanjut HR", "Rujukan rahasia ke psikolog mitra"],
     cta: "Bicara dengan kami", href: ROUTES.contact, featured: false,
   },
   {

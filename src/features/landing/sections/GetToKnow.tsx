@@ -7,7 +7,7 @@ import { ScaleBar } from "../components/ScaleBar";
 import { Card, container } from "../components/ui";
 import { KNOW_POINTS } from "../content";
 
-const WEEK_CHANGES: [string, number][] = [["Insomnia", -6], ["Minder", -3], ["Galau", 2]];
+const WEEK_CHANGES: [string, number][] = [["Insomnia", -6], ["Minder", -3], ["Gelisah Berat", 2]];
 
 /** On phones the floating cards stack under the phone instead of overlapping it. */
 const floating = "z-[2] w-full max-w-[320px] sm:absolute";

@@ -4,7 +4,7 @@ import { Band, BandHead, CtaBand, FeatureCard, PageHero } from "../ui";
 
 /** Product facts that are true for the prototype today. */
 const FACTS = [
-  { value: "17", unit: "area", text: "kesehatan mental yang dipantau, bukan cuma stres" },
+  { value: "42", unit: "area", text: "kesehatan mental yang dipantau, bukan cuma stres" },
   { value: "3", unit: "menit", text: "untuk check-in mingguan di ponsel" },
   { value: "5", unit: "orang", text: "minimal per tim sebelum HR melihat rata-rata" },
 ];

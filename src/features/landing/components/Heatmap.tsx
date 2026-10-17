@@ -1,5 +1,5 @@
 import { Fragment } from "react";
-import { ALL_AREAS, HEAT, HEAT_TEAMS } from "../content";
+import { HEAT, HEAT_AREAS, HEAT_TEAMS } from "../content";
 
 /** Green (sehat) to amber to coral (perlu perhatian). */
 const cellColor = (v: number) => {
@@ -11,9 +11,9 @@ const cellColor = (v: number) => {
 export function Heatmap() {
   return (
     <div className="overflow-x-auto">
-      <div className="grid min-w-[560px] gap-1" style={{ gridTemplateColumns: `92px repeat(${ALL_AREAS.length}, minmax(22px, 1fr))` }}>
+      <div className="grid min-w-[560px] gap-1" style={{ gridTemplateColumns: `92px repeat(${HEAT_AREAS.length}, minmax(22px, 1fr))` }}>
         <span />
-        {ALL_AREAS.map((a) => (
+        {HEAT_AREAS.map((a) => (
           <span key={a.name} title={a.name}
             className="flex h-[92px] rotate-180 items-center gap-1 justify-self-center text-[10.5px] whitespace-nowrap text-muted [writing-mode:vertical-rl]">
             <i className="size-1.5 shrink-0 rounded-full" style={{ background: a.color }} />{a.name}
@@ -23,7 +23,7 @@ export function Heatmap() {
           <Fragment key={team}>
             <span className="self-center text-xs font-medium">{team}</span>
             {HEAT[ti].map((v, ai) => (
-              <span key={ai} className="h-[26px] rounded-md" style={{ background: cellColor(v) }} title={`${team} · ${ALL_AREAS[ai].name}: ${v}`} />
+              <span key={ai} className="h-[26px] rounded-md" style={{ background: cellColor(v) }} title={`${team} · ${HEAT_AREAS[ai].name}: ${v}`} />
             ))}
           </Fragment>
         ))}

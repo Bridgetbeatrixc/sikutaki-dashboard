@@ -1,7 +1,7 @@
-// Sample data for the prototype: one company, 8 divisions, 12 weeks, 17 areas.
+// Sample data for the prototype: one company, 8 divisions, 12 weeks, 42 areas.
 // Everything is deterministic so the prototype looks the same on every load.
 
-export type GroupId = "mood" | "mind" | "energy" | "self";
+export type GroupId = "mood" | "mind" | "energy" | "self" | "habit" | "trait" | "clinical";
 export type Status = "baik" | "waspada" | "perhatian";
 
 export const GROUPS: { id: GroupId; name: string; color: string }[] = [
@@ -9,30 +9,59 @@ export const GROUPS: { id: GroupId; name: string; color: string }[] = [
   { id: "mind", name: "Pikiran", color: "#C2418F" },
   { id: "energy", name: "Energi & Tidur", color: "#C27510" },
   { id: "self", name: "Diri & Hubungan", color: "#12855F" },
+  { id: "habit", name: "Kebiasaan", color: "#7A4FD0" },
+  { id: "trait", name: "Sifat & Sikap", color: "#0085A8" },
+  { id: "clinical", name: "Indikasi Klinis", color: "#A0521C" },
 ];
 export const groupOf = (id: GroupId) => GROUPS.find((g) => g.id === id)!;
 
 export type Area = { id: string; name: string; alias?: string; group: GroupId; core?: boolean; desc: string };
 
 export const AREAS: Area[] = [
-  { id: "sedih", name: "Sedih", group: "mood", desc: "Rasa sedih yang menetap dan mulai mengganggu aktivitas sehari-hari." },
-  { id: "galau", name: "Galau", group: "mood", desc: "Bingung dan gelisah saat menghadapi keputusan atau perubahan." },
-  { id: "kecewa", name: "Kecewa Berat", group: "mood", desc: "Kekecewaan mendalam pada pekerjaan, orang lain, atau diri sendiri." },
-  { id: "hampa", name: "Perasaan Hampa", group: "mood", desc: "Merasa kosong atau kehilangan makna dalam pekerjaan." },
-  { id: "depresi", name: "Depresi", alias: "Gejala depresi", group: "mood", desc: "Indikasi gejala depresi seperti kehilangan minat dan energi yang berkepanjangan. Sinyal skrining, bukan diagnosis." },
-  { id: "stres", name: "Tingkat Stres", group: "mind", core: true, desc: "Seberapa besar tekanan yang dirasakan dari pekerjaan dan kehidupan sehari-hari." },
-  { id: "anxiety", name: "Anxiety", alias: "Kecemasan", group: "mind", desc: "Rasa cemas atau khawatir berlebihan yang sulit dikendalikan." },
+  { id: "sedih", name: "Kesedihan Mendalam", group: "mood", desc: "Rasa sedih yang menetap dan mulai mengganggu aktivitas sehari-hari." },
+  { id: "kecewa", name: "Sangat Kecewa", group: "mood", desc: "Kekecewaan mendalam pada pekerjaan, orang lain, atau diri sendiri." },
+  { id: "hampa", name: "Perasaan Hampa", alias: "Kosong", group: "mood", desc: "Merasa kosong atau kehilangan makna dalam pekerjaan." },
+  { id: "moodswing", name: "Mood Swing Ekstrem", group: "mood", desc: "Suasana hati berubah drastis dalam waktu singkat tanpa sebab yang jelas." },
+  { id: "matirasa", name: "Emotional Numbness", alias: "Mati rasa", group: "mood", desc: "Sulit merasakan emosi apa pun, baik senang maupun sedih." },
+  { id: "duka", name: "Grief Berkepanjangan", alias: "Duka yang belum selesai", group: "mood", desc: "Duka karena kehilangan yang masih terasa berat setelah waktu yang lama." },
+  { id: "apatis", name: "Apatis", alias: "Tidak peduli", group: "mood", desc: "Kehilangan minat dan kepedulian pada pekerjaan, orang lain, atau diri sendiri." },
+  { id: "stres", name: "Stres Kronis", group: "mind", core: true, desc: "Tekanan dari pekerjaan dan kehidupan sehari-hari yang terasa terus-menerus." },
+  { id: "anxiety", name: "Anxiety", alias: "Kecemasan berlebihan", group: "mind", desc: "Rasa cemas atau khawatir berlebihan yang sulit dikendalikan." },
   { id: "overthinking", name: "Overthinking", group: "mind", desc: "Memikirkan hal yang sama berulang-ulang hingga sulit beristirahat." },
   { id: "panik", name: "Panic Attack", alias: "Serangan panik", group: "mind", desc: "Episode takut yang datang tiba-tiba, sering disertai jantung berdebar atau sesak." },
-  { id: "burnout", name: "Burnout", group: "energy", core: true, desc: "Kelelahan fisik dan emosional akibat beban kerja yang berlangsung lama." },
-  { id: "insomnia", name: "Insomnia", group: "energy", core: true, desc: "Sulit tidur, sering terbangun, atau bangun tanpa merasa segar." },
+  { id: "galau", name: "Gelisah Berat", group: "mind", desc: "Rasa gelisah yang kuat sehingga sulit tenang, fokus, atau duduk diam." },
+  { id: "disosiasi", name: "Disosiasi Ringan", alias: "Merasa tidak hadir", group: "mind", desc: "Merasa terlepas dari diri sendiri atau sekitar, seperti melihat dari kejauhan." },
+  { id: "eksistensial", name: "Krisis Eksistensial", alias: "Krisis makna hidup", group: "mind", desc: "Mempertanyakan arti dan tujuan hidup hingga terasa membebani." },
+  { id: "burnout", name: "Burnout", alias: "Kerja atau hidup", group: "energy", core: true, desc: "Kelelahan fisik dan emosional akibat beban kerja atau hidup yang berlangsung lama." },
+  { id: "insomnia", name: "Insomnia", alias: "Pikiran terlalu aktif", group: "energy", core: true, desc: "Sulit tidur karena pikiran aktif, sering terbangun, atau bangun tanpa merasa segar." },
   { id: "baterai", name: "Baterai Sosial", alias: "Energi sosial terkuras", group: "energy", desc: "Seberapa terkuras energi untuk berinteraksi dengan orang lain." },
   { id: "minder", name: "Minder", group: "self", desc: "Rasa kurang percaya diri atau merasa tidak cukup baik dibanding orang lain." },
-  { id: "trauma", name: "Trauma", group: "self", desc: "Dampak pengalaman berat di masa lalu yang masih terasa sampai sekarang." },
-  { id: "dendam", name: "Dendam", group: "self", desc: "Sakit hati yang belum selesai dan terus teringat." },
-  { id: "marah", name: "Mendam Marah", group: "self", desc: "Kemarahan yang ditahan dan tidak tersalurkan dengan sehat." },
-  { id: "narsistik", name: "Narsistik", alias: "Kebutuhan validasi", group: "self", desc: "Kecenderungan sangat membutuhkan pengakuan atau pujian dari orang lain." },
+  { id: "selfesteem", name: "Low Self-Esteem", alias: "Merasa tidak berharga", group: "self", desc: "Merasa diri tidak berharga atau tidak layak dihargai." },
+  { id: "impostor", name: "Impostor Syndrome", alias: "Merasa \u201cpalsu\u201d", group: "self", desc: "Merasa keberhasilan bukan karena kemampuan sendiri dan takut suatu saat ketahuan." },
+  { id: "trauma", name: "Trauma Psikologis", group: "self", desc: "Dampak pengalaman berat di masa lalu yang masih terasa sampai sekarang." },
+  { id: "dendam", name: "Rasa Dendam", group: "self", desc: "Sakit hati yang belum selesai dan terus teringat." },
+  { id: "marah", name: "Anger Issue", alias: "Emosi mudah meledak", group: "self", desc: "Amarah yang mudah meledak, atau justru dipendam dan tidak tersalurkan dengan sehat." },
+  { id: "sosial", name: "Social Anxiety", alias: "Takut interaksi sosial", group: "self", desc: "Rasa takut atau sangat tidak nyaman saat berinteraksi atau dinilai orang lain." },
+  { id: "relasi", name: "Relationship Anxiety", alias: "Takut ditinggal", group: "self", desc: "Khawatir berlebihan akan ditinggalkan atau kehilangan orang terdekat." },
+  { id: "pleaser", name: "People Pleasing", group: "self", desc: "Sulit menolak dan terus mendahulukan keinginan orang lain hingga mengabaikan diri sendiri." },
+  { id: "cemburu", name: "Jealousy Insecurity", alias: "Cemburu dan merasa tidak aman", group: "self", desc: "Cemburu yang disertai rasa tidak aman, dalam hubungan maupun di tempat kerja." },
+  { id: "perfeksionis", name: "Perfeksionisme Obsesif", group: "habit", desc: "Menuntut hasil sempurna hingga sulit menyelesaikan pekerjaan dan mudah kecewa pada diri sendiri." },
+  { id: "fomo", name: "FOMO", alias: "Takut tertinggal", group: "habit", desc: "Takut tertinggal dari pengalaman atau pencapaian orang lain." },
+  { id: "gadget", name: "Kecanduan Digital", alias: "Kecanduan gadget", group: "habit", desc: "Sulit lepas dari ponsel atau media sosial hingga mengganggu tidur, kerja, atau hubungan." },
+  { id: "prokrastinasi", name: "Prokrastinasi Kronis", group: "habit", desc: "Terus menunda pekerjaan penting walau tahu dampaknya." },
+  { id: "makan", name: "Emotional Eating", alias: "Pola makan emosional", group: "habit", desc: "Makan berlebihan, atau justru tidak makan, sebagai pelarian dari emosi." },
+  { id: "egois", name: "Egois", group: "trait", desc: "Cenderung mendahulukan kepentingan sendiri dan sulit melihat sudut pandang orang lain." },
+  { id: "sombong", name: "Sombong/Angkuh", group: "trait", desc: "Cenderung merasa lebih tinggi dari orang lain dan sulit menerima masukan." },
+  { id: "keras", name: "Keras Kepala", group: "trait", desc: "Sulit mengubah pendapat atau cara kerja walau ada alasan kuat untuk berubah." },
+  { id: "ambisius", name: "Ambisius", group: "trait", desc: "Dorongan berprestasi yang sangat tinggi hingga menekan diri sendiri atau orang lain." },
+  { id: "depresi", name: "Depresi", alias: "Gejala depresi", group: "clinical", desc: "Indikasi gejala depresi seperti kehilangan minat dan energi yang berkepanjangan. Sinyal skrining, bukan diagnosis." },
+  { id: "bipolar", name: "Bipolar", alias: "Gejala bipolar", group: "clinical", desc: "Indikasi perubahan suasana hati ekstrem antara sangat bersemangat dan sangat terpuruk, masing-masing berlangsung berhari-hari. Sinyal skrining, bukan diagnosis." },
+  { id: "adhd", name: "ADHD", alias: "Sulit fokus dan impulsif", group: "clinical", desc: "Indikasi sulit memusatkan perhatian, gelisah, dan bertindak impulsif secara menetap. Sinyal skrining, bukan diagnosis." },
+  { id: "skizofrenia", name: "Skizofrenia", alias: "Gejala psikotik", group: "clinical", desc: "Indikasi pengalaman persepsi yang tidak biasa, seperti mendengar atau melihat hal yang tidak dialami orang lain. Sinyal skrining, bukan diagnosis." },
+  { id: "narsistik", name: "Narsistik/NPD", alias: "Kebutuhan validasi", group: "clinical", desc: "Kecenderungan sangat membutuhkan pengakuan atau pujian dan kurang berempati. Sinyal skrining, bukan diagnosis." },
+  { id: "psikopat", name: "Psikopat", alias: "Empati rendah", group: "clinical", desc: "Indikasi empati dan rasa bersalah yang sangat rendah. Sinyal skrining, bukan diagnosis." },
 ];
+export const AREA_COUNT = AREAS.length;
 export const areaById = (id: string) => AREAS.find((a) => a.id === id)!;
 
 export type Team = { id: string; name: string; size: number; lead: string };
@@ -67,7 +96,9 @@ const rand = (a: number, b: number, c: number) => {
 const clamp = (v: number, lo = 4, hi = 96) => Math.max(lo, Math.min(hi, v));
 
 const teamBase: Record<string, number> = { ops: 40, cs: 46, sales: 47, tech: 44, mkt: 38, fin: 34, hr: 33, legal: 36 };
-const areaBase: Record<string, number> = { sedih: -4, galau: 2, kecewa: -2, hampa: -6, depresi: -10, stres: 10, anxiety: 4, overthinking: 8, panik: -16, burnout: 8, insomnia: 2, baterai: 6, minder: 0, trauma: -14, dendam: -12, marah: -2, narsistik: -10 };
+const areaBase: Record<string, number> = {
+  sedih: -4, galau: 2, kecewa: -2, hampa: -6, depresi: -10, stres: 10, anxiety: 4, overthinking: 8, panik: -16, burnout: 8, insomnia: 2, baterai: 6, minder: 0, trauma: -14, dendam: -12, marah: -2, narsistik: -10, moodswing: 1, matirasa: -1, duka: -3, apatis: 1, disosiasi: -7, eksistensial: -1, selfesteem: 3, impostor: 5, sosial: 3, relasi: 1, pleaser: 5, cemburu: -1, perfeksionis: 5, fomo: 5, gadget: 7, prokrastinasi: 6, makan: 1, egois: -1, sombong: -3, keras: 1, ambisius: 5, bipolar: -9, adhd: -3, skizofrenia: -15, psikopat: -15,
+};
 
 // Planted stories (week index -> extra points)
 function story(team: string, area: string, w: number): number {
@@ -190,7 +221,8 @@ export const PARTNERS = [
   { name: "Layanan Konseling Mitra (24 jam)", focus: "Krisis dan rujukan lanjutan", slots: "Setiap hari" },
 ];
 
-// Question rotation: 3 core areas every week + 3 rotating (14 areas, every 5 weeks).
+// Question rotation: 3 core areas every week + 5 rotating, so every other area comes back every 8 weeks.
 export const CORE = ["stres", "burnout", "insomnia"];
+export const ROTATING_PER_WEEK = 5;
 const ROT = AREAS.map((a) => a.id).filter((id) => !CORE.includes(id));
-export const ROTATION = Array.from({ length: 5 }, (_, i) => ROT.slice(i * 3, i * 3 + 3));
+export const ROTATION = Array.from({ length: Math.ceil(ROT.length / ROTATING_PER_WEEK) }, (_, i) => ROT.slice(i * ROTATING_PER_WEEK, (i + 1) * ROTATING_PER_WEEK));

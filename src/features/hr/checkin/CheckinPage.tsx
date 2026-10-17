@@ -11,7 +11,7 @@ import { SwitchRow } from "@/components/ui/Switch";
 import { Funnel } from "@/components/charts/Funnel";
 import { LineChart } from "@/components/charts/LineChart";
 import { cn } from "@/lib/cn";
-import { areaById, COMPANY, CORE, isHidden, NOW, PART, participationSeries, respondents, respondentsScope, ROTATION, TEAMS, WEEKS } from "@/lib/data";
+import { AREA_COUNT, areaById, COMPANY, CORE, isHidden, NOW, PART, participationSeries, respondents, respondentsScope, ROTATING_PER_WEEK, ROTATION, TEAMS, WEEKS } from "@/lib/data";
 import { useHr } from "../HrProvider";
 
 const DAYS = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat"].map((d) => ({ value: d, label: d.slice(0, 3) }));
@@ -67,8 +67,8 @@ export function CheckinPage() {
             ))}
           </div>
         </Card>
-        <Card title="Rotasi pertanyaan" sub="6 pertanyaan per minggu, sekitar 3 menit">
-          <Fine>Inti setiap minggu: {CORE.map((c) => areaById(c).name).join(", ")}. Ditambah 3 area bergilir, sehingga 14 area lainnya terukur setiap 5 minggu. Karyawan yang skornya sedang atau tinggi mendapat 1 pertanyaan lanjutan pilihan ganda tentang penyebabnya.</Fine>
+        <Card title="Rotasi pertanyaan" sub={`${CORE.length + ROTATING_PER_WEEK} pertanyaan per minggu, sekitar 3 menit`}>
+          <Fine>Inti setiap minggu: {CORE.map((c) => areaById(c).name).join(", ")}. Ditambah {ROTATING_PER_WEEK} area bergilir, sehingga {AREA_COUNT - CORE.length} area lainnya terukur setiap {ROTATION.length} minggu. Karyawan yang skornya sedang atau tinggi mendapat 1 pertanyaan lanjutan pilihan ganda tentang penyebabnya.</Fine>
           <ol className="grid gap-1.5">
             {ROTATION.map((r, i) => (
               <li key={i} className={cn("grid items-center gap-2.5 rounded-[10px] px-2.5 py-2 sm:grid-cols-[130px_1fr]", i === rotationWeek && "bg-mint")}>

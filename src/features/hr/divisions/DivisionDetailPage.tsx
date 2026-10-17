@@ -9,7 +9,7 @@ import { Kpi, KpiGrid } from "@/components/ui/Kpi";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { CompareBars } from "@/components/charts/CompareBars";
 import { fitRange, LineChart } from "@/components/charts/LineChart";
-import { AREAS, areaValue, GROUPS, groupOf, isHidden, NOW, PART, respondents, teamById, teamStatus, VAL, wellbeing, wellbeingSeries, WEEKS } from "@/lib/data";
+import { AREA_COUNT, AREAS, areaValue, GROUPS, groupOf, isHidden, NOW, PART, respondents, teamById, teamStatus, VAL, wellbeing, wellbeingSeries, WEEKS } from "@/lib/data";
 import { focusAreas, moodAvg, NOTE_LABEL, sleepHours } from "@/lib/focus";
 import { decimal } from "@/lib/format";
 import { ROUTES } from "@/lib/paths";
@@ -78,7 +78,7 @@ export function DivisionDetailPage({ id }: { id: string }) {
         </Card>
       </div>
 
-      <Card title="17 area dibanding perusahaan" sub="Garis kecil = rata-rata perusahaan. Makin panjang makin perlu perhatian.">
+      <Card title={`${AREA_COUNT} area dibanding perusahaan`} sub="Garis kecil = rata-rata perusahaan. Makin panjang makin perlu perhatian.">
         <div className="grid items-start gap-x-7 gap-y-[18px] xl:grid-cols-2">
           {GROUPS.map((g) => (
             <div key={g.id} className="grid content-start gap-1">

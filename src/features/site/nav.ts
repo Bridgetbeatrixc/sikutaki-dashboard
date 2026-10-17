@@ -15,7 +15,7 @@ export const FOOTER_COLUMNS: { title: string; links: NavLink[] }[] = [
   { title: "Produk", links: [
     { label: "Dashboard HR", href: ROUTES.hr.root },
     { label: "Aplikasi karyawan", href: ROUTES.employee.root },
-    { label: "17 Area", href: "/#area" },
+    { label: "42 Area", href: "/#area" },
     { label: "Harga", href: ROUTES.pricing },
   ] },
   { title: "Perusahaan", links: [

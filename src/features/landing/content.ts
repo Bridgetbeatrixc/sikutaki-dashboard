@@ -1,23 +1,29 @@
 import type { IconName } from "@/components/ui/Icon";
+import { AREAS, GROUPS } from "@/lib/data";
 
 /* Landing page copy and sample data. Numbers inside the mock-ups are illustrative ("Data contoh"). */
 
-export const AREA_GROUPS = [
-  { id: "mood", name: "Suasana Hati", color: "#3D7FD9", areas: ["Sedih", "Galau", "Kecewa Berat", "Perasaan Hampa", "Depresi"] },
-  { id: "mind", name: "Pikiran", color: "#7B61D1", areas: ["Tingkat Stres", "Anxiety", "Overthinking", "Panic Attack"] },
-  { id: "energy", name: "Energi & Tidur", color: "#E39B3B", areas: ["Burnout", "Insomnia", "Baterai Sosial"] },
-  { id: "self", name: "Diri & Hubungan", color: "#13906B", areas: ["Minder", "Trauma", "Dendam", "Mendam Marah", "Narsistik"] },
-];
+/** Landing colors for the area groups (a lighter palette than the HR dashboard). */
+const GROUP_COLORS: Record<string, string> = {
+  mood: "#3D7FD9", mind: "#7B61D1", energy: "#E39B3B", self: "#13906B", habit: "#D2577E", trait: "#2A97AD", clinical: "#8C6A4A",
+};
+export const AREA_GROUPS = GROUPS.map((g) => ({ id: g.id, name: g.name, color: GROUP_COLORS[g.id], areas: AREAS.filter((a) => a.group === g.id).map((a) => a.name) }));
 
 export const ALL_AREAS = AREA_GROUPS.flatMap((g) => g.areas.map((name) => ({ name, color: g.color })));
 
+/** The mock heatmap shows a sample of areas so it stays readable. */
+const HEAT_AREA_NAMES = ["Stres Kronis", "Anxiety", "Overthinking", "Burnout", "Insomnia", "Baterai Sosial", "Kesedihan Mendalam", "Perasaan Hampa",
+  "Minder", "Social Anxiety", "Anger Issue", "Kecanduan Digital", "Prokrastinasi Kronis", "Depresi"];
+export const HEAT_AREAS = HEAT_AREA_NAMES.map((name) => ALL_AREAS.find((a) => a.name === name)!);
+
 /** Heatmap sample, 0 = sehat to 100 = perlu perhatian. Deterministic so builds are stable. */
 export const HEAT_TEAMS = ["Operasional", "Penjualan", "Teknologi", "Keuangan", "Layanan"];
+const HOT: Record<number, string[]> = { 1: ["Stres Kronis", "Anxiety"], 4: ["Burnout", "Insomnia"] };
 export const HEAT: number[][] = HEAT_TEAMS.map((_, t) =>
-  ALL_AREAS.map((_, a) => {
+  HEAT_AREAS.map((area, a) => {
     const base = [38, 52, 44, 30, 58][t];
     const wave = Math.round(18 * Math.sin((a + 1) * (t + 2) * 0.9));
-    const hot = (t === 1 && (a === 5 || a === 9)) || (t === 4 && (a === 9 || a === 10)) ? 28 : 0;
+    const hot = HOT[t]?.includes(area.name) ? 28 : 0;
     return Math.max(8, Math.min(92, base + wave + hot));
   }),
 );
@@ -25,7 +31,7 @@ export const HEAT: number[][] = HEAT_TEAMS.map((_, t) =>
 export type TrendLine = { name: string; color: string; values: number[] };
 export const TREND_WEEKS = Array.from({ length: 12 }, (_, i) => `M${i + 1}`);
 export const TREND: TrendLine[] = [
-  { name: "Tingkat Stres", color: "#7B61D1", values: [64, 66, 61, 63, 58, 57, 55, 56, 52, 50, 49, 47] },
+  { name: "Stres Kronis", color: "#7B61D1", values: [64, 66, 61, 63, 58, 57, 55, 56, 52, 50, 49, 47] },
   { name: "Burnout", color: "#E39B3B", values: [58, 60, 62, 59, 57, 54, 55, 51, 50, 48, 46, 45] },
   { name: "Insomnia", color: "#3D7FD9", values: [49, 47, 50, 48, 46, 47, 44, 43, 44, 41, 40, 38] },
 ];
@@ -37,7 +43,7 @@ export const TOP_AREAS: [string, number, string][] = [
 export type WhyId = "anon" | "areas" | "psy" | "fast";
 export const WHY: { id: WhyId; title: string; text: string }[] = [
   { id: "anon", title: "Anonim", text: "HR hanya melihat tren tim minimal 5 orang. Jawaban pribadi tetap milik karyawan." },
-  { id: "areas", title: "17 area", text: "Bukan cuma stres. Tidur, minder, sampai marah yang dipendam ikut terpantau." },
+  { id: "areas", title: "42 area", text: "Bukan cuma stres. Tidur, minder, FOMO, sampai marah yang dipendam ikut terpantau." },
   { id: "psy", title: "Psikolog", text: "Skor tinggi langsung diarahkan ke psikolog mitra secara rahasia." },
   { id: "fast", title: "Cepat", text: "Tanpa instal aplikasi. Check-in pertama terkirim di minggu yang sama." },
 ];

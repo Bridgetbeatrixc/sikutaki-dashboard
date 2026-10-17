@@ -13,7 +13,7 @@ const RULES = [
 
 const WHO = [
   { who: "Karyawan", sees: "Mood harian, jam tidur, hasil check-in, dan insight pribadinya sendiri", not: "jawaban rekan kerja" },
-  { who: "HR", sees: "Rata-rata per divisi untuk 17 area, mood, dan tidur, bila timnya minimal 5 orang", not: "jawaban atau nama per orang" },
+  { who: "HR", sees: "Rata-rata per divisi untuk 42 area, mood, dan tidur, bila timnya minimal 5 orang", not: "jawaban atau nama per orang" },
   { who: "Psikolog mitra", sees: "Rujukan yang disetujui karyawan", not: "data karyawan lain atau dashboard HR" },
 ];
 

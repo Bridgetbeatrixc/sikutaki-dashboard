@@ -11,7 +11,7 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { CompareBars } from "@/components/charts/CompareBars";
 import { fitRange, LineChart } from "@/components/charts/LineChart";
 import { MoodBar } from "@/components/charts/MoodBar";
-import { areaById, groupOf, isHidden, NOW, participation, participationSeries, REFERRALS, respondentsScope, sizeScope, teamById, teamStatus, TEAMS, wellbeing, wellbeingSeries, wellbeingStatus, WEEKS } from "@/lib/data";
+import { AREA_COUNT, areaById, groupOf, isHidden, NOW, participation, participationSeries, REFERRALS, respondentsScope, sizeScope, teamById, teamStatus, TEAMS, wellbeing, wellbeingSeries, wellbeingStatus, WEEKS } from "@/lib/data";
 import { causeShares, dailyActive, focusAreas, moodAvg, moodDist, NOTE_LABEL, sleepHours, sleepSeries, topCompanyAreas } from "@/lib/focus";
 import { decimal } from "@/lib/format";
 import { ROUTES } from "@/lib/paths";
@@ -113,7 +113,7 @@ export function OverviewPage() {
           {hiddenTeams.length > 0 && <HiddenNote text={`${hiddenTeams.map((t) => t.name).join(", ")}: disembunyikan, kurang dari 5 orang`} />}
         </Card>
         <Card title="Area tertinggi di perusahaan" sub="Skor 0 sampai 100, makin tinggi makin perlu perhatian. Perubahan dibanding 4 minggu lalu."
-          action={<Link href={ROUTES.hr.areas} className="inline-flex items-center gap-1 font-semibold whitespace-nowrap text-brand">17 area <Icon name="arrow" size={14} /></Link>}>
+          action={<Link href={ROUTES.hr.areas} className="inline-flex items-center gap-1 font-semibold whitespace-nowrap text-brand">{AREA_COUNT} area <Icon name="arrow" size={14} /></Link>}>
           <CompareBars onSelect={(id) => router.push(ROUTES.hr.area(id))} items={top.map((x) => ({ id: x.area.id, label: x.area.name, color: groupOf(x.area.group).color, v: x.v }))} />
           <ul className="flex flex-wrap gap-x-3.5 gap-y-1.5 text-[12.5px] text-muted">{top.map((x) => <li key={x.area.id}>{x.area.name} <Delta d={x.d} /></li>)}</ul>
         </Card>

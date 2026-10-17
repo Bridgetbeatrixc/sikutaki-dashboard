@@ -1,12 +1,12 @@
 import type { CSSProperties } from "react";
 import { container, SectionHead } from "../components/ui";
-import { AREA_GROUPS } from "../content";
+import { ALL_AREAS, AREA_GROUPS } from "../content";
 
 export function Areas() {
   return (
     <section id="area" className="py-20">
       <div className={container}>
-        <SectionHead title="17 area yang dipantau" text="Dikelompokkan supaya mudah dibaca, oleh karyawan maupun HR." />
+        <SectionHead title={`${ALL_AREAS.length} area yang dipantau`} text="Dikelompokkan supaya mudah dibaca, oleh karyawan maupun HR." />
         <div className="grid gap-[18px] sm:grid-cols-2 lg:grid-cols-4">
           {AREA_GROUPS.map((g) => (
             <div key={g.id} style={{ "--c": g.color } as CSSProperties}

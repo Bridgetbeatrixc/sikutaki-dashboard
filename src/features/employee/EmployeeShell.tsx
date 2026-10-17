@@ -91,7 +91,7 @@ function FlowGuide({ path }: { path: string }) {
       </ol>
       <div className="mt-[18px] grid max-w-[470px] gap-0.5 rounded-[14px] bg-white/70 px-3.5 py-3 text-[13px] leading-normal text-body">
         <b>Yang sampai ke HR</b>
-        <span>Rata-rata per divisi (minimal 5 orang) untuk 17 area, mood, jam tidur, dan penyebab yang dipilih. Insight pribadi dan jawaban per orang tidak pernah dikirim.</span>
+        <span>Rata-rata per divisi (minimal 5 orang) untuk 42 area, mood, jam tidur, dan penyebab yang dipilih. Insight pribadi dan jawaban per orang tidak pernah dikirim.</span>
       </div>
       <button type="button" onClick={() => { reset(); router.push(E.root); }}
         className="mt-2.5 py-1 text-[13px] font-semibold text-brand">

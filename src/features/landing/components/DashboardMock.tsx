@@ -14,7 +14,7 @@ import { BarRow } from "./ui";
 type View = "ringkasan" | "peta" | "tren";
 const VIEWS: { id: View; icon: IconName; label: string }[] = [
   { id: "ringkasan", icon: "grid", label: "Ringkasan" },
-  { id: "peta", icon: "map", label: "Peta 17 Area" },
+  { id: "peta", icon: "map", label: "Peta 42 Area" },
   { id: "tren", icon: "trend", label: "Tren" },
 ];
 
@@ -63,7 +63,7 @@ export function DashboardMock() {
           {view === "ringkasan" && <Summary />}
           {view === "peta" && (
             <div className={panel}>
-              <div className={panelHead}><b className="text-[13.5px] font-semibold">Peta 17 area per tim</b><small className="text-[11.5px] text-muted">skor rata-rata, 0 sampai 100</small></div>
+              <div className={panelHead}><b className="text-[13.5px] font-semibold">Peta area per tim</b><small className="text-[11.5px] text-muted">skor rata-rata, 0 sampai 100</small></div>
               <Heatmap />
             </div>
           )}

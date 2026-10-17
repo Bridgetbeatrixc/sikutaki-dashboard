@@ -22,15 +22,51 @@ export const moodById = (id: number) => MOODS[id - 1];
 /* ---------- Weekly check-in ---------- */
 
 export const CHECKIN_QUESTIONS: Record<string, string> = {
+  sedih: "Seberapa sering kamu merasa sedih yang dalam dan sulit hilang?",
+  kecewa: "Seberapa sering kamu merasa sangat kecewa pada pekerjaan, orang lain, atau dirimu sendiri?",
+  hampa: "Seberapa sering kamu merasa kosong atau kehilangan makna dalam pekerjaan?",
+  moodswing: "Seberapa sering suasana hatimu berubah drastis dalam waktu singkat?",
+  matirasa: "Seberapa sering kamu merasa mati rasa, tidak bisa merasakan senang maupun sedih?",
+  duka: "Seberapa sering rasa duka karena kehilangan masih terasa berat untukmu?",
+  apatis: "Seberapa sering kamu merasa tidak peduli lagi pada pekerjaan atau orang di sekitarmu?",
   stres: "Seminggu terakhir, seberapa sering kamu merasa tertekan oleh pekerjaan atau hal sehari-hari?",
+  anxiety: "Seberapa sering kamu merasa cemas atau khawatir dan sulit menghentikannya?",
+  overthinking: "Seberapa sering kamu memikirkan hal yang sama berulang-ulang sampai sulit beristirahat?",
+  panik: "Seberapa sering kamu tiba-tiba merasa sangat takut, disertai jantung berdebar atau sesak?",
+  galau: "Seberapa sering kamu merasa sangat gelisah sampai sulit tenang atau duduk diam?",
+  disosiasi: "Seberapa sering kamu merasa tidak benar-benar hadir, seperti melihat dirimu dari kejauhan?",
+  eksistensial: "Seberapa sering kamu mempertanyakan arti atau tujuan hidupmu sampai terasa berat?",
   burnout: "Seberapa sering kamu merasa lelah secara fisik dan emosional karena pekerjaan?",
   insomnia: "Seberapa sering kamu sulit tidur atau bangun tanpa merasa segar?",
-  hampa: "Seberapa sering kamu merasa kosong atau kehilangan makna dalam pekerjaan?",
+  baterai: "Seberapa sering kamu merasa energimu habis setelah berinteraksi dengan orang lain?",
+  minder: "Seberapa sering kamu merasa kurang percaya diri dibanding orang lain?",
+  selfesteem: "Seberapa sering kamu merasa dirimu tidak berharga?",
+  impostor: "Seberapa sering kamu merasa keberhasilanmu bukan karena kemampuanmu sendiri?",
+  trauma: "Seberapa sering pengalaman berat di masa lalu masih mengganggumu?",
+  dendam: "Seberapa sering kamu teringat sakit hati yang belum selesai?",
+  marah: "Seberapa sering emosimu meledak, atau kamu memendam marah yang tidak tersalurkan?",
+  sosial: "Seberapa sering kamu merasa takut atau sangat tidak nyaman saat berinteraksi dengan orang lain?",
+  relasi: "Seberapa sering kamu khawatir akan ditinggalkan oleh orang terdekat?",
+  pleaser: "Seberapa sering kamu sulit menolak permintaan orang lain walau merugikan dirimu?",
+  cemburu: "Seberapa sering kamu merasa cemburu dan tidak aman dalam hubungan atau di tempat kerja?",
+  perfeksionis: "Seberapa sering kamu sulit menyelesaikan pekerjaan karena merasa hasilnya belum sempurna?",
+  fomo: "Seberapa sering kamu takut tertinggal dari pengalaman atau pencapaian orang lain?",
+  gadget: "Seberapa sering penggunaan ponsel atau media sosial mengganggu tidur, kerja, atau hubunganmu?",
+  prokrastinasi: "Seberapa sering kamu menunda pekerjaan penting walau tahu dampaknya?",
+  makan: "Seberapa sering kamu makan berlebihan, atau justru tidak makan, karena emosi?",
+  egois: "Seberapa sering kamu sulit melihat sudut pandang orang lain?",
+  sombong: "Seberapa sering kamu sulit menerima masukan dari orang lain?",
+  keras: "Seberapa sering kamu bertahan pada pendapatmu walau ada alasan kuat untuk berubah?",
+  ambisius: "Seberapa sering dorongan untuk berprestasi membuatmu menekan diri sendiri atau orang lain?",
   depresi: "Seberapa sering kamu kehilangan minat pada hal yang biasanya kamu nikmati?",
-  anxiety: "Seberapa sering kamu merasa cemas atau khawatir dan sulit menghentikannya?",
+  bipolar: "Seberapa sering kamu mengalami masa sangat bersemangat yang lalu berganti menjadi sangat terpuruk?",
+  adhd: "Seberapa sering kamu sulit fokus, gelisah, atau bertindak tanpa berpikir panjang?",
+  skizofrenia: "Seberapa sering kamu mendengar atau melihat sesuatu yang tampaknya tidak dialami orang lain?",
+  narsistik: "Seberapa sering kamu merasa sangat butuh pujian atau pengakuan dari orang lain?",
+  psikopat: "Seberapa sering kamu merasa tidak bersalah setelah tindakanmu menyakiti orang lain?",
 };
 export const SCALE = ["Tidak pernah", "Jarang", "Kadang-kadang", "Sering", "Hampir selalu"];
-/** 3 core areas every week plus this week's rotating 3. */
+/** 3 core areas every week plus this week's rotating 5. */
 export const CHECKIN_AREAS = ["stres", "burnout", "insomnia", ...ROTATION[1]];
 /** Causes offered in the follow-up question (shown when burnout is "Kadang-kadang" or higher). */
 export const FOLLOW_UP_CAUSES = ["shift", "pelanggan", "after", "volume", "recovery", "pribadi"];
