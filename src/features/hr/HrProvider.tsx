@@ -1,40 +1,55 @@
 "use client";
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import type { Scope } from "@/lib/data";
-import { INITIAL_NOTES, type Note } from "@/lib/focus";
+import { useRouter } from "next/navigation";
+import { createContext, useCallback, useContext, useMemo, useState, useTransition, type ReactNode } from "react";
+import { makeModel, type Dataset, type Model, type Scope } from "@/lib/model";
+import { sampleDataset } from "@/lib/sample";
+import type { Result } from "@/server/actions/hr";
 
 type HrState = {
+  /** All numbers of the dashboard, from the server's dataset or the demo company. */
+  m: Model;
+  demo: boolean;
   scope: Scope;
   setScope: (s: Scope) => void;
-  notes: Note[];
-  addNote: (n: Omit<Note, "id">) => void;
-  /** Demo switch: show the dashboard as a brand-new organisation with no results yet. */
-  empty: boolean;
-  setEmpty: (v: boolean) => void;
   toastMsg: string | null;
   toast: (msg: string) => void;
+  /** Runs a server action, shows its error (or `done`) as a toast, and resolves to whether it worked. */
+  run: (action: () => Promise<Result>, done?: string) => Promise<Result>;
+  pending: boolean;
 };
 
 const HrContext = createContext<HrState | null>(null);
 
-export function HrProvider({ children }: { children: ReactNode }) {
+export function HrProvider({ dataset, children }: { dataset: Dataset | null; children: ReactNode }) {
+  const router = useRouter();
+  const m = useMemo(() => makeModel(dataset ?? sampleDataset()), [dataset]);
   const [scope, setScope] = useState<Scope>("all");
-  const [notes, setNotes] = useState<Note[]>(INITIAL_NOTES);
-  const [empty, setEmpty] = useState(false);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
-
-  // Sign-up sends people to ?mode=baru so the dashboard opens as a brand-new organisation.
-  useEffect(() => {
-    if (new URLSearchParams(window.location.search).get("mode") === "baru") setEmpty(true);
-  }, []);
+  const [pending, startTransition] = useTransition();
 
   const toast = useCallback((msg: string) => {
     setToastMsg(msg);
-    window.setTimeout(() => setToastMsg(null), 3200);
+    window.setTimeout(() => setToastMsg(null), 3600);
   }, []);
-  const addNote = useCallback((n: Omit<Note, "id">) => setNotes((ns) => [...ns, { ...n, id: `n${Date.now()}` }]), []);
 
-  const value = useMemo(() => ({ scope, setScope, notes, addNote, empty, setEmpty, toastMsg, toast }), [scope, notes, addNote, empty, toastMsg, toast]);
+  const run = useCallback(async (action: () => Promise<Result>, done?: string) => {
+    let res: Result;
+    try {
+      res = await action();
+    } catch {
+      res = { ok: false, error: "Gagal tersambung ke server. Coba lagi." };
+    }
+    if (!res.ok) toast(res.error);
+    else {
+      if (done) toast(done);
+      startTransition(() => router.refresh());
+    }
+    return res;
+  }, [router, toast]);
+
+  // A division that no longer exists (or is hidden) falls back to the whole company.
+  const safeScope = scope === "all" || m.teamById(scope) ? scope : "all";
+  const value = useMemo(() => ({ m, demo: !dataset, scope: safeScope, setScope, toastMsg, toast, run, pending }), [m, dataset, safeScope, toastMsg, toast, run, pending]);
   return <HrContext.Provider value={value}>{children}</HrContext.Provider>;
 }
 

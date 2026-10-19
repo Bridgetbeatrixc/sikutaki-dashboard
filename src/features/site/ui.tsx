@@ -84,10 +84,11 @@ export function CtaBand({ title, text, primary, secondary }: {
   );
 }
 
-/** Small "prototype" tag so visitors never mistake demo content for a live service. */
-export function ProtoNote({ children, className }: { children: ReactNode; className?: string }) {
+/** Small note for something the visitor should know (a draft, an error, a result). */
+export function Notice({ children, className, tone = "warn" }: { children: ReactNode; className?: string; tone?: "warn" | "bad" | "good" }) {
+  const toneCls = tone === "bad" ? "bg-bad-bg text-bad" : tone === "good" ? "bg-good-bg text-good" : "bg-warn-bg text-warn";
   return (
-    <p className={cn("inline-flex items-start gap-2 rounded-2xl bg-warn-bg px-4 py-3 text-left text-[13.5px] text-warn", className)}>
+    <p role={tone === "bad" ? "alert" : undefined} className={cn("inline-flex items-start gap-2 rounded-2xl px-4 py-3 text-left text-[13.5px]", toneCls, className)}>
       <Icon name="info" size={16} className="mt-0.5 shrink-0" />
       <span>{children}</span>
     </p>

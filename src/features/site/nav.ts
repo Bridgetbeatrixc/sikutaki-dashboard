@@ -13,8 +13,8 @@ export const MAIN_NAV: NavLink[] = [
 
 export const FOOTER_COLUMNS: { title: string; links: NavLink[] }[] = [
   { title: "Produk", links: [
-    { label: "Dashboard HR", href: ROUTES.hr.root },
-    { label: "Aplikasi karyawan", href: ROUTES.employee.root },
+    { label: "Demo dashboard HR", href: ROUTES.demo.hr },
+    { label: "Demo aplikasi karyawan", href: ROUTES.demo.employee },
     { label: "42 Area", href: "/#area" },
     { label: "Harga", href: ROUTES.pricing },
   ] },
@@ -26,7 +26,8 @@ export const FOOTER_COLUMNS: { title: string; links: NavLink[] }[] = [
   ] },
   { title: "Akun", links: [
     { label: "Masuk", href: ROUTES.login },
-    { label: "Daftar", href: ROUTES.signup },
+    { label: "Daftarkan perusahaan", href: ROUTES.signup },
+    { label: "Gabung dengan kode", href: ROUTES.join() },
   ] },
   { title: "Legal", links: [
     { label: "Kebijakan privasi", href: ROUTES.privacy },

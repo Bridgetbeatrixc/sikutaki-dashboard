@@ -1,6 +1,6 @@
 /** Small vertical bars; the latest value is highlighted. */
 export function MiniBars({ values, labels, color = "#0A66F5" }: { values: number[]; labels: string[]; color?: string }) {
-  const max = Math.max(...values);
+  const max = Math.max(1, ...values);
   return (
     <div className="flex h-[110px] items-end gap-4 pt-2">
       {values.map((v, i) => (

@@ -1,54 +1,52 @@
 "use client";
-import { useState } from "react";
+import { Icon } from "@/components/ui/Icon";
 import { cn } from "@/lib/cn";
-import { asset } from "@/lib/paths";
-import { appButton, CheckCircle, Lead, linkText, Screen, Section, Title } from "../components/ui";
-import { SLOTS } from "../content";
+import { recordReferral } from "@/server/actions/employee";
+import { appButton, Lead, Note, Screen, Section, Title } from "../components/ui";
 import { useEmployee } from "../EmployeeProvider";
 
+const contactLabel = (contact: string) =>
+  contact.startsWith("mailto:") ? "Kirim email" : contact.includes("wa.me/") ? "Chat WhatsApp" : "Buka jadwal";
+
 export function CounselingScreen() {
-  const { booked, update } = useEmployee();
-  const [slot, setSlot] = useState<string | null>(null);
+  const { partners, live, company } = useEmployee();
 
   return (
     <Screen>
       <Title>Bicara dengan psikolog</Title>
-      <Lead>Sesi 50 menit lewat video atau chat. <b>Rahasia:</b> perusahaan hanya tahu jumlah sesi yang dipakai, tanpa nama.</Lead>
+      <Lead>
+        Hubungi psikolog mitra {company.name} langsung. <b>Rahasia:</b> percakapan dan jadwal sesi tidak melewati Sikutaki, dan HR hanya melihat jumlah karyawan yang menghubungi mitra setiap bulan, tanpa nama.
+      </Lead>
 
-      <div className="mt-2.5 flex items-center gap-3 rounded-[18px] bg-soft p-3">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={asset("/img/avatar-psikolog.jpg")} alt="" width={56} height={56} className="rounded-full object-cover" />
-        <div>
-          <b className="block text-[14.5px]">Psikolog mitra Sikutaki</b>
-          <small className="mt-0.5 block text-xs text-muted">Stres kerja, burnout, kecemasan · contoh profil</small>
-        </div>
-      </div>
-
-      {booked ? (
-        <div className="mt-3.5 grid grid-cols-[28px_1fr_auto] items-start gap-3 rounded-2xl bg-mint px-3.5 py-3">
-          <CheckCircle on />
-          <div>
-            <b className="block text-[14.5px]">Sesi terjadwal</b>
-            <small className="mt-0.5 block text-[12.5px] leading-snug text-body">{booked}. Pengingat dan tautan sesi muncul di aplikasi 15 menit sebelum mulai.</small>
-          </div>
-          <button type="button" className={cn(linkText, "text-sm")} onClick={() => update({ booked: null })}>Batalkan</button>
+      <Section>Psikolog mitra</Section>
+      {partners.length === 0 ? (
+        <div className="rounded-2xl bg-soft p-3.5 text-[13.5px] leading-normal text-body">
+          Perusahaanmu belum menambahkan psikolog mitra. Untuk sekarang, kamu bisa memakai layanan gratis Healing119 dari Kemenkes di bawah.
         </div>
       ) : (
-        <>
-          <Section>Pilih jadwal</Section>
-          <div className="mb-1.5 grid gap-2">
-            {SLOTS.map((s) => (
-              <button key={s} type="button" onClick={() => setSlot(s)} aria-pressed={slot === s}
-                className={cn("rounded-[14px] border-[1.5px] px-3.5 py-3 text-left text-sm text-ink", slot === s ? "border-app bg-[#eef1f7] font-semibold" : "border-line bg-white")}>
-                {s}
-              </button>
-            ))}
-          </div>
-          <button type="button" className={appButton()} disabled={!slot} onClick={() => update({ booked: slot })}>
-            {slot ? `Pesan sesi ${slot.split(" · ")[0]}` : "Pilih jadwal dulu"}
-          </button>
-        </>
+        <ul className="grid gap-2.5">
+          {partners.map((p) => (
+            <li key={p.id} className="grid gap-2.5 rounded-[18px] bg-soft p-3.5">
+              <div className="grid grid-cols-[44px_1fr] items-center gap-3">
+                <span className="grid size-11 place-items-center rounded-full bg-white text-app"><Icon name="chat" size={20} /></span>
+                <div className="min-w-0">
+                  <b className="block text-[14.5px]">{p.name}</b>
+                  <small className="mt-0.5 block text-xs text-muted">{[p.focus, p.schedule].filter(Boolean).join(" · ")}</small>
+                </div>
+              </div>
+              {p.contact ? (
+                <a href={p.contact} target="_blank" rel="noopener noreferrer" onClick={() => { if (live) void recordReferral(p.id); }}
+                  className={appButton("primary", true, "mt-0")}>
+                  {contactLabel(p.contact)}
+                </a>
+              ) : (
+                <span className={cn(appButton("ghost", true, "mt-0"), "cursor-default")}>Kontak diatur oleh HR perusahaan</span>
+              )}
+            </li>
+          ))}
+        </ul>
       )}
+      <Note>Sesi dengan psikolog bersifat rahasia.</Note>
 
       <div className="mt-[18px] grid gap-1 rounded-2xl bg-[#fdf0f2] px-3.5 py-3 text-[13px] leading-normal text-[#6b2b39]">
         <b>Butuh bantuan sekarang?</b>

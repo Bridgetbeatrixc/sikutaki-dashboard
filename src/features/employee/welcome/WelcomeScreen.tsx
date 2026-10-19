@@ -1,6 +1,5 @@
-import Link from "next/link";
 import { Icon, type IconName } from "@/components/ui/Icon";
-import { ROUTES } from "@/lib/paths";
+import { completeOnboarding } from "@/server/actions/employee";
 import { MoodFace } from "../components/MoodFace";
 import { appButton, Lead } from "../components/ui";
 import { MOODS } from "../content";
@@ -32,7 +31,9 @@ export function WelcomeScreen() {
           </li>
         ))}
       </ul>
-      <Link href={ROUTES.employee.home} className={appButton()}>Mulai</Link>
+      <form action={completeOnboarding}>
+        <button type="submit" className={appButton()}>Mulai</button>
+      </form>
     </div>
   );
 }

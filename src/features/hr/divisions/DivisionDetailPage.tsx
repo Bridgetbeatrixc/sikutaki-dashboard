@@ -9,10 +9,10 @@ import { Kpi, KpiGrid } from "@/components/ui/Kpi";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { CompareBars } from "@/components/charts/CompareBars";
 import { fitRange, LineChart } from "@/components/charts/LineChart";
-import { AREA_COUNT, AREAS, areaValue, GROUPS, groupOf, isHidden, NOW, PART, respondents, teamById, teamStatus, VAL, wellbeing, wellbeingSeries, WEEKS } from "@/lib/data";
-import { focusAreas, moodAvg, NOTE_LABEL, sleepHours } from "@/lib/focus";
+import { AREA_COUNT, AREAS, GROUPS, groupOf, NOTE_LABEL } from "@/lib/catalog";
 import { decimal } from "@/lib/format";
 import { ROUTES } from "@/lib/paths";
+import { addNote, deleteNote } from "@/server/actions/hr";
 import { useHr } from "../HrProvider";
 import { FocusCard } from "./FocusCard";
 import { NotesPanel, type NoteDraft } from "./NotesPanel";
@@ -22,44 +22,53 @@ const EMPTY_DRAFT: NoteDraft = { type: "rencana", area: "", text: "" };
 
 export function DivisionDetailPage({ id }: { id: string }) {
   const router = useRouter();
-  const { notes, addNote, toast } = useHr();
+  const { m, run } = useHr();
   const [draft, setDraft] = useState<NoteDraft>(EMPTY_DRAFT);
-  const team = teamById(id);
+  const team = m.teamById(id);
+  const myNotes = m.ds.notes.filter((n) => n.team === id).reverse();
+
+  const save = async () => {
+    const res = await run(() => addNote(id, draft.type, draft.area, draft.text), "Catatan disimpan");
+    if (res.ok) setDraft(EMPTY_DRAFT);
+  };
+  const remove = (noteId: string) => {
+    if (window.confirm("Hapus catatan ini?")) run(() => deleteNote(noteId), "Catatan dihapus");
+  };
+  const notesPanel = <NotesPanel notes={myNotes} draft={draft} setDraft={setDraft} onSave={save} onDelete={remove} />;
+  const sub = `${team?.size ?? 0} orang terdaftar${team?.lead ? ` · lead ${team.lead}` : ""}`;
 
   if (!team) return <PageHeader title="Divisi tidak ditemukan" crumbs={crumbs} />;
-  if (isHidden(id)) {
+  if (m.isEmpty || m.isHidden(id)) {
     return (
       <>
-        <PageHeader title={team.name} crumbs={crumbs} sub={`${team.size} orang · lead ${team.lead}`} />
-        <Card><HiddenNote text={`Divisi ini hanya punya ${respondents(id)} penjawab minggu ini. Skor ditampilkan mulai 5 penjawab agar tidak ada yang bisa dikenali.`} /></Card>
+        <PageHeader title={team.name} crumbs={crumbs} sub={sub} />
+        <Card><HiddenNote text={`Divisi ini punya ${m.isEmpty ? 0 : m.respondents(id)} penjawab di minggu terakhir. Skor ditampilkan mulai ${m.MIN_GROUP} penjawab agar tidak ada yang bisa dikenali.`} /></Card>
+        <div className="grid items-start gap-[18px] xl:grid-cols-2">{notesPanel}</div>
       </>
     );
   }
 
-  const wb = wellbeing(id), status = teamStatus(id), sleep = sleepHours(id);
-  const focus = focusAreas(id);
-  const myNotes = notes.filter((n) => n.team === id).sort((a, b) => b.week - a.week);
-  const series = wellbeingSeries(id), company = wellbeingSeries("all");
+  const { NOW } = m;
+  const wb = m.wellbeing(id) ?? 0, status = m.teamStatus(id), sleep = m.sleepHours(id), mood = m.moodAvg(id);
+  const prevWb = m.wellbeing(id, NOW - 2), prevSleep = m.sleepHours(id, NOW - 4), part = m.part(id);
+  const companyMood = m.moodAvg("all");
+  const focus = m.focusAreas(id);
+  const series = m.wellbeingSeries(id), company = m.wellbeingSeries("all");
 
   const applyIdea = (text: string, area: string) => {
     setDraft({ type: "rencana", area, text });
     document.getElementById("note-form")?.scrollIntoView({ behavior: "smooth", block: "center" });
   };
-  const save = () => {
-    addNote({ team: id, week: NOW, type: draft.type, area: draft.area || undefined, text: draft.text.trim(), by: "Rina A." });
-    setDraft(EMPTY_DRAFT);
-    toast("Catatan disimpan");
-  };
 
   return (
     <>
-      <PageHeader title={team.name} crumbs={crumbs} sub={<>{team.size} orang · lead {team.lead} · <StatusChip s={status} small /></>} />
+      <PageHeader title={team.name} crumbs={crumbs} sub={<>{sub} · <StatusChip s={status} small /></>} />
 
       <KpiGrid>
-        <Kpi label="Indeks wellbeing" value={wb} unit="/100" delta={wb - wellbeing(id, NOW - 2)} goodWhenUp foot={`perusahaan ${wellbeing("all")}`} />
-        <Kpi label="Partisipasi check-in" value={PART[id][NOW]} unit="%" delta={PART[id][NOW] - PART[id][NOW - 1]} goodWhenUp foot={`${respondents(id)} dari ${team.size} orang`} />
-        <Kpi label="Mood harian" value={decimal(moodAvg(id))} unit="/5" foot={`perusahaan ${decimal(moodAvg("all"))}`} />
-        <Kpi label="Jam tidur" value={decimal(sleep)} unit=" jam" delta={Math.round((sleep - sleepHours(id, NOW - 4)) * 10) / 10} goodWhenUp foot="dibanding 4 minggu lalu" />
+        <Kpi label="Indeks wellbeing" value={wb} unit="/100" delta={prevWb === null ? undefined : wb - prevWb} goodWhenUp foot={`perusahaan ${m.wellbeing("all") ?? "-"}`} />
+        <Kpi label="Partisipasi check-in" value={part} unit="%" delta={(() => { const prev = m.participationSeries(id)[NOW - 1]; return prev == null ? undefined : part - prev; })()} goodWhenUp foot={`${m.respondents(id)} dari ${team.size} orang`} />
+        <Kpi label="Mood harian" value={mood === null ? "-" : decimal(mood)} unit={mood === null ? undefined : "/5"} foot={mood === null ? `tampil mulai ${m.MIN_GROUP} orang mencatat` : `perusahaan ${companyMood === null ? "-" : decimal(companyMood)}`} />
+        <Kpi label="Jam tidur" value={sleep === null ? "-" : decimal(sleep)} unit={sleep === null ? undefined : " jam"} delta={sleep === null || prevSleep === null ? undefined : Math.round((sleep - prevSleep) * 10) / 10} goodWhenUp foot="dibanding 4 minggu lalu" />
       </KpiGrid>
 
       <h2 className="mt-1.5 flex items-center gap-2 text-[17px] font-bold">
@@ -70,21 +79,24 @@ export function DivisionDetailPage({ id }: { id: string }) {
         : <div className="grid gap-3.5">{focus.map((f) => <FocusCard key={f.area} team={id} focus={f} onIdea={applyIdea} />)}</div>}
 
       <div className="grid items-start gap-[18px] xl:grid-cols-2">
-        <NotesPanel notes={myNotes} draft={draft} setDraft={setDraft} onSave={save} />
+        {notesPanel}
         <Card title="Wellbeing 12 minggu" sub="Divisi ini dibanding perusahaan. Garis putus-putus = catatan HR.">
-          <LineChart labels={WEEKS.map((w) => w.label)} {...fitRange([...series, ...company])} height={220}
+          <LineChart labels={m.WEEKS.map((w) => w.label)} {...fitRange([...series, ...company])} height={220}
             series={[{ name: team.name, color: status === "perhatian" ? "#B03424" : "#0A66F5", values: series }, { name: "Perusahaan", color: "#86868B", values: company }]}
-            markers={myNotes.filter((n) => n.week <= NOW).sort((a, b) => a.week - b.week).map((n) => ({ i: n.week, label: NOTE_LABEL[n.type] }))} />
+            markers={myNotes.filter((n) => n.week >= 0 && n.week <= NOW).sort((a, b) => a.week - b.week).map((n) => ({ i: n.week, label: NOTE_LABEL[n.type] }))} />
         </Card>
       </div>
 
-      <Card title={`${AREA_COUNT} area dibanding perusahaan`} sub="Garis kecil = rata-rata perusahaan. Makin panjang makin perlu perhatian.">
+      <Card title={`${AREA_COUNT} area dibanding perusahaan`} sub={`Garis kecil = rata-rata perusahaan. Makin panjang makin perlu perhatian. ${m.scoredAreas(id).length} dari ${AREA_COUNT} area sudah terukur dalam 8 minggu terakhir.`}>
         <div className="grid items-start gap-x-7 gap-y-[18px] xl:grid-cols-2">
           {GROUPS.map((g) => (
             <div key={g.id} className="grid content-start gap-1">
               <span className="mt-1 text-xs font-bold tracking-wider uppercase" style={{ color: g.color }}>{g.name}</span>
               <CompareBars onSelect={(aid) => router.push(ROUTES.hr.area(aid))}
-                items={AREAS.filter((a) => a.group === g.id).map((a) => ({ id: a.id, label: a.name, color: groupOf(a.group).color, v: VAL[id][a.id][NOW], ref: areaValue("all", a.id) }))} />
+                items={AREAS.filter((a) => a.group === g.id).flatMap((a) => {
+                  const v = m.areaValue(id, a.id);
+                  return v === null ? [] : [{ id: a.id, label: a.name, color: groupOf(a.group).color, v, ref: m.areaValue("all", a.id) ?? undefined }];
+                })} />
             </div>
           ))}
         </div>

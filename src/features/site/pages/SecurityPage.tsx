@@ -14,20 +14,21 @@ const RULES = [
 const WHO = [
   { who: "Karyawan", sees: "Mood harian, jam tidur, hasil check-in, dan insight pribadinya sendiri", not: "jawaban rekan kerja" },
   { who: "HR", sees: "Rata-rata per divisi untuk 42 area, mood, dan tidur, bila timnya minimal 5 orang", not: "jawaban atau nama per orang" },
-  { who: "Psikolog mitra", sees: "Rujukan yang disetujui karyawan", not: "data karyawan lain atau dashboard HR" },
+  { who: "Psikolog mitra", sees: "Hanya yang karyawan sampaikan sendiri saat menghubungi mereka", not: "data apa pun dari Sikutaki" },
 ];
 
 const NOW = [
-  "Semua halaman statis, dengan data contoh yang disimpan di kode.",
-  "Isian karyawan hanya disimpan sementara di browser dan hilang saat halaman di-refresh.",
-  "Tidak ada akun sungguhan. Halaman masuk dan daftar hanya untuk demo.",
+  "Kata sandi disimpan sebagai hash scrypt, tidak pernah dalam bentuk aslinya.",
+  "Sesi masuk memakai cookie httpOnly yang tidak bisa dibaca skrip di halaman.",
+  "Aturan minimal 5 orang dijalankan di server: angka kelompok kecil tidak pernah dikirim ke browser HR.",
+  "Jawaban yang lebih lama dari masa simpan perusahaan (12, 24, atau 36 bulan) dihapus permanen.",
+  "Karyawan bisa menghapus akun beserta seluruh catatan dan check-in-nya sendiri dari aplikasi.",
 ];
 
 const PLANNED = [
-  "Backend API dan database, dengan login lewat akun kantor.",
-  "Jawaban perorangan disimpan terpisah dari identitas.",
-  "Aturan minimal 5 orang dijaga di server, bukan hanya disembunyikan di tampilan.",
-  "Akses data dibatasi per peran, dan karyawan bisa meminta datanya dihapus.",
+  "Login lewat akun kantor (Google Workspace atau Microsoft 365).",
+  "Email otomatis untuk undangan, pengingat check-in, dan reset kata sandi.",
+  "Audit keamanan oleh pihak ketiga.",
 ];
 
 /** Visual for the 5-person rule: a team of 4 stays hidden, a team of 12 shows its average. */
@@ -99,15 +100,15 @@ export function SecurityPage() {
       </Band>
 
       <Band>
-        <BandHead eyebrow="Tahap produk" title="Apa yang sudah ada, dan apa yang direncanakan." text="Kami terbuka soal tahap produk saat ini." />
+        <BandHead eyebrow="Cara kerja" title="Yang sudah berjalan, dan yang sedang disiapkan." text="Kami terbuka soal apa yang sudah dan belum ada." />
         <div className="grid gap-5 lg:grid-cols-2">
           <div className="grid content-start gap-5 rounded-[28px] bg-canvas p-7 sm:p-8">
-            <span className="justify-self-start rounded-full bg-warn-bg px-3 py-1 text-[13px] font-semibold text-warn">Sekarang: prototipe</span>
-            <ul className="grid gap-3">{NOW.map((t) => <li key={t} className="flex gap-3 text-[16px] text-body"><Icon name="info" size={19} className="mt-0.5 shrink-0 text-muted" />{t}</li>)}</ul>
+            <span className="justify-self-start rounded-full bg-mint px-3 py-1 text-[13px] font-semibold text-brand">Sudah berjalan</span>
+            <ul className="grid gap-3">{NOW.map((t) => <li key={t} className="flex gap-3 text-[16px] text-body"><Icon name="check" size={19} stroke={2.2} className="mt-0.5 shrink-0 text-brand" />{t}</li>)}</ul>
           </div>
           <div className="grid content-start gap-5 rounded-[28px] bg-canvas p-7 sm:p-8">
-            <span className="justify-self-start rounded-full bg-mint px-3 py-1 text-[13px] font-semibold text-brand">Rencana produksi</span>
-            <ul className="grid gap-3">{PLANNED.map((t) => <li key={t} className="flex gap-3 text-[16px] text-body"><Icon name="check" size={19} stroke={2.2} className="mt-0.5 shrink-0 text-brand" />{t}</li>)}</ul>
+            <span className="justify-self-start rounded-full bg-warn-bg px-3 py-1 text-[13px] font-semibold text-warn">Sedang disiapkan</span>
+            <ul className="grid gap-3">{PLANNED.map((t) => <li key={t} className="flex gap-3 text-[16px] text-body"><Icon name="clock" size={19} className="mt-0.5 shrink-0 text-muted" />{t}</li>)}</ul>
           </div>
         </div>
       </Band>
@@ -129,7 +130,7 @@ export function SecurityPage() {
       </Band>
 
       <CtaBand title="Punya pertanyaan soal data?" text="Tim kami siap menjelaskan cara kerja aturan privasi untuk perusahaan Anda."
-        primary={{ label: "Hubungi kami", href: ROUTES.contact }} secondary={{ label: "Lihat dashboard HR", href: ROUTES.hr.root }} />
+        primary={{ label: "Hubungi kami", href: ROUTES.contact }} secondary={{ label: "Coba demo dashboard HR", href: ROUTES.demo.hr }} />
     </>
   );
 }

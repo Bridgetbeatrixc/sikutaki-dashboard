@@ -26,7 +26,7 @@ function isExpanded(steps: Exercise["steps"], index: number) {
 }
 
 export function PlayerScreen({ exercise }: { exercise: Exercise }) {
-  const { done, update } = useEmployee();
+  const { markDone } = useEmployee();
   const router = useRouter();
   const [elapsed, setElapsed] = useState(0);
   const [running, setRunning] = useState(true);
@@ -42,12 +42,12 @@ export function PlayerScreen({ exercise }: { exercise: Exercise }) {
   const big = isExpanded(exercise.steps, index);
 
   const finish = () => {
-    if (!done.includes(exercise.id)) update({ done: [...done, exercise.id] });
+    markDone(exercise.id);
     router.push(ROUTES.employee.home);
   };
 
   return (
-    <div className="grid min-h-full content-start gap-[18px] px-[22px] pt-2 pb-7">
+    <div className="grid min-h-full content-start gap-[18px] px-[22px] pt-2 pb-7 md:px-8 md:pt-6">
       <FlowBar closeHref={ROUTES.employee.exercises} title={exercise.title} />
       <div className="relative mx-auto mt-7 mb-1.5 grid size-[250px] grid-rows-2 justify-items-center text-center" aria-live="polite">
         <i className={cn(

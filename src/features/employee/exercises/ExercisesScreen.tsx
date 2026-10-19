@@ -11,10 +11,10 @@ const cardBackground = ([a, b, c]: Exercise["colors"]) =>
   `radial-gradient(120% 90% at 20% 20%, ${a}, transparent 60%), radial-gradient(90% 90% at 85% 30%, ${c}, transparent 60%), linear-gradient(160deg, ${a}, ${b})`;
 
 export function ExercisesScreen() {
-  const { mood, sleep, saved, done } = useEmployee();
+  const { todayLog, done } = useEmployee();
   const [feeling, setFeeling] = useState(FEELINGS[0]);
   const list = EXERCISES.filter((e) => feeling === FEELINGS[0] || e.feeling === feeling);
-  const suggested = suggestedExercises(mood, sleep).map((id) => exerciseById(id)!);
+  const suggested = suggestedExercises(todayLog?.mood ?? null, todayLog?.sleep ?? 7).map((id) => exerciseById(id)!);
 
   return (
     <Screen>
@@ -36,7 +36,7 @@ export function ExercisesScreen() {
           </Link>
         ))}
       </div>
-      <Note>{saved ? "Berdasarkan mood dan jam tidur yang kamu catat hari ini." : "Catat mood di Beranda agar saran lebih pas."}</Note>
+      <Note>{todayLog ? "Berdasarkan mood dan jam tidur yang kamu catat hari ini." : "Catat mood di Beranda agar saran lebih pas."}</Note>
 
       <Section>Aku ingin merasa...</Section>
       <div className="flex gap-2 overflow-x-auto pb-0.5 scrollbar-none">

@@ -27,7 +27,7 @@ export function AuthCard({ title, text, children, footer }: { title: string; tex
             ))}
           </ul>
         </div>
-        <p className="relative text-[13px] text-white/70">Prototipe. Nama dan angka di aplikasi adalah data contoh.</p>
+        <p className="relative text-[13px] text-white/70">Sikutaki bukan layanan krisis. Dalam keadaan darurat, hubungi 112.</p>
       </aside>
 
       <div className="flex min-h-screen flex-col">

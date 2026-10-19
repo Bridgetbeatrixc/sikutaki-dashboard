@@ -70,8 +70,8 @@ export function SiteHeader() {
               <Link href={ROUTES.login} onClick={close} className="rounded-full bg-canvas py-3.5 text-center text-[17px] font-medium text-ink">Masuk</Link>
             </div>
             <div className="mt-6 grid gap-1 text-[15px] text-muted">
-              <Link href={ROUTES.hr.root} onClick={close} className="py-2">Coba dashboard HR</Link>
-              <Link href={ROUTES.employee.root} onClick={close} className="py-2">Coba aplikasi karyawan</Link>
+              <Link href={ROUTES.demo.hr} onClick={close} className="py-2">Coba dashboard HR</Link>
+              <Link href={ROUTES.demo.employee} onClick={close} className="py-2">Coba aplikasi karyawan</Link>
               <Link href={ROUTES.pricing} onClick={close} className="py-2">Harga</Link>
             </div>
           </nav>

@@ -6,8 +6,8 @@ import { Logo } from "@/components/Logo";
 import { Icon } from "@/components/ui/Icon";
 import { inputClass } from "@/components/ui/form";
 import { cn } from "@/lib/cn";
-import { alerts, COMPANY, isHidden, TEAMS } from "@/lib/data";
 import { ROUTES } from "@/lib/paths";
+import { logout } from "@/server/actions/auth";
 import { useHr } from "./HrProvider";
 import { HR_NAV, isActive, NAV_DIVIDER_AFTER } from "./nav";
 import { EmptyState } from "./EmptyState";
@@ -15,10 +15,13 @@ import { EmptyState } from "./EmptyState";
 /** Frame of the HR dashboard: sidebar (icon rail on tablet), sticky top bar, bottom bar on phones. */
 export function HrShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  const { empty, setEmpty, scope, setScope, toastMsg } = useHr();
+  const { m, demo, scope, setScope, toastMsg } = useHr();
   const [bellOpen, setBellOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
-  const al = empty ? [] : alerts();
+  const [userOpen, setUserOpen] = useState(false);
+  const empty = m.isEmpty;
+  const al = m.alerts();
+  const initials = m.ds.user.name.split(/\s+/).map((w) => w[0]).join("").slice(0, 2).toUpperCase();
   const teamsWithAlerts = new Set(al.map((a) => a.team)).size;
   const section = pathname.replace(ROUTES.hr.root, "").split("/").filter(Boolean)[0];
   const showScope = !empty && section === "area";
@@ -26,8 +29,8 @@ export function HrShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="flex min-h-screen">
-      <aside className="sticky top-0 hidden h-screen w-[72px] shrink-0 flex-col items-center gap-[18px] border-r border-line bg-white px-2.5 py-4 sm:flex xl:w-[232px] xl:items-stretch xl:px-3 xl:py-[18px]">
-        <Logo className="px-0 text-lg xl:px-2 [&>span]:hidden xl:[&>span]:inline" />
+      <aside className="sticky top-0 hidden print:hidden h-screen w-[72px] shrink-0 flex-col items-center gap-[18px] border-r border-line bg-white px-2.5 py-4 sm:flex xl:w-[232px] xl:items-stretch xl:px-3 xl:py-[18px]">
+        <Logo href={ROUTES.hr.root} className="px-0 text-lg xl:px-2 [&>span]:hidden xl:[&>span]:inline" />
         <nav className="grid gap-0.5">
           {HR_NAV.map((n, i) => (
             <div key={n.href} className={cn(i === NAV_DIVIDER_AFTER && "mb-2.5 border-b border-line pb-2.5")}>
@@ -49,25 +52,27 @@ export function HrShell({ children }: { children: ReactNode }) {
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-20 flex flex-wrap items-center gap-2.5 border-b border-line bg-canvas/90 px-4 py-2.5 backdrop-blur sm:flex-nowrap sm:gap-4 sm:px-7 sm:py-3">
+        {demo && (
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 bg-ink print:hidden px-4 py-2 text-[13px] text-white sm:px-7">
+            <span>Demo dengan perusahaan contoh. Perubahan tidak disimpan.</span>
+            <Link href={ROUTES.signup} className="font-semibold underline underline-offset-2">Daftarkan perusahaan Anda</Link>
+          </div>
+        )}
+        <header className="sticky top-0 z-20 print:hidden flex flex-wrap items-center gap-2.5 border-b border-line bg-canvas/90 px-4 py-2.5 backdrop-blur sm:flex-nowrap sm:gap-4 sm:px-7 sm:py-3">
           <div>
-            <b className="block text-sm">{COMPANY.name}</b>
-            <small className="hidden text-xs text-muted sm:inline">{COMPANY.employees} karyawan</small>
+            <b className="block text-sm">{m.COMPANY.name}</b>
+            <small className="hidden text-xs text-muted sm:inline">{m.COMPANY.employees} karyawan terdaftar</small>
           </div>
           {showScope && (
             <label className="order-3 w-full sm:order-none sm:w-auto">
               <span className="sr-only">Lingkup</span>
               <select className={cn(inputClass, "w-full")} value={scope} onChange={(e) => setScope(e.target.value)} aria-label="Pilih divisi">
                 <option value="all">Seluruh perusahaan</option>
-                {TEAMS.filter((t) => !isHidden(t.id)).map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
+                {m.TEAMS.filter((t) => !m.isHidden(t.id)).map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
               </select>
             </label>
           )}
           <div className="ml-auto flex items-center gap-2.5">
-            <Link href={ROUTES.employee.root} title="Buka aplikasi karyawan"
-              className="inline-flex items-center gap-1.5 rounded-full border border-line bg-white px-2.5 py-[7px] text-[13px] font-semibold text-head hover:border-brand-2 sm:px-3.5">
-              <Icon name="user" size={15} /><span className="hidden sm:inline">Aplikasi karyawan</span>
-            </Link>
             <div className="relative">
               <button type="button" aria-label={`Notifikasi, ${al.length} baru`} onClick={() => setBellOpen(!bellOpen)}
                 className="relative inline-flex size-[38px] items-center justify-center rounded-xl border border-line bg-white">
@@ -85,11 +90,19 @@ export function HrShell({ children }: { children: ReactNode }) {
                 </div>
               )}
             </div>
-            <button type="button" onClick={() => setEmpty(!empty)} title="Ganti tampilan contoh"
-              className={cn("hidden rounded-full border border-dashed px-3 py-1.5 text-xs font-semibold sm:inline-flex", empty ? "border-warn bg-warn-bg text-warn" : "border-[#c7c7cc] text-muted")}>
-              {empty ? "Mode: organisasi baru" : "Mode: data contoh"}
-            </button>
-            <span className="inline-flex size-9 items-center justify-center rounded-full bg-brand text-[13px] font-bold text-white" title="Rina A., HR">RA</span>
+            <div className="relative">
+              <button type="button" onClick={() => setUserOpen(!userOpen)} aria-label="Menu akun" aria-expanded={userOpen}
+                className="inline-flex size-9 items-center justify-center rounded-full bg-brand text-[13px] font-bold text-white">{initials}</button>
+              {userOpen && (
+                <div className="absolute top-[46px] right-0 z-40 grid w-[240px] gap-0.5 rounded-[14px] border border-line bg-white p-2 shadow-xl">
+                  <div className="px-2.5 py-1.5"><b className="block text-[13px]">{m.ds.user.name}</b><small className="block truncate text-muted">{m.ds.user.email}</small></div>
+                  <Link href={ROUTES.hr.settings} onClick={() => setUserOpen(false)} className="flex items-center gap-2 rounded-[10px] px-2.5 py-2 text-[13px] hover:bg-[#f1f3f6]"><Icon name="cog" size={15} />Pengaturan</Link>
+                  <form action={logout}>
+                    <button type="submit" className="flex w-full items-center gap-2 rounded-[10px] px-2.5 py-2 text-left text-[13px] hover:bg-[#f1f3f6]"><Icon name="logout" size={15} />{demo ? "Keluar dari demo" : "Keluar"}</button>
+                  </form>
+                </div>
+              )}
+            </div>
           </div>
         </header>
 
@@ -99,7 +112,7 @@ export function HrShell({ children }: { children: ReactNode }) {
       </div>
 
       {/* Phone navigation */}
-      <nav className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-5 border-t border-line bg-white px-1 pt-1.5 pb-[calc(6px+env(safe-area-inset-bottom))] sm:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-30 print:hidden grid grid-cols-5 border-t border-line bg-white px-1 pt-1.5 pb-[calc(6px+env(safe-area-inset-bottom))] sm:hidden">
         {HR_NAV.slice(0, 4).map((n) => (
           <Link key={n.href} href={n.href} className={cn("grid justify-items-center gap-0.5 py-1 text-[10.5px] font-semibold", isActive(pathname, n.href) ? "text-brand" : "text-muted")}>
             <Icon name={n.icon} size={20} /><span>{n.label}</span>
@@ -115,9 +128,6 @@ export function HrShell({ children }: { children: ReactNode }) {
             {HR_NAV.slice(4).map((n) => (
               <Link key={n.href} href={n.href} onClick={() => setMoreOpen(false)} className="flex items-center gap-3 rounded-[10px] p-3 font-semibold"><Icon name={n.icon} />{n.label}</Link>
             ))}
-            <button type="button" onClick={() => { setEmpty(!empty); setMoreOpen(false); }} className="flex items-center gap-3 border-t border-line p-3 text-left font-semibold text-muted">
-              <Icon name="info" />{empty ? "Tampilkan data contoh" : "Lihat sebagai organisasi baru"}
-            </button>
           </div>
         </div>
       )}

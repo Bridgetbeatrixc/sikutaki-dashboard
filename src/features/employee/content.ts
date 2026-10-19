@@ -1,10 +1,8 @@
 import type { IconName } from "@/components/ui/Icon";
-import { ROTATION } from "@/lib/data";
-import { MOODS as MOOD_LABELS } from "@/lib/focus";
+import { MOODS as MOOD_LABELS } from "@/lib/catalog";
 import { ROUTES } from "@/lib/paths";
 
-/* Static content of the employee app. Everything an employee enters stays on their side;
-   HR only ever sees group averages of 5 or more people. */
+/* Static content of the employee app. HR only ever sees group averages of 5 or more people. */
 
 export type Mood = { id: number; label: string; bg: string; stroke: [string, string]; path: string };
 
@@ -65,12 +63,6 @@ export const CHECKIN_QUESTIONS: Record<string, string> = {
   narsistik: "Seberapa sering kamu merasa sangat butuh pujian atau pengakuan dari orang lain?",
   psikopat: "Seberapa sering kamu merasa tidak bersalah setelah tindakanmu menyakiti orang lain?",
 };
-export const SCALE = ["Tidak pernah", "Jarang", "Kadang-kadang", "Sering", "Hampir selalu"];
-/** 3 core areas every week plus this week's rotating 5. */
-export const CHECKIN_AREAS = ["stres", "burnout", "insomnia", ...ROTATION[1]];
-/** Causes offered in the follow-up question (shown when burnout is "Kadang-kadang" or higher). */
-export const FOLLOW_UP_CAUSES = ["shift", "pelanggan", "after", "volume", "recovery", "pribadi"];
-export const needsFollowUp = (answers: Record<string, number>) => (answers.burnout ?? 0) >= 2;
 
 export type Level = "lo" | "mid" | "hi";
 export const level = (v: number): { label: string; tone: Level } =>
@@ -105,19 +97,6 @@ export function suggestedExercises(mood: number | null, sleep: number) {
   return ["fokus", "jeda"];
 }
 
-/* ---------- Insight ---------- */
-
-/** Earlier days of this week (sample data). Today comes from what the employee notes on Beranda. */
-export const PAST_DAYS = [
-  { day: "Rab", sleep: 6, mood: 3 }, { day: "Kam", sleep: 5.5, mood: 2 }, { day: "Jum", sleep: 5, mood: 2 },
-  { day: "Sab", sleep: 7.5, mood: 4 }, { day: "Min", sleep: 8, mood: 4 }, { day: "Sen", sleep: 6.5, mood: 3 },
-];
-export const TODAY = { day: "Sel", long: "Selasa, 13 Oktober" };
-
-/* ---------- Counseling ---------- */
-
-export const SLOTS = ["Rab, 14 Okt · 19.00", "Kam, 15 Okt · 18.30", "Sab, 17 Okt · 10.00"];
-
 /* ---------- Navigation ---------- */
 
 export const APP_NAV: { href: string; label: string; icon: IconName }[] = [
@@ -125,17 +104,6 @@ export const APP_NAV: { href: string; label: string; icon: IconName }[] = [
   { href: ROUTES.employee.exercises, label: "Latihan", icon: "lotus" },
   { href: ROUTES.employee.insight, label: "Insight", icon: "bars" },
   { href: ROUTES.employee.counseling, label: "Konseling", icon: "chat" },
-];
-
-/** The flow guide shown next to the phone. */
-export const FLOW = [
-  { href: ROUTES.employee.root, title: "Kenalan", text: "Janji privasi dan cara kerja, sekali di awal." },
-  { href: ROUTES.employee.home, title: "Catat mood harian", text: "Pilih mood dan jam tidur. 10 detik setiap hari." },
-  { href: ROUTES.employee.checkin, title: "Check-in mingguan", text: "8 pertanyaan, 3 menit. Tutup setiap Minggu." },
-  { href: ROUTES.employee.insight, title: "Lihat insight-mu", text: "Tidur vs mood, dan hasil check-in. Hanya untukmu." },
-  { href: ROUTES.employee.exercises, title: "Latihan singkat", text: "Napas dan relaksasi dengan panduan, 3 sampai 8 menit." },
-  { href: ROUTES.employee.calm, title: "Saat cemas atau panik", text: "Napas terpandu, grounding 5-4-3-2-1, dan jalur bantuan." },
-  { href: ROUTES.employee.counseling, title: "Konseling bila perlu", text: "Pesan sesi psikolog secara rahasia." },
 ];
 
 /* Calm-down tool for moments of anxiety or panic. */

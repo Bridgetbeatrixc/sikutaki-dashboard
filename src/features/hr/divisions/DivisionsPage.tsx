@@ -10,20 +10,25 @@ import { Icon } from "@/components/ui/Icon";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Sparkline } from "@/components/charts/Sparkline";
 import { cn } from "@/lib/cn";
-import { areaById, groupOf, isHidden, NOW, PART, respondents, teamStatus, TEAMS, wellbeing, wellbeingSeries, type Status } from "@/lib/data";
-import { focusAreas } from "@/lib/focus";
+import { areaById, groupOf, type Status } from "@/lib/catalog";
 import { ROUTES } from "@/lib/paths";
+import { useHr } from "../HrProvider";
 
 type SortKey = "status" | "name" | "wb" | "part";
 const STATUS_RANK: Record<Status, number> = { perhatian: 0, waspada: 1, baik: 2 };
 
 export function DivisionsPage() {
   const router = useRouter();
+  const { m } = useHr();
   const [sort, setSort] = useState<SortKey>("status");
-  const rows = TEAMS.map((t) => ({
-    t, hidden: isHidden(t.id), st: teamStatus(t.id), wb: wellbeing(t.id), wbD: wellbeing(t.id) - wellbeing(t.id, NOW - 2),
-    part: PART[t.id][NOW], focus: isHidden(t.id) ? undefined : focusAreas(t.id)[0],
-  })).sort((a, b) => {
+  const { NOW, TEAMS } = m;
+  const rows = TEAMS.map((t) => {
+    const wb = m.wellbeing(t.id) ?? 0, prev = m.wellbeing(t.id, NOW - 2);
+    return {
+      t, hidden: m.isHidden(t.id), st: m.teamStatus(t.id), wb, wbD: prev === null ? null : wb - prev,
+      part: m.part(t.id), focus: m.isHidden(t.id) ? undefined : m.focusAreas(t.id)[0],
+    };
+  }).sort((a, b) => {
     if (a.hidden !== b.hidden) return a.hidden ? 1 : -1;
     if (sort === "name") return a.t.name.localeCompare(b.t.name);
     if (sort === "wb") return a.wb - b.wb;
@@ -57,13 +62,13 @@ export function DivisionsPage() {
                 className="grid cursor-pointer grid-cols-2 gap-x-3 gap-y-1.5 border-t border-line px-3.5 py-3 first:border-t-0 hover:bg-[#f7f8fb] md:table-row md:p-0 [&>td]:md:px-4 [&>td]:md:py-3">
                 <td className="col-span-2">
                   <Link href={ROUTES.hr.division(r.t.id)} onClick={(e) => e.stopPropagation()} className="font-bold hover:underline">{r.t.name}</Link>
-                  <small className="block text-muted">{r.t.size} orang · {respondents(r.t.id)} menjawab</small>
+                  <small className="block text-muted">{r.t.size} orang · {m.respondents(r.t.id)} menjawab</small>
                 </td>
-                {r.hidden ? <td colSpan={5} className="col-span-2"><HiddenNote /></td> : (
+                {r.hidden ? <td colSpan={5} className="col-span-2"><HiddenNote text={`Disembunyikan, kurang dari ${m.MIN_GROUP} orang`} /></td> : (
                   <>
                     <td><StatusChip s={r.st} small /></td>
-                    <td><b className="num">{r.wb}</b> <Delta d={r.wbD} goodWhenUp /></td>
-                    <td><Sparkline values={wellbeingSeries(r.t.id)} color={r.st === "perhatian" ? "#B03424" : "#0A66F5"} /></td>
+                    <td><b className="num">{r.wb}</b> {r.wbD !== null && <Delta d={r.wbD} goodWhenUp />}</td>
+                    <td><Sparkline values={m.wellbeingSeries(r.t.id)} color={r.st === "perhatian" ? "#B03424" : "#0A66F5"} /></td>
                     <td><b className="num">{r.part}%</b>{r.part < 60 && <Tag tone="warn" className="ml-1.5">data terbatas</Tag>}</td>
                     <td className="col-span-2">{r.focus
                       ? <span className="inline-flex items-center gap-1.5"><Dot color={groupOf(areaById(r.focus.area).group).color} />{areaById(r.focus.area).name} <span className="num text-muted">{r.focus.v}</span></span>
@@ -76,7 +81,8 @@ export function DivisionsPage() {
           </tbody>
         </table>
       </div>
-      <Fine>Divisi dengan kurang dari 5 penjawab tetap tercantum, tetapi skornya disembunyikan untuk melindungi identitas.</Fine>
+      {TEAMS.length === 0 && <p className="text-muted">Belum ada divisi. Tambahkan di Pengaturan.</p>}
+      <Fine>Divisi dengan kurang dari {m.MIN_GROUP} penjawab tetap tercantum, tetapi skornya disembunyikan untuk melindungi identitas.</Fine>
     </>
   );
 }

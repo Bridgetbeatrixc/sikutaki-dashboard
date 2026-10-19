@@ -15,10 +15,10 @@ export function TryIt() {
         </div>
         <div className="grid justify-items-start gap-3 px-[22px] py-[26px] sm:px-9 sm:py-[34px]">
           <h3 className="text-[32px] font-semibold text-white">Coba langsung</h3>
-          <p className="max-w-[520px] text-white/85">Buka dashboard HR dan aplikasi karyawan dengan data contoh. Keduanya saling terhubung.</p>
+          <p className="max-w-[520px] text-white/85">Buka demo dashboard HR dan aplikasi karyawan dengan perusahaan contoh, tanpa membuat akun.</p>
           <div className="flex flex-wrap gap-3">
-            <Link href={ROUTES.hr.root} className={pillButton("white")}>Dashboard HR</Link>
-            <Link href={ROUTES.employee.root} className="inline-flex items-center rounded-full border border-white/60 px-[22px] py-[11px] text-[15px] font-medium text-white hover:bg-white/10">
+            <Link href={ROUTES.demo.hr} className={pillButton("white")}>Dashboard HR</Link>
+            <Link href={ROUTES.demo.employee} className="inline-flex items-center rounded-full border border-white/60 px-[22px] py-[11px] text-[15px] font-medium text-white hover:bg-white/10">
               Aplikasi karyawan
             </Link>
           </div>

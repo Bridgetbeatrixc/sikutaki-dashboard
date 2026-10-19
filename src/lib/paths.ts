@@ -9,10 +9,13 @@ export const ROUTES = {
   terms: "/syarat",
   login: "/masuk",
   signup: "/daftar",
+  /** Employee sign-up with the company's invite code. */
+  join: (code?: string) => (code ? `/gabung?kode=${encodeURIComponent(code)}` : "/gabung"),
+  reset: (token: string) => `/reset/${token}`,
+  /** Opens the demo company without an account. */
+  demo: { hr: "/demo/hr", employee: "/demo/karyawan" },
   hr: {
     root: "/dashboard-hr",
-    /** Opens the dashboard as a brand-new organisation (used right after sign-up). */
-    newOrg: "/dashboard-hr?mode=baru",
     divisions: "/dashboard-hr/divisi",
     division: (id: string) => `/dashboard-hr/divisi/${id}`,
     areas: "/dashboard-hr/area",
@@ -20,6 +23,7 @@ export const ROUTES = {
     checkin: "/dashboard-hr/check-in",
     reports: "/dashboard-hr/laporan",
     settings: "/dashboard-hr/pengaturan",
+    settingsTab: (tab: string) => `/dashboard-hr/pengaturan?tab=${tab}`,
   },
   employee: {
     root: "/dashboard-employee",
@@ -30,6 +34,7 @@ export const ROUTES = {
     exercise: (id: string) => `/dashboard-employee/latihan/${id}`,
     counseling: "/dashboard-employee/konseling",
     calm: "/dashboard-employee/tenang",
+    profile: "/dashboard-employee/profil",
   },
 } as const;
 

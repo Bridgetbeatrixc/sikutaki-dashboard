@@ -4,7 +4,8 @@ import { useEffect, useRef, useState } from "react";
 const GRID = "#E8E8ED", AXIS = "#86868B", INK = "#1D1D1F";
 const axisText = "fill-[#86868b] font-mono text-[10.5px]";
 
-export type Series = { name: string; color: string; values: number[] };
+/** Values may contain null for weeks without a result; the line breaks there. */
+export type Series = { name: string; color: string; values: (number | null)[] };
 export type Marker = { i: number; label: string };
 
 /** Single-axis line chart with a crosshair tooltip, dashed event markers and direct end labels. */
@@ -65,21 +66,34 @@ export function LineChart({ series, labels, min = 0, max = 100, height = 220, ma
           </g>
         ))}
         {series.map((s) => {
-          const d = s.values.map((v, i) => `${i ? "L" : "M"}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join("");
-          const last = s.values.length - 1;
+          const pts = s.values.map((v, i) => (v === null ? null : { i, v }));
+          let d = "", gap = true;
+          for (const p of pts) {
+            if (!p) { gap = true; continue; }
+            d += `${gap ? "M" : "L"}${x(p.i).toFixed(1)},${y(p.v).toFixed(1)}`;
+            gap = false;
+          }
+          const known = pts.filter((p): p is { i: number; v: number } => p !== null);
+          const first = known[0], lastP = known[known.length - 1];
+          const contiguous = known.length === (lastP ? lastP.i - first.i + 1 : 0);
+          if (!lastP) return null;
           return (
             <g key={s.name}>
-              {series.length === 1 && <path d={`${d}L${x(last)},${y(min)}L${x(0)},${y(min)}Z`} fill={s.color} opacity={0.07} />}
+              {series.length === 1 && contiguous && known.length > 1 && <path d={`${d}L${x(lastP.i)},${y(min)}L${x(first.i)},${y(min)}Z`} fill={s.color} opacity={0.07} />}
               <path d={d} fill="none" stroke={s.color} strokeWidth={2} strokeLinejoin="round" strokeLinecap="round" />
-              <circle cx={x(last)} cy={y(s.values[last])} r={4.5} fill={s.color} stroke="#fff" strokeWidth={2} />
-              {series.length > 1 && <text x={x(last) + 9} y={y(s.values[last]) + 4} className="fill-ink text-[11.5px] font-semibold">{s.name}</text>}
+              {/* Isolated points (no neighbour to draw a line to) still need a mark. */}
+              {known.filter((p) => s.values[p.i - 1] == null && s.values[p.i + 1] == null && p !== lastP).map((p) => (
+                <circle key={p.i} cx={x(p.i)} cy={y(p.v)} r={3.5} fill={s.color} />
+              ))}
+              <circle cx={x(lastP.i)} cy={y(lastP.v)} r={4.5} fill={s.color} stroke="#fff" strokeWidth={2} />
+              {series.length > 1 && <text x={x(lastP.i) + 9} y={y(lastP.v) + 4} className="fill-ink text-[11.5px] font-semibold">{s.name}</text>}
             </g>
           );
         })}
         {hover !== null && (
           <g pointerEvents="none">
             <line x1={x(hover)} x2={x(hover)} y1={pt} y2={H - pb} stroke={INK} strokeOpacity={0.25} />
-            {series.map((s) => <circle key={s.name} cx={x(hover)} cy={y(s.values[hover])} r={4.5} fill={s.color} stroke="#fff" strokeWidth={2} />)}
+            {series.map((s) => s.values[hover] !== null && <circle key={s.name} cx={x(hover)} cy={y(s.values[hover]!)} r={4.5} fill={s.color} stroke="#fff" strokeWidth={2} />)}
           </g>
         )}
         <rect x={pl} y={0} width={W - pl - pr} height={H} fill="transparent" onMouseMove={onMove} onMouseLeave={() => setHover(null)} />
@@ -99,7 +113,7 @@ export function LineChart({ series, labels, min = 0, max = 100, height = 220, ma
           {series.map((s) => (
             <span key={s.name} className="flex items-center gap-1.5">
               <i className="size-2 rounded-full" style={{ background: s.color }} />{s.name}
-              <em className="num ml-auto pl-3 font-bold not-italic">{s.values[hover]}{unit}</em>
+              <em className="num ml-auto pl-3 font-bold not-italic">{s.values[hover] === null ? "-" : `${String(s.values[hover]).replace(".", ",")}${unit}`}</em>
             </span>
           ))}
         </div>
@@ -109,7 +123,9 @@ export function LineChart({ series, labels, min = 0, max = 100, height = 220, ma
 }
 
 /** Y range that fits the data with headroom, snapped to 5s. */
-export function fitRange(values: number[], pad = 8): { min: number; max: number } {
+export function fitRange(all: (number | null)[], pad = 8): { min: number; max: number } {
+  const values = all.filter((v): v is number => v !== null);
+  if (values.length === 0) return { min: 0, max: 100 };
   const lo = Math.min(...values), hi = Math.max(...values);
   const min = Math.max(0, Math.floor((lo - pad) / 5) * 5);
   return { min, max: Math.min(100, min + Math.ceil((hi + pad - min) / 20) * 20) };
