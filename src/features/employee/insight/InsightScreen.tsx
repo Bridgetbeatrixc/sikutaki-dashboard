@@ -6,6 +6,8 @@ import { decimal, hours, listJoin } from "@/lib/format";
 import { cn } from "@/lib/cn";
 import { ROUTES } from "@/lib/paths";
 import { addDays, DAYS_SHORT, shortDate, weekday } from "@/lib/week";
+import { dangerSigns } from "@/lib/practice";
+import { Recommendation } from "../components/Recommendation";
 import { appButton, Lead, Note, Screen, Section, Title } from "../components/ui";
 import { level, MOODS, moodById, type Level } from "../content";
 import { useEmployee } from "../EmployeeProvider";
@@ -108,6 +110,7 @@ function CheckinResult() {
         </div>
       )}
       {shown && <CheckinLevels answers={shown.answers} />}
+      {shown && <Recommendation answers={shown.answers} className="mt-3" />}
     </section>
   );
 }
@@ -129,7 +132,7 @@ function CheckinLevels({ answers }: { answers: Record<string, number> }) {
         })}
       </ul>
       <Note>Ini gambaran dari jawabanmu, bukan diagnosis.</Note>
-      {high.length > 0 && (
+      {high.length > 0 && !dangerSigns(answers) && (
         <div className="mt-3 grid gap-1 rounded-2xl border border-[#f3ddb8] bg-[#fff7ec] px-3.5 py-3 text-[13px] leading-normal text-[#5b4520]">
           <b>{listJoin(high.map((a) => areaById(a).name))} sedang tinggi</b>
           <span>Bicara dengan psikolog bisa membantu. Sesinya rahasia dan perusahaan tidak tahu namamu.</span>

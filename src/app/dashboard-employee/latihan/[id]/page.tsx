@@ -1,24 +1,24 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { EXERCISES, exerciseById } from "@/features/employee/content";
-import { PlayerScreen } from "@/features/employee/exercises/PlayerScreen";
+import { PracticeScreen } from "@/features/employee/exercises/PracticeScreen";
+import { PRACTICES, practiceById } from "@/lib/practice";
 
-type Props = { params: Promise<{ id: string }> };
+type Props = { params: Promise<{ id: string }>; searchParams: Promise<{ program?: string; slot?: string }> };
 
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return EXERCISES.map((e) => ({ id: e.id }));
+  return PRACTICES.map((p) => ({ id: p.id }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
-  return { title: exerciseById(id)?.title ?? "Latihan" };
+  return { title: practiceById(id)?.title ?? "Latihan" };
 }
 
-export default async function Page({ params }: Props) {
+export default async function Page({ params, searchParams }: Props) {
   const { id } = await params;
-  const exercise = exerciseById(id);
-  if (!exercise) notFound();
-  return <PlayerScreen exercise={exercise} />;
+  const { program, slot } = await searchParams;
+  if (!practiceById(id)) notFound();
+  return <PracticeScreen key={`${id}-${program ?? ""}`} id={id} program={program} slot={slot} />;
 }

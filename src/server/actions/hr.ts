@@ -3,6 +3,7 @@ import { randomInt } from "node:crypto";
 import { revalidatePath } from "next/cache";
 import { AREAS, MIN_GROUP, NOTE_TYPES, type NoteType } from "@/lib/catalog";
 import { ROUTES } from "@/lib/paths";
+import { practitionerType } from "@/lib/practice";
 import { createResetToken, newId, requireRole } from "../auth";
 import { db } from "../db";
 
@@ -125,15 +126,56 @@ function normalizeContact(raw: string): string | null {
   } catch { return null; }
 }
 
-export async function addPartner(p: { name: string; focus: string; schedule: string; contact: string }): Promise<Result> {
+export type PartnerInput = {
+  name: string; focus: string; schedule: string; contact: string;
+  kind: "psikolog" | "komplementer";
+  practice: string; credential: string;
+  /** HR confirms it checked the credential and that the practitioner agreed to the code of ethics. */
+  confirmed: boolean;
+};
+
+export async function addPartner(p: PartnerInput): Promise<Result> {
   const user = await hr();
   if (!user) return DEMO;
-  if (p.name.trim().length < 2) return fail("Isi nama psikolog atau layanan.");
+  if (p.name.trim().length < 2) return fail("Isi nama psikolog, praktisi, atau layanan.");
   const contact = normalizeContact(p.contact);
   if (!contact) return fail("Kontak harus berupa tautan (https://...), nomor WhatsApp, atau alamat email.");
+  const kind = p.kind === "komplementer" ? "komplementer" : "psikolog";
+  let practice = "", credential = "", verifiedBy = "";
+  if (kind === "komplementer") {
+    if (!practitionerType(p.practice)) return fail("Pilih jenis praktik.");
+    if (p.credential.trim().length < 3) return fail("Isi kredensial praktisi, misalnya nomor sertifikat atau surat terdaftar.");
+    if (!p.confirmed) return fail("Centang konfirmasi bahwa kredensial sudah diperiksa dan praktisi menyetujui kode etik.");
+    practice = p.practice;
+    credential = p.credential.trim().slice(0, 200);
+    verifiedBy = user.name;
+  }
   const sql = await db();
-  await sql`insert into partners (id, company_id, name, focus, schedule, contact)
-    values (${newId()}, ${user.companyId}, ${p.name.trim().slice(0, 120)}, ${p.focus.trim().slice(0, 120)}, ${p.schedule.trim().slice(0, 120)}, ${contact})`;
+  await sql`insert into partners (id, company_id, name, focus, schedule, contact, kind, practice, credential, verified_by)
+    values (${newId()}, ${user.companyId}, ${p.name.trim().slice(0, 120)}, ${p.focus.trim().slice(0, 120)}, ${p.schedule.trim().slice(0, 120)}, ${contact},
+      ${kind}, ${practice}, ${credential}, ${verifiedBy})`;
+  refresh();
+  return { ok: true };
+}
+
+/** After HR has reviewed the reports, the practitioner is shown to employees again. */
+export async function reactivatePartner(id: string): Promise<Result> {
+  const user = await hr();
+  if (!user) return DEMO;
+  const sql = await db();
+  await sql.begin(async (tx) => {
+    await tx`update partners set suspended = false where id = ${id} and company_id = ${user.companyId}`;
+    await tx`update partner_reports set reviewed = true where partner_id = ${id} and company_id = ${user.companyId}`;
+  });
+  refresh();
+  return { ok: true };
+}
+
+export async function saveEnergySection(on: boolean): Promise<Result> {
+  const user = await hr();
+  if (!user) return DEMO;
+  const sql = await db();
+  await sql`update companies set energy_section = ${on} where id = ${user.companyId}`;
   refresh();
   return { ok: true };
 }

@@ -8,7 +8,9 @@ import { Icon } from "@/components/ui/Icon";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { cn } from "@/lib/cn";
 import { MIN_GROUP } from "@/lib/catalog";
-import { addPartner, addTeam, createResetLink, deleteTeam, removePartner, renameTeam, savePrivacy, updateCompany } from "@/server/actions/hr";
+import type { Dataset } from "@/lib/model";
+import { ENERGY_NOTE, PRACTITIONER_CODE, PRACTITIONER_TYPES, practitionerType } from "@/lib/practice";
+import { addPartner, addTeam, createResetLink, deleteTeam, reactivatePartner, removePartner, renameTeam, saveEnergySection, savePrivacy, updateCompany, type PartnerInput } from "@/server/actions/hr";
 import { useHr } from "../HrProvider";
 import { InviteCard } from "../InviteCard";
 
@@ -16,7 +18,7 @@ const TABS = [
   { id: "organisasi", label: "Organisasi" },
   { id: "karyawan", label: "Karyawan" },
   { id: "privasi", label: "Privasi" },
-  { id: "mitra", label: "Psikolog mitra" },
+  { id: "mitra", label: "Mitra" },
 ] as const;
 type Tab = (typeof TABS)[number]["id"];
 const INDUSTRIES = ["Jasa", "Manufaktur", "Teknologi", "Keuangan", "Ritel", "Kesehatan", "Pendidikan", "Pemerintahan", "Lainnya"];
@@ -80,6 +82,7 @@ function OrganisationTab() {
           <Button type="submit" disabled={pending} className="justify-self-start sm:col-span-2">Simpan</Button>
         </form>
       </Card>
+      <EnergyCard />
       <Card title={`Divisi (${m.TEAMS.length})`} sub="Karyawan memilih divisinya saat bergabung, dan bisa mengubahnya di profil.">
         <ul className="grid">
           {m.TEAMS.map((t) => (
@@ -183,45 +186,129 @@ function PrivacyTab() {
   );
 }
 
+/** Company switch for the Latihan Energi section of the employee app. */
+function EnergyCard() {
+  const { m, run, pending } = useHr();
+  const on = m.COMPANY.energySection;
+  return (
+    <Card title="Latihan Energi di aplikasi karyawan" sub="Suara mangkuk bernyanyi dan gong, merasakan energi tubuh, dan latihan prana mandiri.">
+      <p className="text-[13.5px] leading-normal text-body">
+        Bila diizinkan, setiap karyawan tetap memilih sendiri untuk menyalakannya di profil. Setiap latihan diberi label: <i>{ENERGY_NOTE}</i>
+      </p>
+      <div className="flex flex-wrap items-center gap-3">
+        <span className={cn("rounded-full px-2.5 py-1 text-xs font-bold", on ? "bg-mint text-brand" : "bg-soft text-muted")}>{on ? "Diizinkan" : "Tidak ditampilkan"}</span>
+        <Button size="sm" variant="soft" disabled={pending}
+          onClick={() => run(() => saveEnergySection(!on), on ? "Latihan Energi disembunyikan dari aplikasi karyawan" : "Latihan Energi diizinkan")}>
+          {on ? "Sembunyikan untuk semua karyawan" : "Izinkan"}
+        </Button>
+      </div>
+    </Card>
+  );
+}
+
+const EMPTY_PARTNER: PartnerInput = { name: "", focus: "", schedule: "", contact: "", kind: "psikolog", practice: "", credential: "", confirmed: false };
+
 function PartnersTab() {
   const { m, run, pending } = useHr();
-  const [form, setForm] = useState({ name: "", focus: "", schedule: "", contact: "" });
-  const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) => setForm({ ...form, [k]: e.target.value });
+  const [form, setForm] = useState(EMPTY_PARTNER);
+  const set = (k: "name" | "focus" | "schedule" | "contact" | "practice" | "credential") =>
+    (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => setForm({ ...form, [k]: e.target.value });
+  const comp = form.kind === "komplementer";
   const add = async (e: FormEvent) => {
     e.preventDefault();
-    const res = await run(() => addPartner(form), "Psikolog mitra ditambahkan");
-    if (res.ok) setForm({ name: "", focus: "", schedule: "", contact: "" });
+    const res = await run(() => addPartner(form), comp ? "Praktisi komplementer ditambahkan" : "Psikolog mitra ditambahkan");
+    if (res.ok) setForm(EMPTY_PARTNER);
   };
+  const psych = m.ds.partners.filter((p) => p.kind === "psikolog");
+  const compl = m.ds.partners.filter((p) => p.kind === "komplementer");
+  const r = m.ds.referrals;
+  const complMonth = r.complementary[r.complementary.length - 1] ?? 0;
+
   return (
     <div className="grid items-start gap-[18px] xl:grid-cols-2">
-      <Card title="Psikolog mitra" sub="Karyawan menghubungi mitra langsung dari aplikasi. HR hanya melihat jumlah karyawan yang menghubungi per bulan, tanpa nama.">
-        {m.ds.partners.length === 0 ? <p className="text-muted">Belum ada mitra. Selama belum ada, aplikasi karyawan menampilkan layanan Healing119 dari Kemenkes.</p> : (
-          <ul className="grid gap-2.5">
-            {m.ds.partners.map((p) => (
-              <li key={p.id} className="grid grid-cols-[44px_1fr_auto] items-center gap-3">
-                <span className="inline-flex size-11 items-center justify-center rounded-xl bg-mint text-brand"><Icon name="chat" size={18} /></span>
-                <div className="min-w-0"><b>{p.name}</b><small className="block truncate text-muted">{[p.focus, p.schedule].filter(Boolean).join(" · ")}</small></div>
-                {m.live && (
-                  <button type="button" aria-label={`Hapus ${p.name}`} className="p-1 text-muted hover:text-bad"
-                    onClick={() => window.confirm(`Hapus ${p.name} dari daftar mitra?`) && run(() => removePartner(p.id), "Mitra dihapus")}>
-                    <Icon name="trash" size={15} />
-                  </button>
-                )}
-              </li>
-            ))}
-          </ul>
-        )}
-      </Card>
+      <div className="grid min-w-0 gap-[18px]">
+        <Card title="Psikolog mitra" sub="Karyawan menghubungi mitra langsung dari aplikasi. HR hanya melihat jumlah karyawan yang menghubungi per bulan, tanpa nama.">
+          {psych.length === 0 ? <p className="text-muted">Belum ada psikolog mitra. Selama belum ada, aplikasi karyawan menampilkan layanan Healing119 dari Kemenkes.</p> : (
+            <ul className="grid gap-2.5">{psych.map((p) => <PartnerRow key={p.id} p={p} />)}</ul>
+          )}
+        </Card>
+        <Card title="Praktisi komplementer" sub="Bukan dokter atau psikolog. Tampil di aplikasi karyawan di bawah psikolog, dengan label dan kode etik.">
+          {compl.length === 0 ? <p className="text-muted">Belum ada praktisi komplementer.</p> : (
+            <ul className="grid gap-2.5">{compl.map((p) => <PartnerRow key={p.id} p={p} />)}</ul>
+          )}
+          <Fine>Bulan ini <b className="num">{complMonth}</b> karyawan menghubungi praktisi komplementer. Hanya jumlah, tanpa nama.</Fine>
+        </Card>
+      </div>
       <Card title="Tambah mitra">
         <form onSubmit={add} className="grid gap-2.5">
-          <label className="grid gap-1"><span className={labelClass}>Nama psikolog atau layanan</span><input required className={inputClass} value={form.name} onChange={set("name")} placeholder="Nama, M.Psi., Psikolog" /></label>
-          <label className="grid gap-1"><span className={labelClass}>Keahlian</span><input className={inputClass} value={form.focus} onChange={set("focus")} placeholder="Stres kerja, kecemasan" /></label>
+          <div role="radiogroup" aria-label="Jenis mitra" className="grid grid-cols-2 gap-2">
+            {([["psikolog", "Psikolog"], ["komplementer", "Praktisi komplementer"]] as const).map(([k, label]) => (
+              <button key={k} type="button" role="radio" aria-checked={form.kind === k} onClick={() => setForm({ ...form, kind: k })}
+                className={cn("rounded-xl border-[1.5px] px-3 py-2.5 text-[13.5px] font-semibold", form.kind === k ? "border-brand bg-mint text-brand" : "border-line text-body")}>
+                {label}
+              </button>
+            ))}
+          </div>
+          {comp && (
+            <label className="grid gap-1"><span className={labelClass}>Jenis praktik</span>
+              <select required className={inputClass} value={form.practice} onChange={set("practice")}>
+                <option value="" disabled>Pilih jenis praktik</option>
+                {PRACTITIONER_TYPES.map((t) => <option key={t.id} value={t.id}>{t.label}</option>)}
+              </select>
+            </label>
+          )}
+          <label className="grid gap-1"><span className={labelClass}>{comp ? "Nama praktisi" : "Nama psikolog atau layanan"}</span><input required className={inputClass} value={form.name} onChange={set("name")} placeholder={comp ? "Nama lengkap" : "Nama, M.Psi., Psikolog"} /></label>
+          <label className="grid gap-1"><span className={labelClass}>{comp ? "Yang ditawarkan" : "Keahlian"}</span><input className={inputClass} value={form.focus} onChange={set("focus")} placeholder={comp ? "Kelas chikung untuk relaksasi" : "Stres kerja, kecemasan"} /></label>
           <label className="grid gap-1"><span className={labelClass}>Jadwal</span><input className={inputClass} value={form.schedule} onChange={set("schedule")} placeholder="Sen-Jum, 18.00-21.00" /></label>
           <label className="grid gap-1"><span className={labelClass}>Kontak untuk karyawan</span><input required className={inputClass} value={form.contact} onChange={set("contact")} placeholder="Tautan booking, nomor WhatsApp, atau email" /></label>
+          {comp && (
+            <>
+              <label className="grid gap-1"><span className={labelClass}>Kredensial</span>
+                <input required className={inputClass} value={form.credential} onChange={set("credential")} placeholder="Nomor sertifikat, lembaga, atau surat terdaftar" />
+                {form.practice && <small className="text-muted">Syarat: {practitionerType(form.practice)?.requirement}.</small>}
+              </label>
+              <div className="grid gap-1.5 rounded-xl bg-soft p-3 text-[13px]">
+                <b>Kode etik praktisi</b>
+                <ul className="grid list-disc gap-0.5 pl-5 text-body">{PRACTITIONER_CODE.map((c) => <li key={c}>{c}</li>)}</ul>
+              </div>
+              <label className="flex items-start gap-2 text-[13px] text-body">
+                <input type="checkbox" className="mt-0.5 accent-brand" checked={form.confirmed} onChange={(e) => setForm({ ...form, confirmed: e.target.checked })} />
+                Saya sudah memeriksa kredensial ini dan praktisi menyetujui kode etik di atas.
+              </label>
+            </>
+          )}
           <Fine>Karyawan menghubungi mitra langsung lewat kontak ini. Percakapan dan jadwal sesi tidak melewati Sikutaki.</Fine>
-          <Button type="submit" disabled={pending} className="justify-self-start"><Icon name="plus" size={15} />Tambah mitra</Button>
+          <Button type="submit" disabled={pending || (comp && !form.confirmed)} className="justify-self-start"><Icon name="plus" size={15} />Tambah mitra</Button>
         </form>
       </Card>
     </div>
+  );
+}
+
+function PartnerRow({ p }: { p: Dataset["partners"][number] }) {
+  const { m, run } = useHr();
+  const type = practitionerType(p.practice);
+  return (
+    <li className="grid grid-cols-[44px_1fr_auto] items-center gap-3">
+      <span className="inline-flex size-11 items-center justify-center rounded-xl bg-mint text-brand"><Icon name={p.kind === "psikolog" ? "chat" : "lotus"} size={18} /></span>
+      <div className="min-w-0">
+        <b>{p.name}</b>
+        {p.suspended && <span className="ml-2 rounded-full bg-bad-bg px-2 py-0.5 text-[11px] font-bold text-bad">Ditangguhkan</span>}
+        <small className="block truncate text-muted">{[type?.label, p.focus, p.schedule].filter(Boolean).join(" · ")}</small>
+        {p.kind === "komplementer" && <small className="block truncate text-muted">Kredensial: {p.credential}{p.verifiedBy && `, diperiksa ${p.verifiedBy}`}</small>}
+        {p.suspended && (
+          <small className="block text-bad">
+            {p.reports} laporan dari karyawan. Tidak tampil di aplikasi sampai ditinjau.{" "}
+            {m.live && <button type="button" className="font-semibold underline" onClick={() => window.confirm(`Tampilkan lagi ${p.name}? Pastikan laporan sudah ditinjau.`) && run(() => reactivatePartner(p.id), "Praktisi ditampilkan lagi")}>Sudah ditinjau, tampilkan lagi</button>}
+          </small>
+        )}
+      </div>
+      {m.live && (
+        <button type="button" aria-label={`Hapus ${p.name}`} className="p-1 text-muted hover:text-bad"
+          onClick={() => window.confirm(`Hapus ${p.name} dari daftar mitra?`) && run(() => removePartner(p.id), "Mitra dihapus")}>
+          <Icon name="trash" size={15} />
+        </button>
+      )}
+    </li>
   );
 }

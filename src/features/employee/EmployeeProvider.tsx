@@ -1,6 +1,7 @@
 "use client";
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { followUpArea } from "@/lib/catalog";
+import { programById, programState, type Slot } from "@/lib/practice";
 import * as actions from "@/server/actions/employee";
 import type { EmployeeData } from "@/server/employee";
 
@@ -17,6 +18,14 @@ type EmployeeContextValue = EmployeeData & {
   saveDaily: (mood: number, sleep: number) => Promise<boolean>;
   submitCheckin: (answers: Record<string, number>, causes: string[]) => Promise<boolean>;
   markDone: (exercise: string) => void;
+  /** Starts a program; resolves to the enrollment id, or null when it could not start. */
+  startProgram: (programId: string) => Promise<string | null>;
+  pauseProgram: (enrollmentId: string, paused: boolean) => Promise<boolean>;
+  stopProgram: (enrollmentId: string) => Promise<boolean>;
+  /** Records today's session of a program slot (and the practice as done). */
+  completeSession: (enrollmentId: string, slot: Slot, practice: string) => Promise<boolean>;
+  setEnergyOptIn: (on: boolean) => Promise<boolean>;
+  reportPartner: (partnerId: string, reason: string) => Promise<boolean>;
   toastMsg: string | null;
   toast: (msg: string) => void;
 };
@@ -64,11 +73,78 @@ export function EmployeeProvider({ data, children }: { data: EmployeeData; child
     void send(() => actions.markExercise(exercise));
   }, [send]);
 
+  const startProgram = useCallback(async (programId: string) => {
+    const p = programById(programId);
+    if (!p) return null;
+    if (state.programs.some((e) => programById(e.program)?.kind === p.kind)) {
+      toast(`Kamu sudah punya program ${p.kind} yang berjalan. Hentikan dulu bila ingin menggantinya.`);
+      return null;
+    }
+    let id: string | undefined = `demo-${programId}`;
+    if (data.live) {
+      try {
+        const res = await actions.startProgram(programId);
+        if (!res.ok) { toast(res.error); return null; }
+        id = res.id;
+      } catch {
+        toast("Gagal tersambung ke server. Periksa koneksi lalu coba lagi.");
+        return null;
+      }
+    }
+    if (!id) return null;
+    const enrollment = { id, program: programId, startedOn: state.today, paused: false, sessions: [] };
+    setState((s) => ({ ...s, programs: [...s.programs, enrollment] }));
+    return id;
+  }, [data.live, state.programs, state.today, toast]);
+
+  const pauseProgram = useCallback(async (id: string, paused: boolean) => {
+    const ok = await send(() => actions.setProgramPaused(id, paused));
+    if (ok) setState((s) => ({ ...s, programs: s.programs.map((e) => (e.id === id ? { ...e, paused } : e)) }));
+    return ok;
+  }, [send]);
+
+  const stopProgram = useCallback(async (id: string) => {
+    const ok = await send(() => actions.stopProgram(id));
+    if (ok) setState((s) => ({ ...s, programs: s.programs.filter((e) => e.id !== id) }));
+    return ok;
+  }, [send]);
+
+  const completeSession = useCallback(async (id: string, slot: Slot, practice: string) => {
+    const ok = await send(() => actions.completeSession(id, slot));
+    if (!ok) return false;
+    setState((s) => {
+      const mood = s.days.find((d) => d.day === s.today)?.mood ?? null;
+      const programs = s.programs.flatMap((e) => {
+        if (e.id !== id) return [e];
+        const next = { ...e, paused: false, sessions: [...e.sessions.filter((x) => !(x.day === s.today && x.slot === slot)), { day: s.today, slot }] };
+        if (programState(next, s.today, mood).finished) {
+          toast(`Program ${programById(e.program)?.title} selesai. Terima kasih sudah konsisten.`);
+          return [];
+        }
+        return [next];
+      });
+      return { ...s, programs, done: s.done.includes(practice) ? s.done : [...s.done, practice] };
+    });
+    return true;
+  }, [send, toast]);
+
+  const setEnergyOptIn = useCallback(async (on: boolean) => {
+    const ok = await send(() => actions.setEnergyOptIn(on));
+    if (ok) setState((s) => ({ ...s, energy: { ...s.energy, optIn: on } }));
+    return ok;
+  }, [send]);
+
+  const reportPartner = useCallback(async (partnerId: string, reason: string) => {
+    const ok = await send(() => actions.reportPartner(partnerId, reason));
+    if (ok) setState((s) => ({ ...s, partners: s.partners.filter((p) => p.id !== partnerId) }));
+    return ok;
+  }, [send]);
+
   const value = useMemo(() => ({
     ...state,
     todayLog: state.days.find((d) => d.day === state.today) ?? null,
-    saveDaily, submitCheckin, markDone, toastMsg, toast,
-  }), [state, saveDaily, submitCheckin, markDone, toastMsg, toast]);
+    saveDaily, submitCheckin, markDone, startProgram, pauseProgram, stopProgram, completeSession, setEnergyOptIn, reportPartner, toastMsg, toast,
+  }), [state, saveDaily, submitCheckin, markDone, startProgram, pauseProgram, stopProgram, completeSession, setEnergyOptIn, reportPartner, toastMsg, toast]);
   return <EmployeeContext.Provider value={value}>{children}</EmployeeContext.Provider>;
 }
 

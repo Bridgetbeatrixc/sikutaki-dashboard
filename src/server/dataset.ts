@@ -55,8 +55,8 @@ function aggregate(rows: CheckinRow[], daily: DailyRow[], size: number, minGroup
 
 export async function buildDataset(companyId: string, userId: string): Promise<Dataset> {
   const sql = await db();
-  const [company] = await sql<{ name: string; industry: string; invite_code: string; min_group: number; retention_months: number; checkin_day: number; reminder: boolean }[]>`
-    select name, industry, invite_code, min_group, retention_months, checkin_day, reminder from companies where id = ${companyId}`;
+  const [company] = await sql<{ name: string; industry: string; invite_code: string; min_group: number; retention_months: number; checkin_day: number; reminder: boolean; energy_section: boolean }[]>`
+    select name, industry, invite_code, min_group, retention_months, checkin_day, reminder, energy_section from companies where id = ${companyId}`;
   if (!company) throw new Error("Perusahaan tidak ditemukan");
 
   // Answers older than the company's retention period are deleted, not just hidden.
@@ -100,8 +100,9 @@ export async function buildDataset(companyId: string, userId: string): Promise<D
 
   // Counselling contacts: a count per month, never who.
   const months = [3, 2, 1, 0].map((k) => { const d = new Date(); d.setUTCDate(1); d.setUTCMonth(d.getUTCMonth() - k); return d.toISOString().slice(0, 10); });
-  const refRows = await sql<{ month: string; n: number }[]>`
-    select month, count(*)::int as n from referrals where company_id = ${companyId} and month >= ${monthKey(months[0])} group by month`;
+  const refRows = await sql<{ month: string; kind: string; n: number }[]>`
+    select month, kind, count(*)::int as n from referrals where company_id = ${companyId} and month >= ${monthKey(months[0])} group by month, kind`;
+  const refCount = (m: string, kind: string) => refRows.find((r) => r.month === monthKey(m) && r.kind === kind)?.n ?? 0;
 
   const noteRows = await sql<{ id: string; team_id: string; area: string | null; type: NoteType; text: string; by_name: string; day: string }[]>`
     select id, team_id, area, type, text, by_name, to_char(created_at at time zone 'Asia/Jakarta', 'YYYY-MM-DD') as day
@@ -111,8 +112,10 @@ export async function buildDataset(companyId: string, userId: string): Promise<D
     type: n.type, area: n.area ?? undefined, text: n.text, by: n.by_name,
   }));
 
-  const partners = await sql<{ id: string; name: string; focus: string; schedule: string; contact: string }[]>`
-    select id, name, focus, schedule, contact from partners where company_id = ${companyId} order by created_at`;
+  const partners = await sql<Dataset["partners"]>`
+    select p.id, p.name, p.focus, p.schedule, p.contact, p.kind, p.practice, p.credential, p.verified_by as "verifiedBy", p.suspended,
+      (select count(*)::int from partner_reports r where r.partner_id = p.id and not r.reviewed) as reports
+    from partners p where p.company_id = ${companyId} order by p.created_at`;
 
   const cur = weeks[weeks.length - 1];
   const [{ opened }] = await sql<{ opened: number }[]>`
@@ -123,6 +126,7 @@ export async function buildDataset(companyId: string, userId: string): Promise<D
     company: {
       name: company.name, employees, industry: company.industry, inviteCode: company.invite_code,
       minGroup: min, retentionMonths: company.retention_months, checkinDay: company.checkin_day, reminder: company.reminder,
+      energySection: company.energy_section,
     },
     user: user ?? { name: "HR", email: "" },
     teams: teams.map((t) => ({ id: t.id, name: t.name, size: t.size })),
@@ -131,7 +135,8 @@ export async function buildDataset(companyId: string, userId: string): Promise<D
     scopes,
     referrals: {
       months: months.map((m) => MONTHS[Number(m.slice(5, 7)) - 1]),
-      byMonth: months.map((m) => refRows.find((r) => r.month === monthKey(m))?.n ?? 0),
+      byMonth: months.map((m) => refCount(m, "psikolog")),
+      complementary: months.map((m) => refCount(m, "komplementer")),
     },
     notes,
     partners: partners.map((p) => ({ ...p })),

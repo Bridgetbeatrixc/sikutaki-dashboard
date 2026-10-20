@@ -158,18 +158,19 @@ export function sampleDataset(): Dataset {
   const completed = scopes.all[NOW].resp;
   return {
     live: false,
-    company: { name: "PT Contoh Nusantara", employees, industry: "Jasa", inviteCode: "DEMO", minGroup: MIN_GROUP, retentionMonths: 24, checkinDay: 3, reminder: true },
+    company: { name: "PT Contoh Nusantara", employees, industry: "Jasa", inviteCode: "DEMO", minGroup: MIN_GROUP, retentionMonths: 24, checkinDay: 3, reminder: true, energySection: true },
     user: { name: "Rina A.", email: "rina@contoh.co.id" },
     teams: TEAMS,
     weeks: WEEKS,
     rotation0: 0,
     scopes,
-    referrals: { months: ["Jul", "Agu", "Sep", "Okt"], byMonth: [3, 4, 5, 7] },
+    referrals: { months: ["Jul", "Agu", "Sep", "Okt"], byMonth: [3, 4, 5, 7], complementary: [0, 1, 2, 2] },
     notes: NOTES,
     partners: [
-      { id: "p1", name: "Dita Anggraini, M.Psi., Psikolog", focus: "Stres kerja, burnout", schedule: "Sen-Jum, 18.00-21.00", contact: "" },
-      { id: "p2", name: "Raka Pratama, M.Psi., Psikolog", focus: "Kecemasan, serangan panik", schedule: "Sel & Kam, 19.00-21.00", contact: "" },
-      { id: "p3", name: "Layanan Konseling Mitra (24 jam)", focus: "Krisis dan rujukan lanjutan", schedule: "Setiap hari", contact: "" },
+      { id: "p1", name: "Dita Anggraini, M.Psi., Psikolog", focus: "Stres kerja, burnout", schedule: "Sen-Jum, 18.00-21.00", contact: "", kind: "psikolog", practice: "", credential: "", verifiedBy: "", suspended: false, reports: 0 },
+      { id: "p2", name: "Raka Pratama, M.Psi., Psikolog", focus: "Kecemasan, serangan panik", schedule: "Sel & Kam, 19.00-21.00", contact: "", kind: "psikolog", practice: "", credential: "", verifiedBy: "", suspended: false, reports: 0 },
+      { id: "p4", name: "Contoh Instruktur Chikung", focus: "Gerak dan napas untuk relaksasi", schedule: "Sab, 07.00-09.00", contact: "", kind: "komplementer", practice: "chikung", credential: "Sertifikat instruktur (contoh)", verifiedBy: "Rina A.", suspended: false, reports: 0 },
+      { id: "p3", name: "Layanan Konseling Mitra (24 jam)", focus: "Krisis dan rujukan lanjutan", schedule: "Setiap hari", contact: "", kind: "psikolog", practice: "", credential: "", verifiedBy: "", suspended: false, reports: 0 },
     ],
     funnel: { registered: employees, opened: Math.round(completed * 1.1), completed },
   };

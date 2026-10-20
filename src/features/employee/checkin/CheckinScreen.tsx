@@ -8,6 +8,7 @@ import { ROUTES } from "@/lib/paths";
 import { DAYS_LONG } from "@/lib/week";
 import { openCheckin } from "@/server/actions/employee";
 import { MoodFace } from "../components/MoodFace";
+import { Recommendation } from "../components/Recommendation";
 import { appButton, Chip, FlowBar } from "../components/ui";
 import { CHECKIN_QUESTIONS, MOODS } from "../content";
 import { useEmployee } from "../EmployeeProvider";
@@ -26,7 +27,7 @@ export function CheckinScreen() {
   // Counts toward "opened" in HR's funnel (a number only).
   useEffect(() => { if (live && week.open && !week.answers) void openCheckin(); }, [live, week.open, week.answers]);
 
-  if (week.answers) return <CheckinDone />;
+  if (week.answers) return <CheckinDone answers={week.answers} />;
   if (!week.open) return <CheckinClosed opensOn={week.opensOn} />;
 
   const causeArea = followUpArea(areas, answers);
@@ -112,7 +113,7 @@ function CheckinClosed({ opensOn }: { opensOn: number }) {
   );
 }
 
-function CheckinDone() {
+function CheckinDone({ answers }: { answers: Record<string, number> }) {
   return (
     <div className="grid min-h-full content-start justify-items-center gap-3.5 px-[22px] pt-14 pb-6 text-center md:px-8">
       <MoodFace mood={MOODS[3]} size={96} className="rounded-3xl shadow-[0_12px_26px_rgba(0,0,0,.15)]" />
@@ -120,6 +121,7 @@ function CheckinDone() {
       <p className="text-sm leading-relaxed text-muted">
         Terima kasih. Hasil pribadimu sudah ada di Insight. Jawabanmu masuk ke rata-rata divisi tanpa nama, dan HR baru melihatnya bila ada minimal 5 penjawab. Check-in berikutnya dibuka minggu depan.
       </p>
+      <Recommendation answers={answers} className="w-full" />
       <Link href={ROUTES.employee.insight} className={appButton()}>Lihat hasilku</Link>
       <Link href={ROUTES.employee.home} className="text-sm text-muted">Kembali ke beranda</Link>
     </div>

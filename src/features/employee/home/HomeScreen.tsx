@@ -5,12 +5,13 @@ import { Icon } from "@/components/ui/Icon";
 import { hours } from "@/lib/format";
 import { cn } from "@/lib/cn";
 import { ROUTES } from "@/lib/paths";
-import { DAYS_LONG, longDate, weekday } from "@/lib/week";
+import { lowMoodStreak, practiceById, programById, programState, SLOT_LABEL, suggestedPractices } from "@/lib/practice";
+import { addDays, DAYS_LONG, longDate, weekday } from "@/lib/week";
 import { CalmCard } from "../calm/CalmCard";
 import { Blob, type BlobIcon } from "../components/Blob";
 import { MoodFace, MoodTile } from "../components/MoodFace";
 import { appButton, CheckCircle, linkText, StartPill } from "../components/ui";
-import { exerciseById, MOODS, moodById, suggestedExercises } from "../content";
+import { MOODS, moodById } from "../content";
 import { useEmployee } from "../EmployeeProvider";
 
 const MIN_SLEEP = 3;
@@ -27,6 +28,7 @@ export function HomeScreen() {
         </div>
         <CheckinReminder />
         <DailyNote />
+        <LowMoodSuggestion />
         <CalmCard className="mt-4" />
       </div>
       <TodayPlan />
@@ -119,17 +121,46 @@ function StepButton({ label, onClick, children }: { label: string; onClick: () =
   );
 }
 
+/** Three heavy days in a row: suggest the 7-day stress program, and a psychologist. */
+function LowMoodSuggestion() {
+  const { days, today, programs } = useEmployee();
+  if (!lowMoodStreak(days, [addDays(today, -2), addDays(today, -1), today])) return null;
+  if (programs.some((e) => programById(e.program)?.kind === "praktis")) return null;
+  return (
+    <div className="mt-3.5 grid gap-1.5 rounded-[18px] border border-[#f3ddb8] bg-[#fff7ec] px-3.5 py-3 text-[13.5px] leading-normal text-[#5b4520]">
+      <b>Tiga hari terakhir terasa berat</b>
+      <span>Program 7 Hari Lepas Stres bisa membantu, sekitar 10 menit pagi dan malam. Bila terasa makin berat, <Link href={ROUTES.employee.counseling} className="font-bold underline underline-offset-2">bicara dengan psikolog</Link>.</span>
+      <Link href={ROUTES.employee.program("stres-7")} className={appButton("primary", true)}>Lihat program</Link>
+    </div>
+  );
+}
+
 type PlanItem = { id: string; title: string; meta: string; icon: BlobIcon; hue: string; done: boolean; href?: string };
 
 /** Today's three steps on a green timeline. */
 function TodayPlan() {
-  const { todayLog, week, done } = useEmployee();
-  const exercise = exerciseById(suggestedExercises(todayLog?.mood ?? null, todayLog?.sleep ?? 7)[0])!;
+  const { todayLog, week, done, programs, today } = useEmployee();
+  const mood = todayLog?.mood ?? null;
+  // Today's program sessions; without a running program, one suggested practice.
+  const sessions: PlanItem[] = programs.filter((e) => !e.paused).flatMap((e) => {
+    const st = programState(e, today, mood);
+    if (st.finished) return [];
+    return st.slots.map((s) => {
+      const p = practiceById(s.practice)!;
+      return {
+        id: `${e.id}-${s.slot}`, title: p.title, meta: `${st.program.title} · ${SLOT_LABEL[s.slot]} · ${p.minutes} menit`,
+        icon: "lungs" as const, hue: "#C27510", done: s.done, href: ROUTES.employee.session(p.id, e.id, s.slot),
+      };
+    });
+  });
+  const exercise = practiceById(suggestedPractices(mood, todayLog?.sleep ?? 7)[0])!;
   const checkinMeta = week.answers ? "Terkirim minggu ini" : week.open ? `${week.areas.length} pertanyaan · 3 menit · tutup Minggu` : `Dibuka ${DAYS_LONG[week.opensOn]}`;
   const plan: PlanItem[] = [
     { id: "mood", title: "Catat mood harian", meta: "10 detik", icon: "smile", hue: "#3B8EF7", done: Boolean(todayLog) },
     { id: "checkin", title: "Check-in mingguan", meta: checkinMeta, icon: "clip", hue: "#2F8F9D", done: Boolean(week.answers), href: week.open ? ROUTES.employee.checkin : undefined },
-    { id: exercise.id, title: `Latihan ${exercise.title}`, meta: exercise.minutes, icon: "lungs", hue: "#C27510", done: done.includes(exercise.id), href: ROUTES.employee.exercise(exercise.id) },
+    ...(sessions.length ? sessions : [
+      { id: exercise.id, title: `Latihan ${exercise.title}`, meta: `${exercise.minutes} menit`, icon: "lungs" as const, hue: "#C27510", done: done.includes(exercise.id), href: ROUTES.employee.exercise(exercise.id) },
+    ]),
   ];
   const count = plan.filter((p) => p.done).length;
 

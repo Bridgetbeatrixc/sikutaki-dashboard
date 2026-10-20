@@ -3,6 +3,7 @@ import { useState, type FormEvent } from "react";
 import { Icon } from "@/components/ui/Icon";
 import { cn } from "@/lib/cn";
 import { logout } from "@/server/actions/auth";
+import { ENERGY_NOTE } from "@/lib/practice";
 import { changePassword, deleteAccount, updateProfile } from "@/server/actions/employee";
 import { appButton, Lead, Note, Screen, Section, Title } from "../components/ui";
 import { useEmployee } from "../EmployeeProvider";
@@ -64,6 +65,8 @@ export function ProfileScreen() {
         <button type="submit" disabled={busy === "profile"} className={appButton("primary", true)}>Simpan</button>
       </form>
 
+      <EnergySetting />
+
       <Section>Ganti kata sandi</Section>
       <form onSubmit={savePassword} className="grid gap-3">
         <label className={label}>Kata sandi lama<input name="current" type="password" autoComplete="current-password" className={input} required /></label>
@@ -84,5 +87,29 @@ export function ProfileScreen() {
         </form>
       </details>
     </Screen>
+  );
+}
+
+/** Turns the optional Latihan Energi section on or off, when the company allows it. */
+function EnergySetting() {
+  const { energy, setEnergyOptIn, toast } = useEmployee();
+  const [busy, setBusy] = useState(false);
+  if (!energy.allowed) return null;
+  const flip = async () => {
+    setBusy(true);
+    if (await setEnergyOptIn(!energy.optIn)) toast(energy.optIn ? "Latihan Energi disembunyikan" : "Latihan Energi ditampilkan");
+    setBusy(false);
+  };
+  return (
+    <>
+      <Section>Latihan Energi</Section>
+      <div className="grid grid-cols-[1fr_auto] items-center gap-3 rounded-2xl bg-soft p-3.5">
+        <p className="text-[13px] leading-normal text-body">Tampilkan suara mangkuk dan gong, merasakan energi tubuh, dan latihan prana di halaman Latihan. {ENERGY_NOTE}</p>
+        <button type="button" role="switch" aria-checked={energy.optIn} aria-label="Tampilkan Latihan Energi" disabled={busy} onClick={flip}
+          className={cn("relative h-7 w-12 rounded-full transition-colors", energy.optIn ? "bg-app" : "bg-[#c3cbd6]")}>
+          <i className={cn("absolute top-1 size-5 rounded-full bg-white transition-[left]", energy.optIn ? "left-6" : "left-1")} />
+        </button>
+      </div>
+    </>
   );
 }

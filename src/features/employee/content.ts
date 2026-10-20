@@ -68,35 +68,6 @@ export type Level = "lo" | "mid" | "hi";
 export const level = (v: number): { label: string; tone: Level } =>
   v >= 3 ? { label: "Tinggi", tone: "hi" } : v === 2 ? { label: "Sedang", tone: "mid" } : { label: "Rendah", tone: "lo" };
 
-/* ---------- Exercises ---------- */
-
-export type Exercise = {
-  id: string;
-  title: string;
-  minutes: string;
-  feeling: string;
-  steps: [label: string, seconds: number][];
-  /** Three soft colors for the card artwork. */
-  colors: [string, string, string];
-};
-
-export const EXERCISES: Exercise[] = [
-  { id: "napas", title: "Napas 4-7-8", minutes: "3 menit", feeling: "Tenang", steps: [["Tarik napas", 4], ["Tahan", 7], ["Buang perlahan", 8]], colors: ["#E0F2F1", "#8FCFC4", "#E6F1E8"] },
-  { id: "jeda", title: "Jeda Tenang", minutes: "5 menit", feeling: "Tenang", steps: [["Tarik napas", 4], ["Buang perlahan", 6]], colors: ["#E3F4EC", "#A9DCC5", "#F3EBD9"] },
-  { id: "tidur", title: "Siap Tidur", minutes: "8 menit", feeling: "Bisa tidur", steps: [["Tarik napas", 4], ["Lemaskan bahu", 4], ["Buang perlahan", 8]], colors: ["#DDEDE7", "#6FB49A", "#CFE6DA"] },
-  { id: "fokus", title: "Fokus Sebelum Kerja", minutes: "4 menit", feeling: "Fokus", steps: [["Tarik napas", 4], ["Tahan", 4], ["Buang", 4], ["Tahan", 4]], colors: ["#EAF5DF", "#B6D98F", "#E3F4EC"] },
-  { id: "lepas", title: "Lepas Beban Pikiran", minutes: "6 menit", feeling: "Lega", steps: [["Tarik napas", 5], ["Buang dan lepaskan", 7]], colors: ["#F6EDE4", "#E7C2A5", "#E3F2EA"] },
-];
-export const FEELINGS = ["Semua", "Tenang", "Bisa tidur", "Fokus", "Lega"];
-export const exerciseById = (id: string) => EXERCISES.find((e) => e.id === id);
-
-/** Exercises suggested from today's mood and sleep. */
-export function suggestedExercises(mood: number | null, sleep: number) {
-  if (mood && mood <= 2) return ["napas", "lepas"];
-  if (sleep < 6.5) return ["tidur", "napas"];
-  return ["fokus", "jeda"];
-}
-
 /* ---------- Navigation ---------- */
 
 export const APP_NAV: { href: string; label: string; icon: IconName }[] = [

@@ -84,13 +84,48 @@ create table if not exists partners (
   contact text not null,
   created_at timestamptz not null default now()
 );
+alter table partners add column if not exists kind text not null default 'psikolog';
+alter table partners add column if not exists practice text not null default '';
+alter table partners add column if not exists credential text not null default '';
+alter table partners add column if not exists verified_by text not null default '';
+alter table partners add column if not exists suspended boolean not null default false;
+create table if not exists partner_reports (
+  id text primary key,
+  partner_id text not null references partners(id) on delete cascade,
+  company_id text not null references companies(id) on delete cascade,
+  reason text not null,
+  reviewed boolean not null default false,
+  created_at timestamptz not null default now()
+);
 create table if not exists referrals (
   company_id text not null references companies(id) on delete cascade,
   user_id text references users(id) on delete set null,
   month text not null,
   created_at timestamptz not null default now()
 );
-create unique index if not exists referrals_once on referrals (company_id, user_id, month);
+alter table referrals add column if not exists kind text not null default 'psikolog';
+drop index if exists referrals_once;
+create unique index if not exists referrals_once_kind on referrals (company_id, user_id, month, kind);
+alter table companies add column if not exists energy_section boolean not null default true;
+alter table users add column if not exists energy_opt_in boolean not null default false;
+create table if not exists program_enrollments (
+  id text primary key,
+  user_id text not null references users(id) on delete cascade,
+  program text not null,
+  kind text not null check (kind in ('praktis', 'rutin')),
+  started_on date not null,
+  paused boolean not null default false,
+  ended_on date,
+  completed boolean not null default false
+);
+create unique index if not exists program_one_active on program_enrollments (user_id, kind) where ended_on is null;
+create table if not exists program_sessions (
+  enrollment_id text not null references program_enrollments(id) on delete cascade,
+  day date not null,
+  slot text not null,
+  practice text not null,
+  primary key (enrollment_id, day, slot)
+);
 create table if not exists notes (
   id text primary key,
   company_id text not null references companies(id) on delete cascade,

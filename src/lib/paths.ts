@@ -32,6 +32,9 @@ export const ROUTES = {
     insight: "/dashboard-employee/insight",
     exercises: "/dashboard-employee/latihan",
     exercise: (id: string) => `/dashboard-employee/latihan/${id}`,
+    /** A practice opened as today's session of a program. */
+    session: (practice: string, enrollment: string, slot: string) => `/dashboard-employee/latihan/${practice}?program=${encodeURIComponent(enrollment)}&slot=${slot}`,
+    program: (id: string) => `/dashboard-employee/latihan/program/${id}`,
     counseling: "/dashboard-employee/konseling",
     calm: "/dashboard-employee/tenang",
     profile: "/dashboard-employee/profil",

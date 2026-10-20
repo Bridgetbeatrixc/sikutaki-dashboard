@@ -24,7 +24,12 @@ export type WeekAgg = {
 
 export type DataTeam = { id: string; name: string; size: number; lead?: string };
 export type Note = { id: string; team: string; week: number; date: string; type: NoteType; area?: string; text: string; by: string };
-export type Partner = { id: string; name: string; focus: string; schedule: string; contact: string };
+export type Partner = {
+  id: string; name: string; focus: string; schedule: string; contact: string;
+  kind: "psikolog" | "komplementer";
+  /** Complementary practitioners: practice type, credential HR recorded, who confirmed it, and open reports. */
+  practice: string; credential: string; verifiedBy: string; suspended: boolean; reports: number;
+};
 
 export type Dataset = {
   /** False for the demo company. */
@@ -32,6 +37,8 @@ export type Dataset = {
   company: {
     name: string; employees: number; industry: string; inviteCode: string;
     minGroup: number; retentionMonths: number; checkinDay: number; reminder: boolean;
+    /** Latihan Energi in the employee app (each employee still turns it on). */
+    energySection: boolean;
   };
   user: { name: string; email: string };
   teams: DataTeam[];
@@ -41,8 +48,8 @@ export type Dataset = {
   rotation0: number;
   /** "all" and every team id. */
   scopes: Record<string, WeekAgg[]>;
-  /** Counselling contacts per month, a count only. */
-  referrals: { months: string[]; byMonth: number[] };
+  /** Psychologist contacts per month, a count only; complementary practitioner contacts in `complementary`. */
+  referrals: { months: string[]; byMonth: number[]; complementary: number[] };
   notes: Note[];
   partners: Partner[];
   /** This week's check-in funnel for the whole company. */

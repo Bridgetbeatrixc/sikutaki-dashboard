@@ -3,8 +3,9 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { causesFor, checkinAreas, followUpArea, SCALE_MAX } from "@/lib/catalog";
 import { ROUTES } from "@/lib/paths";
+import { PRACTICE_IDS, programById, programState, REPORT_REASONS, type Slot } from "@/lib/practice";
 import { monthKey, rotationIndex, today } from "@/lib/week";
-import { endSession, hashPassword, requireRole, verifyPassword } from "../auth";
+import { endSession, hashPassword, newId, requireRole, verifyPassword } from "../auth";
 import { db } from "../db";
 import { checkinWindow } from "../employee";
 
@@ -12,7 +13,8 @@ import { checkinWindow } from "../employee";
 
 export type Result = { ok: true } | { ok: false; error: string };
 const fail = (error: string): Result => ({ ok: false, error });
-const EXERCISES = ["napas", "jeda", "tidur", "fokus", "lepas", "tenang"];
+/** Practices plus "tenang", the calm-down tool. */
+const EXERCISES = [...PRACTICE_IDS, "tenang"];
 
 async function employee() {
   const s = await requireRole("employee");
@@ -79,14 +81,109 @@ export async function markExercise(id: string): Promise<Result> {
   return { ok: true };
 }
 
-/** HR sees one count per month: each employee counts at most once a month. */
+/** HR sees one count per month and kind (psychologist or complementary): each employee counts at most once. */
 export async function recordReferral(partnerId: string): Promise<Result> {
   const user = await employee();
   if (!user) return { ok: true };
   const sql = await db();
-  const [p] = await sql`select 1 from partners where id = ${partnerId} and company_id = ${user.companyId}`;
-  if (!p) return fail("Psikolog tidak ditemukan.");
-  await sql`insert into referrals (company_id, user_id, month) values (${user.companyId}, ${user.id}, ${monthKey(today())}) on conflict do nothing`;
+  const [p] = await sql<{ kind: string }[]>`select kind from partners where id = ${partnerId} and company_id = ${user.companyId} and not suspended`;
+  if (!p) return fail("Mitra tidak ditemukan.");
+  await sql`insert into referrals (company_id, user_id, month, kind) values (${user.companyId}, ${user.id}, ${monthKey(today())}, ${p.kind}) on conflict do nothing`;
+  return { ok: true };
+}
+
+/** A report suspends a complementary practitioner until HR has looked at it. The reporter is not stored. */
+export async function reportPartner(partnerId: string, reason: string): Promise<Result> {
+  const user = await employee();
+  if (!REPORT_REASONS.includes(reason)) return fail("Pilih alasan laporan.");
+  if (!user) return { ok: true };
+  const sql = await db();
+  const [p] = await sql`select 1 from partners where id = ${partnerId} and company_id = ${user.companyId} and kind = 'komplementer'`;
+  if (!p) return fail("Praktisi tidak ditemukan.");
+  await sql.begin(async (tx) => {
+    await tx`insert into partner_reports (id, partner_id, company_id, reason) values (${newId()}, ${partnerId}, ${user.companyId}, ${reason})`;
+    await tx`update partners set suspended = true where id = ${partnerId}`;
+  });
+  refresh();
+  return { ok: true };
+}
+
+/* ---------- Programs ---------- */
+
+/** Starts a program. One practical and one routine program can run at the same time. Returns the enrollment id. */
+export async function startProgram(programId: string): Promise<Result & { id?: string }> {
+  const user = await employee();
+  const p = programById(programId);
+  if (!p) return fail("Program tidak dikenal.");
+  if (!user) return { ok: true, id: `demo-${programId}` };
+  const sql = await db();
+  const [active] = await sql`select 1 from program_enrollments where user_id = ${user.id} and kind = ${p.kind} and ended_on is null`;
+  if (active) return fail(`Kamu sudah punya program ${p.kind} yang berjalan. Hentikan dulu bila ingin menggantinya.`);
+  const id = newId();
+  await sql`insert into program_enrollments (id, user_id, program, kind, started_on) values (${id}, ${user.id}, ${p.id}, ${p.kind}, ${today()})`;
+  refresh();
+  return { ok: true, id };
+}
+
+export async function setProgramPaused(enrollmentId: string, paused: boolean): Promise<Result> {
+  const user = await employee();
+  if (!user) return { ok: true };
+  const sql = await db();
+  await sql`update program_enrollments set paused = ${paused} where id = ${enrollmentId} and user_id = ${user.id} and ended_on is null`;
+  refresh();
+  return { ok: true };
+}
+
+/** Ends a program; it counts as completed when every program day had a session. */
+export async function stopProgram(enrollmentId: string): Promise<Result> {
+  const user = await employee();
+  if (!user) return { ok: true };
+  const sql = await db();
+  const [e] = await sql<{ program: string; days: number }[]>`
+    select e.program, (select count(distinct s.day)::int from program_sessions s where s.enrollment_id = e.id) as days
+    from program_enrollments e where e.id = ${enrollmentId} and e.user_id = ${user.id} and e.ended_on is null`;
+  if (!e) return fail("Program tidak ditemukan.");
+  const completed = e.days >= (programById(e.program)?.days ?? Infinity);
+  await sql`update program_enrollments set ended_on = ${today()}, completed = ${completed}, paused = false where id = ${enrollmentId}`;
+  refresh();
+  return { ok: true };
+}
+
+/** Marks today's session of a program slot done, logs the practice, and closes the program after its last day. */
+export async function completeSession(enrollmentId: string, slot: Slot): Promise<Result> {
+  const user = await employee();
+  if (!user) return { ok: true };
+  const sql = await db();
+  const [e] = await sql<{ program: string; started_on: string; paused: boolean }[]>`
+    select program, to_char(started_on, 'YYYY-MM-DD') as started_on, paused from program_enrollments
+    where id = ${enrollmentId} and user_id = ${user.id} and ended_on is null`;
+  if (!e) return fail("Program tidak ditemukan.");
+  const p = programById(e.program);
+  if (!p || !p.slots.includes(slot)) return fail("Sesi tidak dikenal.");
+  const day = today();
+  const done = await sql<{ day: string; slot: Slot }[]>`select to_char(day, 'YYYY-MM-DD') as day, slot from program_sessions where enrollment_id = ${enrollmentId}`;
+  const [mood] = await sql<{ mood: number }[]>`select mood from daily_logs where user_id = ${user.id} and day = ${day}`;
+  const enrollment = { id: enrollmentId, program: e.program, startedOn: e.started_on, paused: e.paused, sessions: done };
+  const practice = programState(enrollment, day, mood?.mood ?? null).slots.find((x) => x.slot === slot)!.practice;
+  await sql`insert into program_sessions (enrollment_id, day, slot, practice) values (${enrollmentId}, ${day}, ${slot}, ${practice}) on conflict do nothing`;
+  await sql`insert into exercise_logs (user_id, day, exercise) values (${user.id}, ${day}, ${practice}) on conflict do nothing`;
+  // Completing a session also resumes a paused program.
+  const after = programState({ ...enrollment, paused: false, sessions: [...done, { day, slot }] }, day, mood?.mood ?? null);
+  if (after.finished) {
+    await sql`update program_enrollments set ended_on = ${day}, completed = true, paused = false where id = ${enrollmentId}`;
+  } else if (e.paused) {
+    await sql`update program_enrollments set paused = false where id = ${enrollmentId}`;
+  }
+  refresh();
+  return { ok: true };
+}
+
+export async function setEnergyOptIn(on: boolean): Promise<Result> {
+  const user = await employee();
+  if (!user) return { ok: true };
+  const sql = await db();
+  await sql`update users set energy_opt_in = ${on} where id = ${user.id}`;
+  refresh();
   return { ok: true };
 }
 
