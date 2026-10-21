@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { PracticeScreen } from "@/features/employee/exercises/PracticeScreen";
 import { PRACTICES, practiceById } from "@/lib/practice";
 
-type Props = { params: Promise<{ id: string }>; searchParams: Promise<{ program?: string; slot?: string }> };
+type Props = { params: Promise<{ id: string }> };
 
 export const dynamicParams = false;
 
@@ -16,9 +17,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return { title: practiceById(id)?.title ?? "Latihan" };
 }
 
-export default async function Page({ params, searchParams }: Props) {
+/** The program session (?program=&slot=) is read in the browser, so the page stays static. */
+export default async function Page({ params }: Props) {
   const { id } = await params;
-  const { program, slot } = await searchParams;
   if (!practiceById(id)) notFound();
-  return <PracticeScreen key={`${id}-${program ?? ""}`} id={id} program={program} slot={slot} />;
+  return <Suspense><PracticeScreen id={id} /></Suspense>;
 }

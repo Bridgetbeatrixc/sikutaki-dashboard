@@ -1,5 +1,10 @@
+"use client";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { Icon, type IconName } from "@/components/ui/Icon";
-import { completeOnboarding } from "@/server/actions/employee";
+import { ROUTES } from "@/lib/paths";
+import { completeOnboarding } from "@/store/account";
+import { loadEmployeeLocal } from "@/store/employee";
 import { MoodFace } from "../components/MoodFace";
 import { appButton, Lead } from "../components/ui";
 import { MOODS } from "../content";
@@ -11,6 +16,10 @@ const PROMISES: { icon: IconName; title: string; text: string }[] = [
 ];
 
 export function WelcomeScreen() {
+  const router = useRouter();
+  // Shown once: after "Mulai" the app opens on Beranda.
+  useEffect(() => { if (loadEmployeeLocal().onboarded) router.replace(ROUTES.employee.home); }, [router]);
+  const start = () => { completeOnboarding(); router.push(ROUTES.employee.home); };
   return (
     <div className="grid gap-1 px-6 pt-[18px] pb-7">
       <div className="mt-5 mb-1.5 flex items-end justify-center gap-2.5">
@@ -31,9 +40,7 @@ export function WelcomeScreen() {
           </li>
         ))}
       </ul>
-      <form action={completeOnboarding}>
-        <button type="submit" className={appButton()}>Mulai</button>
-      </form>
+      <button type="button" className={appButton()} onClick={start}>Mulai</button>
     </div>
   );
 }

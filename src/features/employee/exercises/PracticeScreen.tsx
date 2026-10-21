@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { ROUTES } from "@/lib/paths";
 import { practiceById, programById, type Slot } from "@/lib/practice";
 import { appButton, FlowBar, Lead } from "../components/ui";
@@ -11,7 +12,9 @@ import { SilenceScreen } from "./SilenceScreen";
 import { SoundPlayer } from "./SoundPlayer";
 
 /** Opens a practice with the player for its kind; a program session counts only for a running program. */
-export function PracticeScreen({ id, program, slot }: { id: string; program?: string; slot?: string }) {
+export function PracticeScreen({ id }: { id: string }) {
+  const params = useSearchParams();
+  const program = params.get("program") ?? undefined, slot = params.get("slot") ?? undefined;
   const { programs, energy } = useEmployee();
   const practice = practiceById(id)!;
   const enrollment = programs.find((e) => e.id === program);

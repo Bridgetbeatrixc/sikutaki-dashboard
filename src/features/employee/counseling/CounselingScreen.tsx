@@ -4,7 +4,7 @@ import { Icon } from "@/components/ui/Icon";
 import { cn } from "@/lib/cn";
 import { dangerSigns, lowMoodStreak, PRACTITIONER_CODE, practitionerType, REPORT_REASONS } from "@/lib/practice";
 import { addDays } from "@/lib/week";
-import { recordReferral } from "@/server/actions/employee";
+import { recordReferral } from "@/store/employee-actions";
 import { appButton, Lead, Note, Screen, Section, Title } from "../components/ui";
 import { useEmployee } from "../EmployeeProvider";
 

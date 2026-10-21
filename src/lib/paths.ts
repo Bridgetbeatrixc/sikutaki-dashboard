@@ -11,9 +11,9 @@ export const ROUTES = {
   signup: "/daftar",
   /** Employee sign-up with the company's invite code. */
   join: (code?: string) => (code ? `/gabung?kode=${encodeURIComponent(code)}` : "/gabung"),
-  reset: (token: string) => `/reset/${token}`,
-  /** Opens the demo company without an account. */
-  demo: { hr: "/demo/hr", employee: "/demo/karyawan" },
+
+  /** The frontend-only version has no demo mode: both apps open directly with data kept in the browser. */
+  demo: { hr: "/dashboard-hr", employee: "/dashboard-employee" },
   hr: {
     root: "/dashboard-hr",
     divisions: "/dashboard-hr/divisi",
@@ -38,6 +38,7 @@ export const ROUTES = {
     counseling: "/dashboard-employee/konseling",
     calm: "/dashboard-employee/tenang",
     profile: "/dashboard-employee/profil",
+    assistant: "/dashboard-employee/asisten",
   },
 } as const;
 

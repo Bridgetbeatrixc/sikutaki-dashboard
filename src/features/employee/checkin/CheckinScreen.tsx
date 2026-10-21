@@ -6,7 +6,7 @@ import { areaById, CAUSES, causesFor, followUpArea, followUpQuestion, SCALE } fr
 import { cn } from "@/lib/cn";
 import { ROUTES } from "@/lib/paths";
 import { DAYS_LONG } from "@/lib/week";
-import { openCheckin } from "@/server/actions/employee";
+import { openCheckin } from "@/store/employee-actions";
 import { MoodFace } from "../components/MoodFace";
 import { Recommendation } from "../components/Recommendation";
 import { appButton, Chip, FlowBar } from "../components/ui";

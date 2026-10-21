@@ -6,7 +6,6 @@ import { Logo } from "@/components/Logo";
 import { Icon } from "@/components/ui/Icon";
 import { cn } from "@/lib/cn";
 import { ROUTES } from "@/lib/paths";
-import { logout } from "@/server/actions/auth";
 import { APP_NAV } from "./content";
 import { useEmployee } from "./EmployeeProvider";
 
@@ -24,18 +23,13 @@ const isFullScreen = (path: string) =>
  */
 export function EmployeeShell({ children }: { children: ReactNode }) {
   const path = strip(usePathname());
-  const { live, user, company, toastMsg } = useEmployee();
+  const { user, company, toastMsg } = useEmployee();
   const full = isFullScreen(path);
   const initial = user.name.trim()[0]?.toUpperCase() ?? "?";
 
   return (
     <div className="min-h-dvh bg-white text-ink md:bg-[radial-gradient(1200px_700px_at_15%_10%,#dde4f1,transparent_60%),radial-gradient(900px_600px_at_90%_90%,#eef3df,transparent_60%),#f1f3f7]">
-      {!live && (
-        <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 bg-ink px-4 py-2 text-center text-[13px] text-white">
-          <span>Demo aplikasi karyawan. Isian tidak disimpan.</span>
-          <form action={logout}><button type="submit" className="font-semibold underline underline-offset-2">Keluar dari demo</button></form>
-        </div>
-      )}
+      <div className="bg-ink px-4 py-2 text-center text-[13px] text-white">Versi frontend: datamu tersimpan di peramban ini saja.</div>
 
       <header className={cn("sticky top-0 z-20 border-b border-line bg-white/90 backdrop-blur md:border-0 md:bg-white/70", full && "hidden md:block")}>
         <div className="mx-auto flex h-14 max-w-[1080px] items-center gap-3 px-4 md:h-16 md:px-6">
@@ -91,7 +85,7 @@ export function EmployeeShell({ children }: { children: ReactNode }) {
 function BottomNav({ path }: { path: string }) {
   return (
     <nav aria-label="Menu aplikasi"
-      className="fixed inset-x-2.5 bottom-[calc(10px+env(safe-area-inset-bottom))] z-30 grid h-[70px] grid-cols-4 items-center rounded-3xl bg-[#f2f4f8]/90 px-1 shadow-[0_10px_30px_rgba(0,0,0,.15),inset_0_0_0_1px_rgba(255,255,255,.8)] backdrop-blur-md md:hidden">
+      className="fixed inset-x-2.5 bottom-[calc(10px+env(safe-area-inset-bottom))] z-30 grid h-[70px] grid-cols-5 items-center rounded-3xl bg-[#f2f4f8]/90 px-1 shadow-[0_10px_30px_rgba(0,0,0,.15),inset_0_0_0_1px_rgba(255,255,255,.8)] backdrop-blur-md md:hidden">
       {APP_NAV.map((item) => {
         const on = within(path, item.href);
         return (

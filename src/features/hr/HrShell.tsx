@@ -7,7 +7,7 @@ import { Icon } from "@/components/ui/Icon";
 import { inputClass } from "@/components/ui/form";
 import { cn } from "@/lib/cn";
 import { ROUTES } from "@/lib/paths";
-import { logout } from "@/server/actions/auth";
+import { logout } from "@/store/account";
 import { useHr } from "./HrProvider";
 import { HR_NAV, isActive, NAV_DIVIDER_AFTER } from "./nav";
 import { EmptyState } from "./EmptyState";
@@ -15,7 +15,7 @@ import { EmptyState } from "./EmptyState";
 /** Frame of the HR dashboard: sidebar (icon rail on tablet), sticky top bar, bottom bar on phones. */
 export function HrShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  const { m, demo, scope, setScope, toastMsg } = useHr();
+  const { m, scope, setScope, toastMsg } = useHr();
   const [bellOpen, setBellOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
   const [userOpen, setUserOpen] = useState(false);
@@ -52,12 +52,9 @@ export function HrShell({ children }: { children: ReactNode }) {
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        {demo && (
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 bg-ink print:hidden px-4 py-2 text-[13px] text-white sm:px-7">
-            <span>Demo dengan perusahaan contoh. Perubahan tidak disimpan.</span>
-            <Link href={ROUTES.signup} className="font-semibold underline underline-offset-2">Daftarkan perusahaan Anda</Link>
-          </div>
-        )}
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 bg-ink print:hidden px-4 py-2 text-[13px] text-white sm:px-7">
+          <span>Versi frontend: angka dashboard memakai data contoh. Perubahan Anda tersimpan di peramban ini saja.</span>
+        </div>
         <header className="sticky top-0 z-20 print:hidden flex flex-wrap items-center gap-2.5 border-b border-line bg-canvas/90 px-4 py-2.5 backdrop-blur sm:flex-nowrap sm:gap-4 sm:px-7 sm:py-3">
           <div>
             <b className="block text-sm">{m.COMPANY.name}</b>
@@ -98,7 +95,7 @@ export function HrShell({ children }: { children: ReactNode }) {
                   <div className="px-2.5 py-1.5"><b className="block text-[13px]">{m.ds.user.name}</b><small className="block truncate text-muted">{m.ds.user.email}</small></div>
                   <Link href={ROUTES.hr.settings} onClick={() => setUserOpen(false)} className="flex items-center gap-2 rounded-[10px] px-2.5 py-2 text-[13px] hover:bg-[#f1f3f6]"><Icon name="cog" size={15} />Pengaturan</Link>
                   <form action={logout}>
-                    <button type="submit" className="flex w-full items-center gap-2 rounded-[10px] px-2.5 py-2 text-left text-[13px] hover:bg-[#f1f3f6]"><Icon name="logout" size={15} />{demo ? "Keluar dari demo" : "Keluar"}</button>
+                    <button type="submit" className="flex w-full items-center gap-2 rounded-[10px] px-2.5 py-2 text-left text-[13px] hover:bg-[#f1f3f6]"><Icon name="logout" size={15} />Keluar</button>
                   </form>
                 </div>
               )}

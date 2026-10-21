@@ -2,9 +2,10 @@
 import { useState, type FormEvent } from "react";
 import { Icon } from "@/components/ui/Icon";
 import { cn } from "@/lib/cn";
-import { logout } from "@/server/actions/auth";
+import { logout } from "@/store/account";
 import { ENERGY_NOTE } from "@/lib/practice";
-import { changePassword, deleteAccount, updateProfile } from "@/server/actions/employee";
+import { deleteAccount } from "@/store/employee-actions";
+import { ROUTES } from "@/lib/paths";
 import { appButton, Lead, Note, Screen, Section, Title } from "../components/ui";
 import { useEmployee } from "../EmployeeProvider";
 
@@ -13,13 +14,12 @@ const label = "grid gap-1.5 text-[13px] font-semibold text-body";
 
 /** The employee's account: name, division, password, sign out, and deleting the account with all its data. */
 export function ProfileScreen() {
-  const { user, teams, company, live, toast } = useEmployee();
+  const { user, teams, company, toast, updateUser } = useEmployee();
   const [name, setName] = useState(user.name);
   const [team, setTeam] = useState(user.teamId ?? "");
   const [busy, setBusy] = useState<string | null>(null);
 
   const guard = async (key: string, call: () => Promise<{ ok: boolean; error?: string }>, done: string) => {
-    if (!live) { toast("Ini demo, perubahan tidak disimpan."); return false; }
     setBusy(key);
     try {
       const res = await call();
@@ -34,17 +34,16 @@ export function ProfileScreen() {
     }
   };
 
-  const saveProfile = (e: FormEvent) => { e.preventDefault(); guard("profile", () => updateProfile(name, team), "Profil disimpan"); };
-  const savePassword = async (e: FormEvent<HTMLFormElement>) => {
+  const saveProfile = async (e: FormEvent) => {
     e.preventDefault();
-    const form = e.currentTarget, f = new FormData(form);
-    if (await guard("password", () => changePassword(String(f.get("current")), String(f.get("next"))), "Kata sandi diganti")) form.reset();
+    setBusy("profile");
+    if (await updateUser(name, team)) toast("Profil disimpan");
+    setBusy(null);
   };
-  const remove = (e: FormEvent<HTMLFormElement>) => {
+  const remove = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const pw = String(new FormData(e.currentTarget).get("password"));
-    if (!window.confirm("Hapus akun beserta semua catatan harian dan check-in-mu? Ini tidak bisa dibatalkan.")) return;
-    guard("delete", () => deleteAccount(pw), "Akun dihapus");
+    if (!window.confirm("Hapus semua catatan harian, check-in, program, dan jurnal di peramban ini? Ini tidak bisa dibatalkan.")) return;
+    if (await guard("delete", deleteAccount, "Data dihapus")) window.location.assign(`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}${ROUTES.join()}`);
   };
 
   return (
@@ -67,23 +66,15 @@ export function ProfileScreen() {
 
       <EnergySetting />
 
-      <Section>Ganti kata sandi</Section>
-      <form onSubmit={savePassword} className="grid gap-3">
-        <label className={label}>Kata sandi lama<input name="current" type="password" autoComplete="current-password" className={input} required /></label>
-        <label className={label}>Kata sandi baru<input name="next" type="password" autoComplete="new-password" minLength={8} className={input} required /></label>
-        <button type="submit" disabled={busy === "password"} className={appButton("ghost", true)}>Ganti kata sandi</button>
-      </form>
-
       <form action={logout} className="mt-6">
         <button type="submit" className={cn(appButton("ghost"), "flex items-center justify-center gap-2")}><Icon name="logout" size={18} />Keluar</button>
       </form>
 
       <details className="mt-6 rounded-2xl border border-[#f1c9c9] p-3.5">
-        <summary className="cursor-pointer text-sm font-semibold text-bad">Hapus akun dan semua data</summary>
+        <summary className="cursor-pointer text-sm font-semibold text-bad">Hapus semua data di peramban ini</summary>
         <form onSubmit={remove} className="mt-3 grid gap-3">
-          <p className="text-[13px] leading-normal text-body">Semua catatan harian, check-in, dan riwayat latihanmu dihapus permanen, termasuk dari rata-rata divisi.</p>
-          <label className={label}>Ketik kata sandi untuk konfirmasi<input name="password" type="password" autoComplete="current-password" className={input} required /></label>
-          <button type="submit" disabled={busy === "delete"} className="rounded-2xl bg-bad p-3 text-sm font-semibold text-white disabled:opacity-50">Hapus akun saya</button>
+          <p className="text-[13px] leading-normal text-body">Di versi frontend semua datamu hanya tersimpan di peramban ini. Catatan harian, check-in, program, dan jurnal dihapus permanen.</p>
+          <button type="submit" disabled={busy === "delete"} className="rounded-2xl bg-bad p-3 text-sm font-semibold text-white disabled:opacity-50">Hapus data saya</button>
         </form>
       </details>
     </Screen>

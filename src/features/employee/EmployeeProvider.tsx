@@ -2,12 +2,12 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { followUpArea } from "@/lib/catalog";
 import { programById, programState, type Slot } from "@/lib/practice";
-import * as actions from "@/server/actions/employee";
-import type { EmployeeData } from "@/server/employee";
+import { loadEmployee, saveEmployee, type EmployeeData } from "@/store/employee";
+import * as actions from "@/store/employee-actions";
 
 /*
- * The employee's own data: loaded on the server, then kept here so the app responds at once.
- * Every change is sent to the server; the demo keeps it in the browser only.
+ * The employee's own data, kept in this browser (frontend-only version). Loaded after the first render,
+ * because localStorage exists only in the browser, and saved again after every change.
  */
 
 type Day = EmployeeData["days"][number];
@@ -26,17 +26,24 @@ type EmployeeContextValue = EmployeeData & {
   completeSession: (enrollmentId: string, slot: Slot, practice: string) => Promise<boolean>;
   setEnergyOptIn: (on: boolean) => Promise<boolean>;
   reportPartner: (partnerId: string, reason: string) => Promise<boolean>;
+  updateUser: (name: string, teamId: string) => Promise<boolean>;
   toastMsg: string | null;
   toast: (msg: string) => void;
 };
 
 const EmployeeContext = createContext<EmployeeContextValue | null>(null);
 
-export function EmployeeProvider({ data, children }: { data: EmployeeData; children: ReactNode }) {
+export function EmployeeProvider({ children }: { children: ReactNode }) {
+  const [data, setData] = useState<EmployeeData | null>(null);
+  useEffect(() => setData(loadEmployee()), []);
+  if (!data) return <div className="grid min-h-dvh place-items-center text-sm text-muted">Memuat...</div>;
+  return <EmployeeState data={data}>{children}</EmployeeState>;
+}
+
+function EmployeeState({ data, children }: { data: EmployeeData; children: ReactNode }) {
   const [state, setState] = useState(data);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
-  // Fresh server data (after a refresh) replaces the local copy.
-  useEffect(() => setState(data), [data]);
+  useEffect(() => { saveEmployee(state); }, [state]);
 
   const toast = useCallback((msg: string) => {
     setToastMsg(msg);
@@ -51,7 +58,7 @@ export function EmployeeProvider({ data, children }: { data: EmployeeData; child
       if (!res.ok) toast(res.error);
       return res.ok;
     } catch {
-      toast("Gagal tersambung ke server. Periksa koneksi lalu coba lagi.");
+      toast("Gagal menyimpan di peramban ini.");
       return false;
     }
   }, [data.live, toast]);
@@ -87,7 +94,7 @@ export function EmployeeProvider({ data, children }: { data: EmployeeData; child
         if (!res.ok) { toast(res.error); return null; }
         id = res.id;
       } catch {
-        toast("Gagal tersambung ke server. Periksa koneksi lalu coba lagi.");
+        toast("Gagal menyimpan di peramban ini.");
         return null;
       }
     }
@@ -140,11 +147,17 @@ export function EmployeeProvider({ data, children }: { data: EmployeeData; child
     return ok;
   }, [send]);
 
+  const updateUser = useCallback(async (name: string, teamId: string) => {
+    const ok = await send(() => actions.updateProfile(name, teamId));
+    if (ok) setState((s) => ({ ...s, user: { ...s.user, name: name.trim(), teamId } }));
+    return ok;
+  }, [send]);
+
   const value = useMemo(() => ({
     ...state,
     todayLog: state.days.find((d) => d.day === state.today) ?? null,
-    saveDaily, submitCheckin, markDone, startProgram, pauseProgram, stopProgram, completeSession, setEnergyOptIn, reportPartner, toastMsg, toast,
-  }), [state, saveDaily, submitCheckin, markDone, startProgram, pauseProgram, stopProgram, completeSession, setEnergyOptIn, reportPartner, toastMsg, toast]);
+    saveDaily, submitCheckin, markDone, startProgram, pauseProgram, stopProgram, completeSession, setEnergyOptIn, reportPartner, updateUser, toastMsg, toast,
+  }), [state, saveDaily, submitCheckin, markDone, startProgram, pauseProgram, stopProgram, completeSession, setEnergyOptIn, reportPartner, updateUser, toastMsg, toast]);
   return <EmployeeContext.Provider value={value}>{children}</EmployeeContext.Provider>;
 }
 

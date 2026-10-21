@@ -1,12 +1,11 @@
 "use client";
-import { useRouter } from "next/navigation";
-import { createContext, useCallback, useContext, useMemo, useState, useTransition, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { makeModel, type Dataset, type Model, type Scope } from "@/lib/model";
-import { sampleDataset } from "@/lib/sample";
-import type { Result } from "@/server/actions/hr";
+import { localDataset } from "@/store/hr";
+import type { Result } from "@/store/hr-actions";
 
 type HrState = {
-  /** All numbers of the dashboard, from the server's dataset or the demo company. */
+  /** All numbers of the dashboard: the sample company with HR's local changes. */
   m: Model;
   demo: boolean;
   scope: Scope;
@@ -20,12 +19,20 @@ type HrState = {
 
 const HrContext = createContext<HrState | null>(null);
 
-export function HrProvider({ dataset, children }: { dataset: Dataset | null; children: ReactNode }) {
-  const router = useRouter();
-  const m = useMemo(() => makeModel(dataset ?? sampleDataset()), [dataset]);
+/** The dashboard reads the sample company with HR's own changes from this browser on top. */
+export function HrProvider({ children }: { children: ReactNode }) {
+  const [dataset, setDataset] = useState<Dataset | null>(null);
+  // localStorage exists only in the browser, so the data loads after the first render.
+  useEffect(() => setDataset(localDataset()), []);
+  if (!dataset) return <div className="grid min-h-dvh place-items-center text-sm text-muted">Memuat dashboard...</div>;
+  return <HrState dataset={dataset} reload={() => setDataset(localDataset())}>{children}</HrState>;
+}
+
+function HrState({ dataset, reload, children }: { dataset: Dataset; reload: () => void; children: ReactNode }) {
+  const m = useMemo(() => makeModel(dataset), [dataset]);
   const [scope, setScope] = useState<Scope>("all");
   const [toastMsg, setToastMsg] = useState<string | null>(null);
-  const [pending, startTransition] = useTransition();
+  const [pending, setPending] = useState(false);
 
   const toast = useCallback((msg: string) => {
     setToastMsg(msg);
@@ -33,23 +40,25 @@ export function HrProvider({ dataset, children }: { dataset: Dataset | null; chi
   }, []);
 
   const run = useCallback(async (action: () => Promise<Result>, done?: string) => {
+    setPending(true);
     let res: Result;
     try {
       res = await action();
     } catch {
-      res = { ok: false, error: "Gagal tersambung ke server. Coba lagi." };
+      res = { ok: false, error: "Gagal menyimpan di peramban ini." };
     }
+    setPending(false);
     if (!res.ok) toast(res.error);
     else {
       if (done) toast(done);
-      startTransition(() => router.refresh());
+      reload();
     }
     return res;
-  }, [router, toast]);
+  }, [reload, toast]);
 
   // A division that no longer exists (or is hidden) falls back to the whole company.
   const safeScope = scope === "all" || m.teamById(scope) ? scope : "all";
-  const value = useMemo(() => ({ m, demo: !dataset, scope: safeScope, setScope, toastMsg, toast, run, pending }), [m, dataset, safeScope, toastMsg, toast, run, pending]);
+  const value = useMemo(() => ({ m, demo: false, scope: safeScope, setScope, toastMsg, toast, run, pending }), [m, safeScope, toastMsg, toast, run, pending]);
   return <HrContext.Provider value={value}>{children}</HrContext.Provider>;
 }
 

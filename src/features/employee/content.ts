@@ -73,6 +73,7 @@ export const level = (v: number): { label: string; tone: Level } =>
 export const APP_NAV: { href: string; label: string; icon: IconName }[] = [
   { href: ROUTES.employee.home, label: "Beranda", icon: "home" },
   { href: ROUTES.employee.exercises, label: "Latihan", icon: "lotus" },
+  { href: ROUTES.employee.assistant, label: "Asisten", icon: "spark" },
   { href: ROUTES.employee.insight, label: "Insight", icon: "bars" },
   { href: ROUTES.employee.counseling, label: "Konseling", icon: "chat" },
 ];

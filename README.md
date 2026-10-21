@@ -1,16 +1,31 @@
-# Sikutaki Dashboard
+# Sikutaki Dashboard (versi frontend + Asisten AI)
 
-Sikutaki dalam satu project Next.js: **situs perusahaan**, **Dashboard HR**, dan **aplikasi karyawan**, dengan backend Postgres.
-HR hanya melihat rata-rata kelompok minimal 5 orang, tidak pernah jawaban per orang. Aturan ini dijaga di server.
+Cabang `frontend-gemini`: versi **murni frontend** dari Sikutaki, tanpa server dan database. Isinya sama dengan cabang `backend-real-app` (situs perusahaan, Dashboard HR, aplikasi karyawan, latihan mandiri, program), ditambah **Asisten AI** berbasis Google Gemini yang menyarankan latihan dari katalog.
 
-## Cara kerja
+Versi dengan backend Postgres ada di cabang `backend-real-app`.
 
-1. HR mendaftar di `/daftar` dan membuat perusahaan beserta divisinya.
-2. Dashboard HR menampilkan kode undangan. Karyawan bergabung lewat `/gabung?kode=...` dan memilih divisi.
-3. Karyawan mencatat mood dan tidur setiap hari, lalu mengisi check-in mingguan (8 pertanyaan: 5 area inti dan 3 area bergiliran dari 42 area).
-4. Server menghitung rata-rata per divisi. Divisi dengan responden di bawah batas minimum (bawaan 5) ditampilkan "Disembunyikan".
+- Data karyawan dan perubahan HR tersimpan di `localStorage` peramban, tidak dikirim ke server mana pun.
+- Angka Dashboard HR memakai data contoh (perusahaan fiktif), karena agregat butuh banyak karyawan.
+- HR dan karyawan di peramban yang sama berbagi data: psikolog dan praktisi mitra, bagian energi, jumlah kontak, dan laporan praktisi.
+- Situs diekspor statis (`out/`), jadi bisa dipasang di hosting statis mana saja.
 
-Skor area adalah sinyal skrining dari check-in, bukan diagnosis.
+## Asisten AI (Gemini, untuk uji coba)
+
+Tab **Asisten** di aplikasi karyawan (`/dashboard-employee/asisten`). Karyawan menceritakan kondisinya, asisten menyarankan paling banyak 3 latihan atau program dari katalog Sikutaki, ditampilkan sebagai kartu yang langsung bisa dibuka.
+
+- Asisten tidak mendiagnosis dan hanya boleh menyarankan latihan yang ada di katalog (`src/lib/assistant.ts`).
+- Bila pesan berisi tanda krisis, aplikasi selalu menampilkan Healing119 (119 ext 8) dan 112, apa pun jawaban model.
+- Yang dikirim ke Google: pesan percakapan dan ringkasan mood, tidur, check-in minggu ini, serta program yang berjalan. Tidak ada nama lengkap atau email.
+
+### API key
+
+1. Buat key gratis di [aistudio.google.com/apikey](https://aistudio.google.com/apikey).
+2. Pilih salah satu:
+   - Tempel di aplikasi: buka tab Asisten, tekan ikon pengaturan, isi key. Key disimpan di peramban itu saja.
+   - Atau isi saat build: `NEXT_PUBLIC_GEMINI_API_KEY=...` di `.env.local` atau di Environment Variables hosting.
+3. Model bawaan `gemini-3.5-flash-lite`, bisa diganti di pengaturan asisten.
+
+> **Hanya untuk uji coba.** Key dipakai langsung dari peramban, jadi siapa pun yang membuka situs bisa melihatnya. Untuk produksi, panggilan Gemini perlu dipindah ke server, misalnya ditambahkan ke cabang `backend-real-app`.
 
 ## Route
 
@@ -19,9 +34,7 @@ Skor area adalah sinyal skrining dari check-in, bukan diagnosis.
 | `/`, `/tentang`, `/harga`, `/keamanan`, `/kontak`, `/privasi`, `/syarat` | Situs perusahaan |
 | `/daftar` | Daftar akun HR dan buat perusahaan |
 | `/gabung?kode=...` | Karyawan bergabung dengan kode undangan |
-| `/masuk` | Masuk (HR dan karyawan), plus tombol demo |
-| `/reset/[token]` | Atur ulang kata sandi lewat tautan yang dibuat HR |
-| `/demo/hr`, `/demo/karyawan` | Demo tanpa akun dengan perusahaan contoh. Tidak ada yang disimpan |
+| `/masuk` | Tautan ke Dashboard HR dan aplikasi karyawan |
 | `/dashboard-hr` | Beranda HR: wellbeing, partisipasi, mood, fokus per divisi |
 | `/dashboard-hr/divisi`, `/dashboard-hr/divisi/[id]` | Divisi, penyebab, catatan tindakan HR |
 | `/dashboard-hr/area`, `/dashboard-hr/area/[id]` | 42 area dan detail per area |
@@ -33,21 +46,22 @@ Skor area adalah sinyal skrining dari check-in, bukan diagnosis.
 | `/dashboard-employee/check-in` | Check-in mingguan |
 | `/dashboard-employee/insight` | Insight pribadi (hanya karyawan itu sendiri) |
 | `/dashboard-employee/latihan`, `/dashboard-employee/latihan/[id]` | Latihan napas dan pemutarnya |
+| `/dashboard-employee/asisten` | Asisten AI (Gemini) yang menyarankan latihan |
 | `/dashboard-employee/konseling` | Kontak psikolog mitra dan Healing119 |
 | `/dashboard-employee/tenang` | Alat tenangkan diri saat cemas atau panik |
-| `/dashboard-employee/profil` | Profil, kata sandi, keluar, hapus akun |
+| `/dashboard-employee/profil` | Profil, keluar, hapus data di peramban |
 
 ## Struktur
 
 ```
 src/
   app/                    Route (App Router). page.tsx tipis, hanya merender fitur.
-  server/
-    db.ts                 Koneksi Postgres dan skema (dibuat otomatis saat pertama dipakai)
-    auth.ts               Kata sandi (scrypt), sesi cookie httpOnly, mode demo
-    dataset.ts            Agregat untuk HR: rata-rata per divisi, aturan minimal 5 orang, retensi data
-    employee.ts           Data milik karyawan itu sendiri
-    actions/              Server action: auth, karyawan, HR
+  store/
+    local.ts              Baca dan tulis localStorage
+    hr.ts, hr-actions.ts  Data HR lokal di atas perusahaan contoh
+    employee.ts, employee-actions.ts  Data karyawan di peramban
+    account.ts            Daftar, gabung, keluar
+    gemini.ts             Panggilan ke Gemini API
   features/
     hr/                   Dashboard HR
     employee/             Aplikasi karyawan
@@ -56,7 +70,8 @@ src/
   lib/
     catalog.ts            42 area, skala jawaban, penyebab, rotasi check-in
     model.ts              Perhitungan dashboard dari dataset agregat
-    sample.ts             Perusahaan contoh untuk demo
+    sample.ts             Perusahaan contoh
+    assistant.ts          Aturan dan katalog untuk Asisten AI
     week.ts               Tanggal dan minggu (WIB)
 ```
 
@@ -64,23 +79,20 @@ src/
 
 ```bash
 npm install
-cp .env.example .env.local   # isi DATABASE_URL
 npm run dev                  # http://localhost:3000
 npm run typecheck
-npm run build && npm start
+npm run build                # hasil statis di out/
+npx serve out                # coba hasil build
 ```
 
-Tanpa `DATABASE_URL`, situs dan demo tetap berjalan, tetapi daftar dan masuk menampilkan pemberitahuan.
+Untuk GitHub Pages atau hosting di subfolder, isi `NEXT_PUBLIC_BASE_PATH` (misalnya `/sikutaki-dashboard`) saat build.
 
 ## Deploy ke Vercel
 
-1. Impor repo ini di [vercel.com/new](https://vercel.com/new).
-2. Di **Storage**, tambahkan database Postgres (misalnya Neon) dan sambungkan ke project. Vercel mengisi `DATABASE_URL` otomatis. Bisa juga isi `DATABASE_URL` sendiri di **Settings > Environment Variables**.
-3. Deploy ulang. Tabel dibuat otomatis saat permintaan pertama.
+Impor repo di [vercel.com/new](https://vercel.com/new) dan pilih cabang `frontend-gemini`. Tidak perlu database. Bila ingin key Gemini bawaan, isi `NEXT_PUBLIC_GEMINI_API_KEY` di **Settings > Environment Variables**.
 
-Workflow `.github/workflows/ci.yml` menjalankan typecheck dan build di setiap push dan pull request.
+## Batasan versi ini
 
-## Belum ada
-
-- Pengiriman email. Undangan memakai kode atau tautan, dan reset kata sandi memakai tautan yang dibuat HR di Pengaturan.
-- Login SSO kantor (Google Workspace, Microsoft).
+- Data hanya ada di satu peramban. Membersihkan data situs menghapusnya.
+- Angka HR tidak berasal dari karyawan sungguhan. Menambah atau menghapus divisi belum bisa.
+- Tidak ada akun atau kata sandi sungguhan.

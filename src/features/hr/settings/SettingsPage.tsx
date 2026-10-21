@@ -10,7 +10,7 @@ import { cn } from "@/lib/cn";
 import { MIN_GROUP } from "@/lib/catalog";
 import type { Dataset } from "@/lib/model";
 import { ENERGY_NOTE, PRACTITIONER_CODE, PRACTITIONER_TYPES, practitionerType } from "@/lib/practice";
-import { addPartner, addTeam, createResetLink, deleteTeam, reactivatePartner, removePartner, renameTeam, saveEnergySection, savePrivacy, updateCompany, type PartnerInput } from "@/server/actions/hr";
+import { addPartner, addTeam, createResetLink, deleteTeam, reactivatePartner, removePartner, renameTeam, saveEnergySection, savePrivacy, updateCompany, type PartnerInput } from "@/store/hr-actions";
 import { useHr } from "../HrProvider";
 import { InviteCard } from "../InviteCard";
 

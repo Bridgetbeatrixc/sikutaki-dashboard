@@ -6,7 +6,7 @@ import { Icon } from "@/components/ui/Icon";
 import { inputClass } from "@/components/ui/form";
 import { cn } from "@/lib/cn";
 import { ROUTES } from "@/lib/paths";
-import { regenerateInvite } from "@/server/actions/hr";
+import { regenerateInvite } from "@/store/hr-actions";
 import { useHr } from "./HrProvider";
 
 /** The company's invite code and link: employees join with it and pick their division. */

@@ -13,7 +13,7 @@ import { LineChart } from "@/components/charts/LineChart";
 import { cn } from "@/lib/cn";
 import { AREA_COUNT, areaById, CORE, ROTATING_PER_WEEK, ROTATION } from "@/lib/catalog";
 import { DAYS_LONG } from "@/lib/week";
-import { saveSchedule } from "@/server/actions/hr";
+import { saveSchedule } from "@/store/hr-actions";
 import { useHr } from "../HrProvider";
 
 const DAYS = [1, 2, 3, 4, 5].map((d) => ({ value: String(d), label: DAYS_LONG[d].slice(0, 3) }));

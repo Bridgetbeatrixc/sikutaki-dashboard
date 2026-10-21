@@ -20,6 +20,11 @@ export function ExercisesScreen() {
       <Title>Latihan</Title>
       <Lead>Latihan mandiri dengan panduan, dari 1 menit sampai program beberapa minggu.</Lead>
       <CalmCard className="mt-3" />
+      <Link href={ROUTES.employee.assistant} className="mt-2.5 grid grid-cols-[44px_1fr_auto] items-center gap-3 rounded-[18px] bg-soft py-2.5 pr-3 pl-2.5 text-ink">
+        <span className="grid size-11 place-items-center rounded-[14px] bg-white text-app"><Icon name="spark" size={22} /></span>
+        <span><b className="block text-[14px] font-semibold">Bingung pilih latihan?</b><small className="mt-0.5 block text-[12px] text-muted">Ceritakan ke Asisten AI, dapat saran latihan</small></span>
+        <Icon name="chevron" size={18} className="text-muted" />
+      </Link>
 
       {programs.length > 0 && (
         <>

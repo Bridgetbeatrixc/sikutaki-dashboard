@@ -12,7 +12,7 @@ import { fitRange, LineChart } from "@/components/charts/LineChart";
 import { AREA_COUNT, AREAS, GROUPS, groupOf, NOTE_LABEL } from "@/lib/catalog";
 import { decimal } from "@/lib/format";
 import { ROUTES } from "@/lib/paths";
-import { addNote, deleteNote } from "@/server/actions/hr";
+import { addNote, deleteNote } from "@/store/hr-actions";
 import { useHr } from "../HrProvider";
 import { FocusCard } from "./FocusCard";
 import { NotesPanel, type NoteDraft } from "./NotesPanel";
