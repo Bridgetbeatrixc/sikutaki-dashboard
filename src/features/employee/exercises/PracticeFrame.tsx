@@ -5,6 +5,7 @@ import { Icon } from "@/components/ui/Icon";
 import { ROUTES } from "@/lib/paths";
 import { ENERGY_NOTE, MOVEMENT_NOTE, programById, type Practice, type Slot } from "@/lib/practice";
 import { FlowBar } from "../components/ui";
+import { practiceArt } from "./ProgramCard";
 import { useEmployee } from "../EmployeeProvider";
 
 /** Today's session of a program, when the practice was opened from one. */
@@ -33,6 +34,7 @@ export function PracticeFrame({ practice, session, right, children }: { practice
     <div className="grid min-h-full content-start gap-4 px-[22px] pt-2 pb-7 md:px-8 md:pt-6">
       <FlowBar closeHref={session ? ROUTES.employee.home : ROUTES.employee.exercises} title={practice.title} right={right} />
       {program && <p className="-mt-2 text-center text-xs text-muted">{program.title}</p>}
+      {practice.kind !== "sound" && <div className="h-[120px] rounded-[22px] md:h-[160px]" style={{ background: practiceArt(practice) }} role="img" aria-label={practice.title} />}
       {practice.caution && <Banner icon="alert">{MOVEMENT_NOTE}</Banner>}
       {practice.group === "energi" && <Banner icon="info">{ENERGY_NOTE}</Banner>}
       {children}

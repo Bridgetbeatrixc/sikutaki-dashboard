@@ -3,7 +3,7 @@
  * except the AI assistant's messages, which go to the Gemini API.
  */
 
-export const KEYS = { hr: "sikutaki:hr", employee: "sikutaki:karyawan", journal: "sikutaki:jurnal:", gemini: "sikutaki:gemini" } as const;
+export const KEYS = { hr: "sikutaki:hr", employee: "sikutaki:karyawan", journal: "sikutaki:jurnal:", gemini: "sikutaki:gemini", counsel: "sikutaki:konseling" } as const;
 
 export function read<T>(key: string, fallback: T): T {
   try {

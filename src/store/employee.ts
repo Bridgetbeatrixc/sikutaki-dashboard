@@ -46,6 +46,8 @@ export type EmployeeLocal = {
   done: Record<string, string[]>;
   programs: Enrollment[];
   energyOptIn: boolean;
+  /** Programs carried through to the last day, for the personal report. */
+  finished: { program: string; startedOn: string; finishedOn: string }[];
 };
 
 /** The check-in opens on the company's day (Monday to Friday) and closes Sunday 23.59 WIB. */
@@ -56,7 +58,7 @@ export function checkinWindow(day: string, opensOn: number) {
 
 const EMPTY: EmployeeLocal = {
   profile: { name: "Dimas", email: "", teamId: "cs" }, onboarded: false,
-  days: [], checkins: {}, done: {}, programs: [], energyOptIn: false,
+  days: [], checkins: {}, done: {}, programs: [], energyOptIn: false, finished: [],
 };
 
 export const loadEmployeeLocal = (): EmployeeLocal => ({ ...EMPTY, ...read<Partial<EmployeeLocal>>(KEYS.employee, {}) });
@@ -112,6 +114,12 @@ export function saveEmployee(s: EmployeeData) {
     const days = [...e.days.filter((d) => !s.days.some((x) => x.day === d.day)), ...s.days]
       .filter((d) => d.day > addDays(s.today, -400));
     const checkins = s.week.answers ? { ...e.checkins, [s.week.start]: { answers: s.week.answers, causeArea: s.week.causeArea, causes: s.week.causes } } : e.checkins;
-    return { ...e, days, checkins, done: { [s.today]: s.done }, programs: s.programs, energyOptIn: s.energy.optIn };
+    // Practices done per day are kept for 120 days, for the personal report.
+    const done = Object.fromEntries(Object.entries({ ...e.done, [s.today]: s.done }).filter(([d, list]) => d > addDays(s.today, -120) && list.length));
+    return { ...e, days, checkins, done, programs: s.programs, energyOptIn: s.energy.optIn };
   });
 }
+
+/** Notes a program that reached its last day (it then leaves the running list). */
+export const logFinishedProgram = (program: string, startedOn: string, finishedOn: string) =>
+  updateEmployeeLocal((e) => (e.finished?.some((f) => f.program === program && f.startedOn === startedOn) ? e : { ...e, finished: [...(e.finished ?? []), { program, startedOn, finishedOn }] }));

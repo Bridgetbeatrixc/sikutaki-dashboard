@@ -2,13 +2,20 @@
 import Link from "next/link";
 import { Icon } from "@/components/ui/Icon";
 import { cn } from "@/lib/cn";
-import { ROUTES } from "@/lib/paths";
+import { asset, ROUTES } from "@/lib/paths";
 import { practiceById, programState, progressLabel, SLOT_LABEL, type Enrollment, type Practice } from "@/lib/practice";
 import { CheckCircle, StartPill } from "../components/ui";
 import { useEmployee } from "../EmployeeProvider";
 
 export const cardBackground = ([a, b, c]: Practice["colors"]) =>
   `radial-gradient(120% 90% at 20% 20%, ${a}, transparent 60%), radial-gradient(90% 90% at 85% 30%, ${c}, transparent 60%), linear-gradient(160deg, ${a}, ${b})`;
+
+/** Photo of a practice (from Unsplash, in public/img/latihan), over its soft colors while it loads. */
+export const practiceArt = (p: Pick<Practice, "id" | "colors">) =>
+  `url("${asset(`/img/latihan/${p.id}.jpg`)}") center / cover no-repeat, ${cardBackground(p.colors)}`;
+
+/** Cover photo of a program (public/img/program). */
+export const programArt = (id: string) => `url("${asset(`/img/program/${id}.jpg`)}") center / cover no-repeat, linear-gradient(160deg,#eef4fd,#cfe0f7)`;
 
 export const kindLabel = (kind: "praktis" | "rutin", days: number, slots: number) =>
   kind === "praktis" ? `Praktis · ${slots}x sehari selama ${days} hari` : `Rutin · setiap hari selama ${days / 7} minggu`;
@@ -42,7 +49,7 @@ export function ProgramCard({ enrollment, link = true }: { enrollment: Enrollmen
             const p = practiceById(s.practice)!;
             const body = (
               <>
-                <span className="size-10 rounded-xl" style={{ background: cardBackground(p.colors) }} />
+                <span className="size-10 rounded-xl" style={{ background: practiceArt(p) }} />
                 <span className="min-w-0">
                   <b className={cn("block text-[13.5px] font-semibold", s.done && "line-through decoration-ink/35")}>{p.title}</b>
                   <small className="text-[11.5px] text-muted">{SLOT_LABEL[s.slot]} · {p.minutes} menit</small>

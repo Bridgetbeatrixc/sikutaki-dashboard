@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useState, type FormEvent } from "react";
 import { Icon } from "@/components/ui/Icon";
 import { cn } from "@/lib/cn";
@@ -93,6 +94,12 @@ function EnergySetting() {
   };
   return (
     <>
+      <Section>Laporan pribadi</Section>
+      <Link href={ROUTES.employee.report} className="flex items-center gap-3 rounded-2xl bg-soft p-3.5 text-ink">
+        <Icon name="file" size={18} className="text-app" />
+        <span className="flex-1 text-[13.5px]"><b>Unduh laporanmu (PDF)</b><small className="block text-xs text-muted">Mood, tidur, check-in, latihan, dan program. Hanya untukmu.</small></span>
+        <Icon name="chevron" size={16} className="text-muted" />
+      </Link>
       <Section>Latihan Energi</Section>
       <div className="grid grid-cols-[1fr_auto] items-center gap-3 rounded-2xl bg-soft p-3.5">
         <p className="text-[13px] leading-normal text-body">Tampilkan suara mangkuk dan gong, merasakan energi tubuh, dan latihan prana di halaman Latihan. {ENERGY_NOTE}</p>

@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { MOOD_COLORS } from "@/components/charts/MoodBar";
+import { Icon } from "@/components/ui/Icon";
 import { areaById } from "@/lib/catalog";
 import { decimal, hours, listJoin } from "@/lib/format";
 import { cn } from "@/lib/cn";
@@ -30,6 +31,11 @@ export function InsightScreen() {
       <Lead>Dari catatan harian dan check-in. <b>Hanya kamu yang bisa melihat halaman ini.</b></Lead>
       <SleepAndMood />
       <CheckinResult />
+      <Link href={ROUTES.employee.report} className="mt-5 flex items-center gap-3 rounded-[18px] border-[1.5px] border-line px-3.5 py-3 text-ink hover:bg-soft">
+        <span className="grid size-10 place-items-center rounded-xl bg-mint text-app-dark"><Icon name="file" size={18} /></span>
+        <span className="flex-1"><b className="block text-[14px]">Laporan pribadi (PDF)</b><small className="text-xs text-muted">Ringkasan 30 atau 90 hari untuk disimpan atau dibawa ke psikolog</small></span>
+        <Icon name="chevron" size={16} className="text-muted" />
+      </Link>
     </Screen>
   );
 }

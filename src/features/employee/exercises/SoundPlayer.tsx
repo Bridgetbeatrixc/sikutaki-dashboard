@@ -6,6 +6,7 @@ import type { SoundPractice } from "@/lib/practice";
 import { appButton, Chip, Note } from "../components/ui";
 import { audioContext, playSound, type SoundHandle } from "./audio";
 import { PracticeFrame, useFinish, type Session } from "./PracticeFrame";
+import { practiceArt } from "./ProgramCard";
 
 const DURATIONS = [5, 10, 20];
 const clock = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
@@ -52,11 +53,11 @@ export function SoundPlayer({ practice, session }: { practice: SoundPractice; se
   return (
     <PracticeFrame practice={practice} session={session}>
       <div className="relative mx-auto mt-3 grid size-[230px] place-items-center">
-        <i className={cn("absolute inset-0 rounded-full", playing && "animate-pulse")}
-          style={{ background: `radial-gradient(circle at 35% 30%, #fff, ${practice.colors[1]} 60%, ${practice.colors[2]})` }} />
+        <i className={cn("absolute inset-0 rounded-full shadow-[0_18px_40px_rgba(20,40,80,.18)]", playing && "animate-pulse")} style={{ background: practiceArt(practice) }} />
+        <i className="absolute inset-0 rounded-full bg-[radial-gradient(circle,rgba(0,0,0,.45),rgba(0,0,0,.15))]" />
         <div className="relative text-center">
-          <b className="num block text-[34px] font-semibold text-ink">{clock(Math.max(left, 0))}</b>
-          <small className="text-[13px] text-body">{ended ? "Selesai" : playing ? "Sedang diputar" : "Siap diputar"}</small>
+          <b className="num block text-[34px] font-semibold text-white">{clock(Math.max(left, 0))}</b>
+          <small className="text-[13px] text-white/85">{ended ? "Selesai" : playing ? "Sedang diputar" : "Siap diputar"}</small>
         </div>
       </div>
       <p className="text-center text-sm text-body">{practice.blurb}</p>

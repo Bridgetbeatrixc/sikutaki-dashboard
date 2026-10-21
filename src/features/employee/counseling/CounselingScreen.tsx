@@ -7,6 +7,7 @@ import { addDays } from "@/lib/week";
 import { recordReferral } from "@/store/employee-actions";
 import { appButton, Lead, Note, Screen, Section, Title } from "../components/ui";
 import { useEmployee } from "../EmployeeProvider";
+import { ScheduleRequests } from "./ScheduleRequest";
 
 type Partner = ReturnType<typeof useEmployee>["partners"][number];
 
@@ -24,7 +25,7 @@ export function CounselingScreen() {
     <Screen>
       <Title>Bicara dengan psikolog</Title>
       <Lead>
-        Hubungi mitra {company.name} langsung. <b>Rahasia:</b> percakapan dan jadwal sesi tidak melewati Sikutaki, dan HR hanya melihat jumlah karyawan yang menghubungi mitra setiap bulan, tanpa nama.
+        Hubungi mitra {company.name} langsung, atau minta HR mengatur jadwalnya. <b>Rahasia:</b> isi sesi tidak melewati Sikutaki. Bila lewat HR, HR hanya membaca permintaan jadwalmu, dan kamu boleh mengajukannya tanpa nama.
       </Lead>
       {urgent && <CrisisBox className="mt-3" />}
 
@@ -37,6 +38,7 @@ export function CounselingScreen() {
         <ul className="grid gap-2.5">{psych.map((p) => <PartnerCard key={p.id} p={p} />)}</ul>
       )}
       <Note>Sesi dengan psikolog bersifat rahasia.</Note>
+      <ScheduleRequests />
       {!urgent && <CrisisBox className="mt-[18px]" />}
 
       {compl.length > 0 && (

@@ -7,7 +7,7 @@ import { ENERGY_NOTE, GROUPS, practiceById, PRACTICES, PROGRAMS, suggestedPracti
 import { CalmCard } from "../calm/CalmCard";
 import { appButton, Lead, Note, Screen, Section, StartPill, Title } from "../components/ui";
 import { useEmployee } from "../EmployeeProvider";
-import { cardBackground, kindLabel, ProgramCard } from "./ProgramCard";
+import { kindLabel, practiceArt, programArt, ProgramCard } from "./ProgramCard";
 
 export function ExercisesScreen() {
   const { todayLog, done, programs, energy } = useEmployee();
@@ -38,7 +38,7 @@ export function ExercisesScreen() {
         {suggested.map((p) => (
           <Link key={p.id} href={ROUTES.employee.exercise(p.id)}
             className="grid w-full grid-cols-[46px_1fr_auto] items-center gap-3 rounded-2xl bg-soft py-2.5 pr-3 pl-2.5 text-ink">
-            <span className="size-[46px] rounded-xl" style={{ background: `radial-gradient(circle at 30% 30%, #fff, ${p.colors[1]} 60%, ${p.colors[2]})` }} />
+            <span className="size-[46px] rounded-xl" style={{ background: practiceArt(p) }} />
             <span>
               <b className="block text-[13.5px] font-semibold">{p.title}</b>
               <small className="mt-0.5 block text-[11.5px] text-muted">{p.minutes} menit{done.includes(p.id) && " · selesai hari ini"}</small>
@@ -58,7 +58,8 @@ export function ExercisesScreen() {
         {PROGRAMS.map((p) => {
           const active = programs.some((e) => e.program === p.id);
           return (
-            <Link key={p.id} href={ROUTES.employee.program(p.id)} className="grid gap-1 rounded-[18px] border-[1.5px] border-line bg-white p-3.5 text-ink hover:border-app/50">
+            <Link key={p.id} href={ROUTES.employee.program(p.id)} className="grid gap-1 overflow-hidden rounded-[18px] border-[1.5px] border-line bg-white p-3.5 pt-0 text-ink hover:border-app/50">
+              <span className="-mx-3.5 mb-2 block h-[110px]" style={{ background: programArt(p.id) }} aria-hidden />
               <small className="text-[11.5px] font-bold text-app-dark">{kindLabel(p.kind, p.days, p.slots.length)}</small>
               <b className="text-[14.5px]">{p.title}</b>
               <span className="text-[12.5px] leading-snug text-body">{p.blurb}</span>
@@ -81,10 +82,10 @@ function PracticeRow({ group, title, sub }: { group: PracticeGroup; title: strin
       {group === "energi" && <p className="mb-2.5 rounded-xl bg-[#fff7ec] px-3 py-2 text-[12.5px] text-[#5b4520]">{ENERGY_NOTE}</p>}
       <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
         {list.map((p) => (
-          <Link key={p.id} href={ROUTES.employee.exercise(p.id)} style={{ background: cardBackground(p.colors) }}
-            className="relative h-[124px] overflow-hidden rounded-[20px] shadow-[inset_0_0_0_1px_rgba(255,255,255,.6)]">
+          <Link key={p.id} href={ROUTES.employee.exercise(p.id)} style={{ background: practiceArt(p) }}
+            className="relative h-[140px] overflow-hidden rounded-[20px] shadow-[0_6px_18px_rgba(20,40,80,.10)] transition-transform hover:-translate-y-0.5">
             {done.includes(p.id) && <span className="absolute top-2 right-2 grid size-6 place-items-center rounded-full bg-white text-app"><Icon name="check" size={13} /></span>}
-            <span className="absolute inset-x-0 bottom-0 bg-white/55 px-3 py-2.5 text-ink backdrop-blur-sm">
+            <span className="absolute inset-x-0 bottom-0 bg-white/80 px-3 py-2.5 text-ink backdrop-blur-md">
               <b className="block text-[13px] leading-tight font-semibold">{p.title}</b>
               <small className="text-[11px] text-[#3e4651]">{p.minutes} menit</small>
             </span>

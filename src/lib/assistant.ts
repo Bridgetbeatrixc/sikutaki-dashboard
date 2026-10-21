@@ -4,7 +4,9 @@ import { ENERGY_NOTE, GROUPS, MOVEMENT_NOTE, PRACTICES, practiceById, PROGRAMS, 
 /*
  * The AI assistant's instructions and the app context it receives. The model may only recommend practices and
  * programs from the catalog, written as tokens the app turns into buttons: [[latihan:id]], [[program:id]],
- * [[psikolog]] and [[bantuan]] (crisis lines).
+ * [[psikolog]] and [[bantuan]] (crisis lines). It can also propose changes the employee confirms with one tap:
+ * start, pause, resume or stop a program ([[mulai:id]], [[jeda:id]], [[lanjutkan:id]], [[hentikan:id]]),
+ * mark a practice done today ([[selesai:id]]), and ask HR for a counseling schedule ([[ajukan]]).
  */
 
 export type AssistantContext = {
@@ -13,7 +15,11 @@ export type AssistantContext = {
   days: { day: string; mood: number; sleep: number }[];
   todayMood: number | null;
   answers: Record<string, number> | null;
-  programs: string[];
+  /** Running programs with today's sessions. */
+  programs: { id: string; day: number; days: number; paused: boolean; sessions: { slot: string; practice: string; done: boolean }[] }[];
+  doneToday: string[];
+  /** Counseling requests to HR, e.g. "menunggu HR" or "dijadwalkan 2026-10-24 19.00". */
+  requests: string[];
 };
 
 const SCALE = ["tidak pernah", "jarang", "kadang-kadang", "sering", "hampir selalu"];
@@ -24,7 +30,10 @@ export function systemPrompt(c: AssistantContext) {
   const programs = PROGRAMS.map((p) => `${p.id} | ${p.title} | ${p.kind === "praktis" ? `2x sehari, ${p.days} hari` : `setiap hari, ${p.days / 7} minggu`} | ${p.blurb}`).join("\n");
   const days = c.days.length ? c.days.map((d) => `${d.day}: mood ${MOODS[d.mood - 1]}, tidur ${d.sleep} jam`).join("; ") : "belum ada catatan";
   const checkin = c.answers ? Object.entries(c.answers).filter(([a]) => areaById(a)).map(([a, v]) => `${areaById(a).name}: ${SCALE[v]}`).join("; ") : "belum mengisi minggu ini";
-  const running = c.programs.length ? c.programs.map((id) => programById(id)?.title).join(", ") : "tidak ada";
+  const running = c.programs.length
+    ? c.programs.map((p) => `${programById(p.id)?.title} (id ${p.id}): hari ${p.day} dari ${p.days}${p.paused ? ", sedang dijeda" : ""}; sesi hari ini: ${p.sessions.map((x) => `${x.slot} ${practiceById(x.practice)?.title} (id ${x.practice}) ${x.done ? "sudah" : "belum"}`).join(", ")}`).join("\n  ")
+    : "tidak ada";
+  const doneToday = c.doneToday.length ? c.doneToday.map((id) => practiceById(id)?.title ?? id).join(", ") : "belum ada";
 
   return `Kamu adalah Asisten Sikutaki, teman bicara dan pendamping latihan mandiri di aplikasi kesejahteraan karyawan di Indonesia. Tugas utamamu mendengarkan; menyarankan latihan hanya bila memang dibutuhkan.
 
@@ -49,6 +58,13 @@ Aturan:
 10. Jangan sarankan latihan "syukur" bila mood hari ini Berat; pilih latihan napas.
 11. Jangan meminta nama lengkap, nama atasan, atau data pribadi lain.
 
+Mengubah latihan dan mencatat kemajuan (aplikasi menampilkan tombol yang harus ditekan pengguna; kamu tidak mengubah apa pun sendiri):
+12. Bila pengguna ingin memulai program, tulis [[mulai:ID_PROGRAM]]. Hanya satu program "praktis" dan satu program "rutin" boleh berjalan bersamaan; bila sudah ada yang sejenis, tawarkan untuk menghentikannya dulu.
+13. Bila pengguna ingin menjeda, melanjutkan, atau menghentikan program yang sedang berjalan, tulis [[jeda:ID_PROGRAM]], [[lanjutkan:ID_PROGRAM]], atau [[hentikan:ID_PROGRAM]]. Untuk menghentikan, sebutkan bahwa kemajuannya tidak bisa dilanjutkan.
+14. Bila pengguna bilang sudah melakukan suatu latihan hari ini, tulis [[selesai:ID_LATIHAN]] agar ia bisa mencatatnya. Bila latihan itu sesi program hari ini, catatan itu juga menambah kemajuan programnya. Sebutkan kemajuan program dengan jujur dari data konteks.
+15. Bila pengguna ingin bicara dengan psikolog tapi butuh bantuan mengatur waktu, atau ingin lewat HR, tulis [[ajukan]] agar ia bisa mengajukan jadwal ke HR (boleh tanpa nama). Tetap tulis [[psikolog]] bila ia ingin menghubungi psikolog langsung.
+16. Pakai kode tindakan hanya saat pengguna memintanya atau menyetujui tawaranmu, dan katakan "tekan tombol di bawah".
+
 Katalog latihan (id | judul | durasi | kelompok | keterangan):
 ${practices}
 
@@ -60,7 +76,9 @@ Konteks dari aplikasi, hanya sebagai latar (jangan diulang mentah-mentah, dan ja
 - Mood hari ini: ${c.todayMood ? MOODS[c.todayMood - 1] : "belum dicatat"}
 - Catatan 7 hari: ${days}
 - Check-in minggu ini: ${checkin}
-- Program yang sedang berjalan: ${running}`;
+- Program yang sedang berjalan: ${running}
+- Latihan yang sudah selesai hari ini: ${doneToday}
+- Permintaan jadwal konseling ke HR: ${c.requests.length ? c.requests.join("; ") : "tidak ada"}`;
 }
 
 export type Piece =
@@ -68,12 +86,16 @@ export type Piece =
   | { kind: "practice"; id: string }
   | { kind: "program"; id: string }
   | { kind: "counsel" }
-  | { kind: "crisis" };
+  | { kind: "crisis" }
+  | { kind: "action"; action: Action; id: string }
+  | { kind: "request" };
+
+export type Action = "mulai" | "jeda" | "lanjutkan" | "hentikan" | "selesai";
 
 /** Splits a reply into text and recommendation cards; unknown ids are dropped. */
 export function parseReply(text: string): Piece[] {
   const pieces: Piece[] = [];
-  const re = /\[\[(latihan|program):([a-z0-9-]+)\]\]|\[\[(psikolog|bantuan)\]\]/g;
+  const re = /\[\[(latihan|program|mulai|jeda|lanjutkan|hentikan|selesai):([a-z0-9-]+)\]\]|\[\[(psikolog|bantuan|ajukan)\]\]/g;
   let last = 0;
   for (const m of text.matchAll(re)) {
     const before = text.slice(last, m.index).trim();
@@ -81,7 +103,10 @@ export function parseReply(text: string): Piece[] {
     last = (m.index ?? 0) + m[0].length;
     if (m[1] === "latihan" && practiceById(m[2])) pieces.push({ kind: "practice", id: m[2] });
     else if (m[1] === "program" && programById(m[2])) pieces.push({ kind: "program", id: m[2] });
+    else if (m[1] === "selesai" && practiceById(m[2])) pieces.push({ kind: "action", action: "selesai", id: m[2] });
+    else if (m[1] && m[1] !== "latihan" && m[1] !== "program" && m[1] !== "selesai" && programById(m[2])) pieces.push({ kind: "action", action: m[1] as Action, id: m[2] });
     else if (m[3] === "psikolog") pieces.push({ kind: "counsel" });
+    else if (m[3] === "ajukan") pieces.push({ kind: "request" });
     else if (m[3] === "bantuan") pieces.push({ kind: "crisis" });
   }
   const rest = text.slice(last).trim();
@@ -90,7 +115,7 @@ export function parseReply(text: string): Piece[] {
   const seen = new Set<string>();
   return pieces.filter((p) => {
     if (p.kind === "text") return true;
-    const key = p.kind === "practice" || p.kind === "program" ? `${p.kind}:${p.id}` : p.kind;
+    const key = p.kind === "practice" || p.kind === "program" ? `${p.kind}:${p.id}` : p.kind === "action" ? `${p.action}:${p.id}` : p.kind;
     if (seen.has(key)) return false;
     seen.add(key);
     return true;

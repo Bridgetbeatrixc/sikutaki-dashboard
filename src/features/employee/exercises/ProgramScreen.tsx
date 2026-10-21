@@ -7,7 +7,7 @@ import { MOVEMENT_NOTE, practiceById, programById, programState, SLOT_LABEL } fr
 import { appButton, FlowBar, Lead, Note, Section } from "../components/ui";
 import { useEmployee } from "../EmployeeProvider";
 import { HelpLine } from "./PracticeFrame";
-import { kindLabel, ProgramCard } from "./ProgramCard";
+import { kindLabel, ProgramCard, programArt } from "./ProgramCard";
 
 export function ProgramScreen({ id }: { id: string }) {
   const { programs, startProgram, pauseProgram, stopProgram, today, todayLog } = useEmployee();
@@ -37,6 +37,7 @@ export function ProgramScreen({ id }: { id: string }) {
   return (
     <div className="grid min-h-full content-start gap-3.5 px-[22px] pt-2 pb-[104px] md:px-8 md:pt-6 md:pb-10">
       <FlowBar closeHref={ROUTES.employee.exercises} title="Program" />
+      <div className="h-[140px] rounded-[22px] md:h-[190px]" style={{ background: programArt(p.id) }} role="img" aria-label={p.title} />
       <div>
         <small className="rounded-full bg-mint px-2.5 py-1 text-xs font-bold text-app-dark">{kindLabel(p.kind, p.days, p.slots.length)}</small>
         <h1 className="mt-3 text-[24px] leading-tight font-semibold text-ink">{p.title}</h1>

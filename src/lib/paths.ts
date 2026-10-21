@@ -22,6 +22,7 @@ export const ROUTES = {
     area: (id: string) => `/dashboard-hr/area/${id}`,
     checkin: "/dashboard-hr/check-in",
     reports: "/dashboard-hr/laporan",
+    counseling: "/dashboard-hr/konseling",
     settings: "/dashboard-hr/pengaturan",
     settingsTab: (tab: string) => `/dashboard-hr/pengaturan?tab=${tab}`,
   },
@@ -39,6 +40,10 @@ export const ROUTES = {
     calm: "/dashboard-employee/tenang",
     profile: "/dashboard-employee/profil",
     assistant: "/dashboard-employee/asisten",
+    /** The employee's own report, printable as PDF. */
+    report: "/dashboard-employee/laporan",
+    /** Konseling with the "ask HR for a schedule" form open. */
+    requestSession: (fromAssistant = false) => `/dashboard-employee/konseling?ajukan=1${fromAssistant ? "&dari=asisten" : ""}#jadwal`,
   },
 } as const;
 

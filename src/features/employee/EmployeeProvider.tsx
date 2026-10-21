@@ -2,7 +2,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { followUpArea } from "@/lib/catalog";
 import { programById, programState, type Slot } from "@/lib/practice";
-import { loadEmployee, saveEmployee, type EmployeeData } from "@/store/employee";
+import { loadEmployee, logFinishedProgram, saveEmployee, type EmployeeData } from "@/store/employee";
 import * as actions from "@/store/employee-actions";
 
 /*
@@ -125,6 +125,7 @@ function EmployeeState({ data, children }: { data: EmployeeData; children: React
         if (e.id !== id) return [e];
         const next = { ...e, paused: false, sessions: [...e.sessions.filter((x) => !(x.day === s.today && x.slot === slot)), { day: s.today, slot }] };
         if (programState(next, s.today, mood).finished) {
+          logFinishedProgram(e.program, e.startedOn, s.today);
           toast(`Program ${programById(e.program)?.title} selesai. Terima kasih sudah konsisten.`);
           return [];
         }

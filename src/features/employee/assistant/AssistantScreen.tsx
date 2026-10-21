@@ -2,18 +2,19 @@
 import Link from "next/link";
 import { Fragment, useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { Icon } from "@/components/ui/Icon";
-import { isCrisis, parseReply, systemPrompt, type Piece } from "@/lib/assistant";
+import { isCrisis, parseReply, systemPrompt, type Action, type Piece } from "@/lib/assistant";
 import { cn } from "@/lib/cn";
-import { ROUTES } from "@/lib/paths";
-import { practiceById, programById } from "@/lib/practice";
+import { asset, ROUTES } from "@/lib/paths";
+import { practiceById, programById, programState, SLOT_LABEL } from "@/lib/practice";
+import { loadRequests, STATUS_LABEL } from "@/store/counseling";
 import { askGemini, GEMINI_MODELS, geminiKey, hasBuiltInKey, loadGemini, saveGemini, type ChatTurn, type GeminiSettings } from "@/store/gemini";
 import { appButton, Note } from "../components/ui";
 import { useEmployee } from "../EmployeeProvider";
-import { cardBackground } from "../exercises/ProgramCard";
+import { practiceArt, programArt } from "../exercises/ProgramCard";
 
 type Message = ChatTurn & { error?: boolean };
 
-const STARTERS = ["Aku susah tidur belakangan ini", "Lagi stres karena kerjaan", "Aku cuma mau cerita", "Aku cuma punya 3 menit"];
+const STARTERS = ["Aku cuma mau cerita", "Aku susah tidur belakangan ini", "Aku cuma punya 3 menit", "Bagaimana kemajuan programku?", "Aku mau atur jadwal dengan psikolog"];
 /** The conversation stays in this tab only. */
 const CHAT_KEY = "sikutaki:asisten";
 const input = "w-full rounded-[14px] border-[1.5px] border-line bg-white px-3.5 py-3 text-[15px] text-ink focus:border-app focus:outline-none";
@@ -48,9 +49,16 @@ export function AssistantScreen() {
     setText("");
     setBusy(true);
     try {
+      const mood = emp.todayLog?.mood ?? null;
       const system = systemPrompt({
-        name: emp.user.name, energy: emp.energy.allowed && emp.energy.optIn, days: emp.days, todayMood: emp.todayLog?.mood ?? null,
-        answers: emp.week.answers, programs: emp.programs.map((p) => p.program),
+        name: emp.user.name, energy: emp.energy.allowed && emp.energy.optIn, days: emp.days, todayMood: mood, answers: emp.week.answers,
+        programs: emp.programs.map((e) => {
+          const st = programState(e, emp.today, mood);
+          return { id: e.program, day: st.day, days: st.program.days, paused: e.paused, sessions: st.slots.map((x) => ({ slot: SLOT_LABEL[x.slot], practice: x.practice, done: x.done })) };
+        }),
+        doneToday: emp.done,
+        requests: loadRequests().filter((r) => r.status !== "dibatalkan").slice(0, 3)
+          .map((r) => (r.schedule && r.status === "dijadwalkan" ? `dijadwalkan ${r.schedule.date} ${r.schedule.time}` : STATUS_LABEL[r.status].toLowerCase())),
       });
       const reply = await askGemini(settings, system, history.slice(-12));
       setMessages((m) => [...m, { role: "model", text: reply }]);
@@ -130,13 +138,15 @@ function Reply({ pieces }: { pieces: Piece[] }) {
         if (p.kind === "text") return <div key={i} className="rounded-[18px] rounded-bl-md bg-soft px-3.5 py-2.5 text-[14px] leading-normal whitespace-pre-wrap text-ink">{bold(p.text)}</div>;
         if (p.kind === "practice") {
           const x = practiceById(p.id)!;
-          return <Card key={i} href={ROUTES.employee.exercise(x.id)} title={x.title} meta={`Latihan · ${x.minutes} menit`} art={cardBackground(x.colors)} />;
+          return <Card key={i} href={ROUTES.employee.exercise(x.id)} title={x.title} meta={`Latihan · ${x.minutes} menit`} art={practiceArt(x)} />;
         }
         if (p.kind === "program") {
           const x = programById(p.id)!;
-          return <Card key={i} href={ROUTES.employee.program(x.id)} title={x.title} meta={x.kind === "praktis" ? `Program · ${x.days} hari` : `Program · ${x.days / 7} minggu`} art="linear-gradient(160deg,#eef4fd,#cfe0f7)" />;
+          return <Card key={i} href={ROUTES.employee.program(x.id)} title={x.title} meta={x.kind === "praktis" ? `Program · ${x.days} hari` : `Program · ${x.days / 7} minggu`} art={programArt(x.id)} />;
         }
-        if (p.kind === "counsel") return <Card key={i} href={ROUTES.employee.counseling} title="Bicara dengan psikolog" meta="Rahasia, langsung ke psikolog mitra" art="linear-gradient(160deg,#e8f1fb,#a9c6ec)" />;
+        if (p.kind === "counsel") return <Card key={i} href={ROUTES.employee.counseling} title="Bicara dengan psikolog" meta="Rahasia, langsung ke psikolog mitra" art={`url("${asset("/img/tentang/tangan.jpg")}") center / cover, #a9c6ec`} />;
+        if (p.kind === "request") return <Card key={i} href={ROUTES.employee.requestSession(true)} title="Ajukan jadwal konseling ke HR" meta="Chat HR dulu, boleh tanpa nama" art={`url("${asset("/img/tentang/obrolan.jpg")}") center / cover, #a8d8bf`} />;
+        if (p.kind === "action") return <ActionCard key={i} action={p.action} id={p.id} />;
         return <Crisis key={i} />;
       })}
     </>
@@ -155,6 +165,74 @@ function Card({ href, title, meta, art }: { href: string; title: string; meta: s
       <span className="min-w-0"><b className="block text-[13.5px] font-semibold">{title}</b><small className="text-[11.5px] text-muted">{meta}</small></span>
       <Icon name="chevron" size={16} className="text-app" />
     </Link>
+  );
+}
+
+const ACTION_TEXT: Record<Action, { label: string; done: string }> = {
+  mulai: { label: "Mulai program", done: "Program dimulai" },
+  jeda: { label: "Jeda program", done: "Program dijeda" },
+  lanjutkan: { label: "Lanjutkan program", done: "Program dilanjutkan" },
+  hentikan: { label: "Hentikan program", done: "Program dihentikan" },
+  selesai: { label: "Catat selesai hari ini", done: "Tercatat selesai" },
+};
+
+/** A change the assistant proposed; nothing happens until the employee taps it. Stopping asks once more. */
+function ActionCard({ action, id }: { action: Action; id: string }) {
+  const emp = useEmployee();
+  const [state, setState] = useState<"idle" | "confirm" | "done">("idle");
+  const [busy, setBusy] = useState(false);
+  const isPractice = action === "selesai";
+  const practice = isPractice ? practiceById(id) : undefined;
+  const program = isPractice ? undefined : programById(id);
+  const enrollment = emp.programs.find((e) => e.program === id);
+  const title = practice?.title ?? program?.title ?? id;
+  const art = practice ? practiceArt(practice) : programArt(id);
+
+  // Today's program session for this practice, if there is one still open.
+  const session = isPractice ? emp.programs.filter((e) => !e.paused).flatMap((e) => programState(e, emp.today, emp.todayLog?.mood ?? null).slots
+    .filter((x) => x.practice === id && !x.done).map((x) => ({ enrollment: e.id, slot: x.slot, program: programById(e.program)?.title }))).at(0) : undefined;
+
+  const already = action === "selesai" ? emp.done.includes(id) && !session
+    : action === "mulai" ? Boolean(enrollment)
+    : action === "jeda" ? Boolean(enrollment?.paused)
+    : action === "lanjutkan" ? Boolean(enrollment && !enrollment.paused)
+    : !enrollment;
+  const missing = !isPractice && action !== "mulai" && !enrollment;
+
+  const run = async () => {
+    if (action === "hentikan" && state !== "confirm") { setState("confirm"); return; }
+    setBusy(true);
+    let ok = false;
+    if (action === "mulai") ok = Boolean(await emp.startProgram(id));
+    else if (action === "selesai") {
+      if (session) ok = await emp.completeSession(session.enrollment, session.slot, id);
+      else { emp.markDone(id); ok = true; }
+    } else if (enrollment) {
+      ok = action === "hentikan" ? await emp.stopProgram(enrollment.id) : await emp.pauseProgram(enrollment.id, action === "jeda");
+    }
+    setBusy(false);
+    if (ok) { setState("done"); emp.toast(`${ACTION_TEXT[action].done}: ${title}`); }
+  };
+
+  const meta = isPractice ? (session ? `Sesi ${SLOT_LABEL[session.slot].toLowerCase()} · ${session.program}` : `Latihan · ${practice?.minutes} menit`)
+    : enrollment ? `Hari ${programState(enrollment, emp.today, emp.todayLog?.mood ?? null).day} dari ${program?.days}${enrollment.paused ? " · dijeda" : ""}` : `Program · ${program?.days} hari`;
+  const done = state === "done" || (already && state === "idle");
+
+  return (
+    <div className="grid grid-cols-[42px_1fr] items-center gap-x-3 gap-y-2 rounded-2xl border-[1.5px] border-app/40 bg-white py-2 pr-2 pl-2 text-ink">
+      <span className="size-[42px] rounded-xl" style={{ background: art }} />
+      <span className="min-w-0"><b className="block text-[13.5px] font-semibold">{title}</b><small className="text-[11.5px] text-muted">{meta}</small></span>
+      <div className="col-span-full">
+        {missing ? <small className="text-xs text-muted">Program ini tidak sedang berjalan.</small>
+          : done ? <span className="inline-flex items-center gap-1 text-[12.5px] font-semibold text-app"><Icon name="check" size={14} />{state === "done" ? ACTION_TEXT[action].done : "Sudah"}</span>
+          : (
+            <button type="button" disabled={busy} onClick={run}
+              className={cn("w-full rounded-xl px-3 py-2 text-[13px] font-semibold disabled:opacity-50", action === "hentikan" ? "bg-[#fdf0f2] text-[#8a2b3d]" : "bg-app text-white")}>
+              {state === "confirm" ? "Ya, hentikan. Kemajuannya tidak bisa dilanjutkan" : ACTION_TEXT[action].label}
+            </button>
+          )}
+      </div>
+    </div>
   );
 }
 

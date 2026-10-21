@@ -1,13 +1,14 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Icon } from "@/components/ui/Icon";
 import { hours } from "@/lib/format";
 import { cn } from "@/lib/cn";
-import { ROUTES } from "@/lib/paths";
+import { asset, ROUTES } from "@/lib/paths";
 import { lowMoodStreak, practiceById, programById, programState, SLOT_LABEL, suggestedPractices } from "@/lib/practice";
 import { addDays, DAYS_LONG, longDate, weekday } from "@/lib/week";
 import { CalmCard } from "../calm/CalmCard";
+import { practiceArt } from "../exercises/ProgramCard";
 import { Blob, type BlobIcon } from "../components/Blob";
 import { MoodFace, MoodTile } from "../components/MoodFace";
 import { appButton, CheckCircle, linkText, StartPill } from "../components/ui";
@@ -22,17 +23,100 @@ export function HomeScreen() {
   return (
     <div className="flex min-h-full flex-col">
       <div className="px-[22px] pt-3.5 pb-1.5 md:px-8 md:pt-6">
-        <div className="mt-1">
-          <span className="block text-[15px] font-bold">Hai, {user.name.split(" ")[0]}</span>
-          <small className="block text-xs text-muted">{longDate(today)}</small>
-        </div>
+        <Greeting name={user.name.split(" ")[0]} date={today} />
         <CheckinReminder />
         <DailyNote />
         <LowMoodSuggestion />
+        <ForYou />
         <CalmCard className="mt-4" />
       </div>
       <TodayPlan />
     </div>
+  );
+}
+
+/** Short, original lines for the day. Not attributed to anyone, and never a promise of an outcome. */
+const QUOTES = [
+  "Kamu tidak harus produktif setiap jam untuk tetap berharga.",
+  "Istirahat bukan hadiah setelah lelah. Istirahat bagian dari bekerja.",
+  "Satu napas pelan sudah cukup sebagai awal.",
+  "Hari ini tidak perlu sempurna. Cukup dijalani pelan-pelan.",
+  "Perasaan berat itu datang dan pergi. Kamu tidak sendirian menghadapinya.",
+  "Bilang \u201Cbelum bisa\u201D juga termasuk menjaga diri.",
+  "Langkah kecil yang diulang lebih kuat dari rencana besar yang ditunda.",
+  "Tidak apa-apa meminta bantuan. Itu tanda kamu peduli pada dirimu.",
+  "Coba perhatikan satu hal baik hari ini, sekecil apa pun.",
+  "Kamu sudah melewati banyak hari sulit. Hari ini juga bisa.",
+  "Jeda lima menit bisa membuat sisa hari terasa lebih ringan.",
+  "Bersikap lembut pada diri sendiri bukan berarti malas.",
+  "Fokus pada yang bisa kamu kendalikan, lepaskan sisanya sebentar.",
+  "Tidur yang cukup adalah investasi, bukan kemewahan.",
+];
+
+const GREET = [
+  { until: 11, label: "Selamat pagi", photo: "hening" },
+  { until: 15, label: "Selamat siang", photo: "hadir" },
+  { until: 18, label: "Selamat sore", photo: "jeda" },
+  { until: 24, label: "Selamat malam", photo: "sungai" },
+];
+
+/** Welcome card: greeting by time of day over a calm photo, with the day's message. */
+function Greeting({ name, date }: { name: string; date: string }) {
+  // The hour is read after mount so the static export does not bake in the build time.
+  const [hour, setHour] = useState<number | null>(null);
+  useEffect(() => setHour(new Date().getHours()), []);
+  const g = GREET.find((x) => (hour ?? 9) < x.until)!;
+  const dayIndex = Math.floor(Date.parse(`${date}T00:00:00Z`) / 86_400_000);
+  const quote = QUOTES[((dayIndex % QUOTES.length) + QUOTES.length) % QUOTES.length];
+  return (
+    <section className="relative mt-1 overflow-hidden rounded-[24px] text-white shadow-[0_10px_30px_rgba(15,23,42,.18)]"
+      style={{ background: `linear-gradient(180deg,rgba(10,25,50,.55),rgba(10,25,50,.25) 45%,rgba(10,25,50,.8)), url("${asset(`/img/latihan/${g.photo}.jpg`)}") center / cover no-repeat, #1f4f8f` }}>
+      <div className="grid gap-3 px-5 pt-5 pb-5 md:px-6 md:pt-6">
+        <div>
+          <small className="block text-xs font-medium opacity-85">{longDate(date)}</small>
+          <h1 className="mt-0.5 text-[24px] font-bold leading-tight text-white [text-shadow:0_1px_8px_rgba(0,0,0,.35)] md:text-[26px]">{g.label}, {name}</h1>
+        </div>
+        <figure className="mt-6 rounded-2xl bg-white/15 px-4 py-3 backdrop-blur-md">
+          <figcaption className="mb-1 flex items-center gap-1.5 text-[11px] font-bold tracking-wide uppercase opacity-85">
+            <Icon name="heart" size={13} />Pesan hari ini
+          </figcaption>
+          <blockquote className="text-[15px] leading-snug font-semibold">“{quote}”</blockquote>
+        </figure>
+      </div>
+    </section>
+  );
+}
+
+/** Practices picked from today's mood and sleep, as photo cards. */
+function ForYou() {
+  const { todayLog, done } = useEmployee();
+  const ids = [...suggestedPractices(todayLog?.mood ?? null, todayLog?.sleep ?? 7), "napas"].filter((v, i, a) => a.indexOf(v) === i).slice(0, 3);
+  return (
+    <section className="mt-5">
+      <div className="mb-2.5 flex items-baseline justify-between">
+        <b className="text-[15px]">Latihan untukmu</b>
+        <Link href={ROUTES.employee.exercises} className={cn(linkText, "text-[13px]")}>Lihat semua</Link>
+      </div>
+      <ul className="grid grid-cols-3 gap-2.5">
+        {ids.map((id) => {
+          const p = practiceById(id);
+          if (!p) return null;
+          return (
+            <li key={id}>
+              <Link href={ROUTES.employee.exercise(id)} className="block overflow-hidden rounded-[18px] bg-soft shadow-[0_4px_14px_rgba(15,23,42,.08)]">
+                <span className="relative block h-[92px]" style={{ background: practiceArt(p) }}>
+                  {done.includes(id) && <span className="absolute top-2 right-2 rounded-full bg-white/90 px-2 py-0.5 text-[10.5px] font-bold text-app-dark">Sudah</span>}
+                </span>
+                <span className="block px-2.5 py-2">
+                  <b className="block truncate text-[13px] text-ink">{p.title}</b>
+                  <small className="text-[11.5px] text-muted">{p.minutes} menit</small>
+                </span>
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
   );
 }
 
@@ -89,7 +173,7 @@ function DailyNote() {
 
   return (
     <>
-      <h1 className="mt-4 mb-3.5 text-[28px] font-semibold text-ink">Bagaimana perasaanmu hari ini?</h1>
+      <h2 className="mt-4 mb-3.5 text-[24px] font-semibold text-ink">Bagaimana perasaanmu hari ini?</h2>
       <div className="grid grid-cols-5 gap-2">
         {MOODS.map((m) => <MoodTile key={m.id} mood={m} selected={mood === m.id} onSelect={() => setMood(m.id)} />)}
       </div>
@@ -135,7 +219,7 @@ function LowMoodSuggestion() {
   );
 }
 
-type PlanItem = { id: string; title: string; meta: string; icon: BlobIcon; hue: string; done: boolean; href?: string };
+type PlanItem = { id: string; title: string; meta: string; icon: BlobIcon; hue: string; done: boolean; href?: string; art?: string };
 
 /** Today's three steps on a green timeline. */
 function TodayPlan() {
@@ -149,7 +233,7 @@ function TodayPlan() {
       const p = practiceById(s.practice)!;
       return {
         id: `${e.id}-${s.slot}`, title: p.title, meta: `${st.program.title} · ${SLOT_LABEL[s.slot]} · ${p.minutes} menit`,
-        icon: "lungs" as const, hue: "#C27510", done: s.done, href: ROUTES.employee.session(p.id, e.id, s.slot),
+        icon: "lungs" as const, hue: "#C27510", done: s.done, href: ROUTES.employee.session(p.id, e.id, s.slot), art: practiceArt(p),
       };
     });
   });
@@ -159,13 +243,13 @@ function TodayPlan() {
     { id: "mood", title: "Catat mood harian", meta: "10 detik", icon: "smile", hue: "#3B8EF7", done: Boolean(todayLog) },
     { id: "checkin", title: "Check-in mingguan", meta: checkinMeta, icon: "clip", hue: "#2F8F9D", done: Boolean(week.answers), href: week.open ? ROUTES.employee.checkin : undefined },
     ...(sessions.length ? sessions : [
-      { id: exercise.id, title: `Latihan ${exercise.title}`, meta: `${exercise.minutes} menit`, icon: "lungs" as const, hue: "#C27510", done: done.includes(exercise.id), href: ROUTES.employee.exercise(exercise.id) },
+      { id: exercise.id, title: `Latihan ${exercise.title}`, meta: `${exercise.minutes} menit`, icon: "lungs" as const, hue: "#C27510", done: done.includes(exercise.id), href: ROUTES.employee.exercise(exercise.id), art: practiceArt(exercise) },
     ]),
   ];
   const count = plan.filter((p) => p.done).length;
 
   return (
-    <section className="relative mt-[18px] min-h-[360px] flex-1 rounded-t-[30px] bg-app px-4 pt-[18px] pb-[104px] text-white md:px-6 md:pb-8">
+    <section className="relative mt-[18px] min-h-[300px] flex-1 rounded-t-[30px] bg-app px-4 pt-[18px] pb-[104px] text-white md:mx-6 md:mb-6 md:min-h-0 md:flex-none md:rounded-[26px] md:px-5 md:pb-5">
       <div className="mb-3.5 flex justify-between px-1 text-[15px] font-semibold">
         <span>Rencana hari ini</span>
         <span className="text-[13px] font-medium opacity-85">{count}/{plan.length} selesai</span>
@@ -186,7 +270,7 @@ function TodayPlan() {
 function PlanRow({ item }: { item: PlanItem }) {
   const body = (
     <>
-      <Blob hue={item.hue} icon={item.icon} />
+      {item.art ? <span className="size-[52px] rounded-[14px]" style={{ background: item.art }} /> : <Blob hue={item.hue} icon={item.icon} />}
       <span>
         <b className={cn("block text-sm font-semibold", item.done && "line-through decoration-ink/35")}>{item.title}</b>
         <small className="mt-0.5 block text-[11.5px] text-muted">{item.meta}</small>
