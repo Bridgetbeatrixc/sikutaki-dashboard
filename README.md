@@ -87,6 +87,15 @@ npx serve out                # coba hasil build
 
 Untuk GitHub Pages atau hosting di subfolder, isi `NEXT_PUBLIC_BASE_PATH` (misalnya `/sikutaki-dashboard`) saat build.
 
+### Foto masuk/daftar
+
+Foto di samping formulir masuk, daftar, dan gabung masih sementara (Unsplash):
+
+- `public/img/auth/masuk.jpg` untuk `/masuk`
+- `public/img/auth/daftar.jpg` untuk `/daftar` dan `/gabung`
+
+Panduan mengganti, ukuran yang disarankan, dan prompt siap pakai untuk ChatGPT (DALL·E) ada di `proposal/Prompt_Foto_Masuk_Daftar.md` di folder proyek. Cukup timpa file dengan nama yang sama (JPG, di bawah ~300 KB); kode tidak perlu diubah.
+
 ## Deploy ke Vercel
 
 Impor repo di [vercel.com/new](https://vercel.com/new) dan pilih cabang `frontend-gemini`. Tidak perlu database. Bila ingin key Gemini bawaan, isi `NEXT_PUBLIC_GEMINI_API_KEY` di **Settings > Environment Variables**.

@@ -11,6 +11,7 @@ const secondary = "inline-flex min-h-11 w-full items-center justify-center round
 export function LoginPage() {
   return (
     <AuthCard title="Masuk ke Sikutaki" text="Versi frontend untuk pengujian."
+      photo={{ src: "/img/auth/masuk.jpg", alt: "Karyawan tersenyum saat bekerja dengan laptop" }}
       footer={
         <div className="grid gap-2">
           <span>Karyawan baru? <Link href={ROUTES.join()} className="font-medium text-brand hover:underline">Isi nama dan divisi</Link></span>

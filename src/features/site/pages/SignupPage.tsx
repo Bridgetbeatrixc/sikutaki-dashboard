@@ -15,6 +15,7 @@ export function SignupPage() {
   const v = state?.fields ?? {};
   return (
     <AuthCard title="Daftarkan perusahaan" text="Versi frontend: nama Anda dan perusahaan tersimpan di peramban ini. Angka dashboard memakai 8 divisi perusahaan contoh."
+      photo={{ src: "/img/auth/daftar.jpg", alt: "Rekan kerja tersenyum bersama di kantor" }}
       footer={<>Ingin langsung melihat? <Link href={ROUTES.hr.root} className="font-medium text-brand hover:underline">Buka dashboard HR</Link></>}>
       <form action={action} className="grid gap-5">
         <label className={field}><span className={fieldLabel}>Nama lengkap</span><input name="name" required autoComplete="name" defaultValue={v.name} className={fieldInput} /></label>

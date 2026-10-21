@@ -20,6 +20,7 @@ export function JoinPage() {
   const v = state?.fields ?? {};
   return (
     <AuthCard title={company.name ? `Gabung dengan ${company.name}` : "Gabung"} text="Versi frontend: tanpa akun, datamu tersimpan di peramban ini."
+      photo={{ src: "/img/auth/daftar.jpg", alt: "Rekan kerja tersenyum bersama di kantor" }}
       footer={<>Ingin langsung mencoba? <Link href={ROUTES.employee.root} className="font-medium text-brand hover:underline">Buka aplikasi karyawan</Link></>}>
       <form action={action} className="grid gap-5">
         <label className={field}><span className={fieldLabel}>Nama panggilan</span><input name="name" required autoComplete="given-name" defaultValue={v.name} className={fieldInput} /></label>
