@@ -13,7 +13,7 @@ import { cardBackground } from "../exercises/ProgramCard";
 
 type Message = ChatTurn & { error?: boolean };
 
-const STARTERS = ["Aku susah tidur belakangan ini", "Lagi stres karena kerjaan", "Aku cuma punya 3 menit", "Badan pegal setelah seharian di depan laptop"];
+const STARTERS = ["Aku susah tidur belakangan ini", "Lagi stres karena kerjaan", "Aku cuma mau cerita", "Aku cuma punya 3 menit"];
 /** The conversation stays in this tab only. */
 const CHAT_KEY = "sikutaki:asisten";
 const input = "w-full rounded-[14px] border-[1.5px] border-line bg-white px-3.5 py-3 text-[15px] text-ink focus:border-app focus:outline-none";
@@ -69,7 +69,7 @@ export function AssistantScreen() {
       <div className="flex items-start justify-between gap-3">
         <div>
           <h1 className="mt-2.5 text-[26px] font-semibold text-ink">Asisten AI</h1>
-          <p className="text-sm leading-relaxed text-body">Ceritakan yang kamu rasakan, asisten menyarankan latihan yang cocok.</p>
+          <p className="text-sm leading-relaxed text-body">Ceritakan yang kamu rasakan. Asisten mendengarkan dulu, lalu menyarankan latihan bila kamu butuh.</p>
         </div>
         <button type="button" onClick={() => setShowSettings(!showSettings)} aria-label="Pengaturan asisten" aria-expanded={showSettings}
           className="mt-3 grid size-10 shrink-0 place-items-center rounded-full bg-soft text-ink"><Icon name="cog" size={18} /></button>

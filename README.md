@@ -11,7 +11,7 @@ Versi dengan backend Postgres ada di cabang `backend-real-app`.
 
 ## Asisten AI (Gemini, untuk uji coba)
 
-Tab **Asisten** di aplikasi karyawan (`/dashboard-employee/asisten`). Karyawan menceritakan kondisinya, asisten menyarankan paling banyak 3 latihan atau program dari katalog Sikutaki, ditampilkan sebagai kartu yang langsung bisa dibuka.
+Tab **Asisten** di aplikasi karyawan (`/dashboard-employee/asisten`). Karyawan menceritakan kondisinya. Asisten mendengarkan dan bertanya dulu, lalu bila dibutuhkan menyarankan paling banyak 3 latihan atau program dari katalog Sikutaki, ditampilkan sebagai kartu yang langsung bisa dibuka.
 
 - Asisten tidak mendiagnosis dan hanya boleh menyarankan latihan yang ada di katalog (`src/lib/assistant.ts`).
 - Bila pesan berisi tanda krisis, aplikasi selalu menampilkan Healing119 (119 ext 8) dan 112, apa pun jawaban model.
