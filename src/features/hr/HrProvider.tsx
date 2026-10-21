@@ -1,40 +1,64 @@
 "use client";
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import type { Scope } from "@/lib/data";
-import { INITIAL_NOTES, type Note } from "@/lib/focus";
+import { makeModel, type Dataset, type Model, type Scope } from "@/lib/model";
+import { localDataset } from "@/store/hr";
+import type { Result } from "@/store/hr-actions";
 
 type HrState = {
+  /** All numbers of the dashboard: the sample company with HR's local changes. */
+  m: Model;
+  demo: boolean;
   scope: Scope;
   setScope: (s: Scope) => void;
-  notes: Note[];
-  addNote: (n: Omit<Note, "id">) => void;
-  /** Demo switch: show the dashboard as a brand-new organisation with no results yet. */
-  empty: boolean;
-  setEmpty: (v: boolean) => void;
   toastMsg: string | null;
   toast: (msg: string) => void;
+  /** Runs a server action, shows its error (or `done`) as a toast, and resolves to whether it worked. */
+  run: (action: () => Promise<Result>, done?: string) => Promise<Result>;
+  pending: boolean;
 };
 
 const HrContext = createContext<HrState | null>(null);
 
+/** The dashboard reads the sample company with HR's own changes from this browser on top. */
 export function HrProvider({ children }: { children: ReactNode }) {
-  const [scope, setScope] = useState<Scope>("all");
-  const [notes, setNotes] = useState<Note[]>(INITIAL_NOTES);
-  const [empty, setEmpty] = useState(false);
-  const [toastMsg, setToastMsg] = useState<string | null>(null);
+  const [dataset, setDataset] = useState<Dataset | null>(null);
+  // localStorage exists only in the browser, so the data loads after the first render.
+  useEffect(() => setDataset(localDataset()), []);
+  if (!dataset) return <div className="grid min-h-dvh place-items-center text-sm text-muted">Memuat dashboard...</div>;
+  return <HrState dataset={dataset} reload={() => setDataset(localDataset())}>{children}</HrState>;
+}
 
-  // Sign-up sends people to ?mode=baru so the dashboard opens as a brand-new organisation.
-  useEffect(() => {
-    if (new URLSearchParams(window.location.search).get("mode") === "baru") setEmpty(true);
-  }, []);
+function HrState({ dataset, reload, children }: { dataset: Dataset; reload: () => void; children: ReactNode }) {
+  const m = useMemo(() => makeModel(dataset), [dataset]);
+  const [scope, setScope] = useState<Scope>("all");
+  const [toastMsg, setToastMsg] = useState<string | null>(null);
+  const [pending, setPending] = useState(false);
 
   const toast = useCallback((msg: string) => {
     setToastMsg(msg);
-    window.setTimeout(() => setToastMsg(null), 3200);
+    window.setTimeout(() => setToastMsg(null), 3600);
   }, []);
-  const addNote = useCallback((n: Omit<Note, "id">) => setNotes((ns) => [...ns, { ...n, id: `n${Date.now()}` }]), []);
 
-  const value = useMemo(() => ({ scope, setScope, notes, addNote, empty, setEmpty, toastMsg, toast }), [scope, notes, addNote, empty, toastMsg, toast]);
+  const run = useCallback(async (action: () => Promise<Result>, done?: string) => {
+    setPending(true);
+    let res: Result;
+    try {
+      res = await action();
+    } catch {
+      res = { ok: false, error: "Gagal menyimpan di peramban ini." };
+    }
+    setPending(false);
+    if (!res.ok) toast(res.error);
+    else {
+      if (done) toast(done);
+      reload();
+    }
+    return res;
+  }, [reload, toast]);
+
+  // A division that no longer exists (or is hidden) falls back to the whole company.
+  const safeScope = scope === "all" || m.teamById(scope) ? scope : "all";
+  const value = useMemo(() => ({ m, demo: false, scope: safeScope, setScope, toastMsg, toast, run, pending }), [m, safeScope, toastMsg, toast, run, pending]);
   return <HrContext.Provider value={value}>{children}</HrContext.Provider>;
 }
 

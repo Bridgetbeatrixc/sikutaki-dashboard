@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/cn";
-import { STATUS_LABEL, type Status } from "@/lib/data";
+import { STATUS_LABEL, type Status } from "@/lib/catalog";
 import { Icon, type IconName } from "./Icon";
 
 const STATUS_STYLE: Record<Status, { cls: string; icon: IconName }> = {

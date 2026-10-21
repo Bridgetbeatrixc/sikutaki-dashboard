@@ -2,25 +2,31 @@ import Link from "next/link";
 import { ROUTES } from "@/lib/paths";
 import { container } from "@/features/landing/components/ui";
 import { DEMO_EMAIL } from "@/features/landing/content";
-import { PageHero, ProtoNote } from "../ui";
+import { PageHero, Notice } from "../ui";
 
 type Section = { title: string; body: string[] };
 
 const PRIVACY: Section[] = [
   { title: "Data yang kami kumpulkan", body: [
-    "Dari karyawan: mood harian, jam tidur, jawaban check-in mingguan untuk 42 area, dan penyebab yang dipilih.",
-    "Dari HR: nama perusahaan, struktur divisi, dan catatan tindak lanjut yang ditulis HR.",
+    "Akun: nama, email, divisi, dan kata sandi (disimpan sebagai hash, bukan aslinya).",
+    "Dari karyawan: mood harian, jam tidur, jawaban check-in mingguan untuk 42 area, penyebab yang dipilih, dan latihan yang diselesaikan.",
+    "Dari HR: nama perusahaan, struktur divisi, psikolog mitra, dan catatan tindak lanjut yang ditulis HR.",
+    "Satu cookie sesi untuk menjaga Anda tetap masuk. Kami tidak memakai cookie iklan atau pelacak.",
   ] },
   { title: "Siapa yang bisa melihat apa", body: [
     "Karyawan melihat catatan dan insight pribadinya sendiri.",
     "HR hanya melihat rata-rata divisi yang berisi minimal 5 orang. Jawaban perorangan tidak pernah ditampilkan ke perusahaan.",
-    "Psikolog mitra hanya menerima rujukan yang disetujui karyawan.",
+    "Sikutaki tidak mengirim data apa pun ke psikolog mitra. Karyawan menghubungi mitra sendiri, dan HR hanya melihat jumlah karyawan yang menghubungi mitra per bulan.",
   ] },
   { title: "Dasar hukum", body: [
     "Data kesehatan diperlakukan sebagai data pribadi spesifik sesuai UU No. 27 Tahun 2022 tentang Pelindungan Data Pribadi, dan hanya diproses dengan persetujuan karyawan.",
   ] },
+  { title: "Masa simpan", body: [
+    "Jawaban check-in dan catatan harian disimpan sesuai masa simpan yang dipilih perusahaan (12, 24, atau 36 bulan), lalu dihapus permanen.",
+  ] },
   { title: "Hak Anda", body: [
-    "Karyawan berhak melihat, memperbaiki, dan meminta penghapusan datanya, serta menarik persetujuan kapan saja.",
+    "Karyawan berhak melihat, memperbaiki, dan menghapus datanya, serta menarik persetujuan kapan saja.",
+    "Akun beserta seluruh catatan dan check-in bisa dihapus sendiri dari halaman Profil di aplikasi karyawan.",
   ] },
   { title: "Kontak", body: [`Pertanyaan tentang privasi dapat dikirim ke ${DEMO_EMAIL}.`] },
 ];
@@ -49,7 +55,7 @@ export function LegalPage({ kind }: { kind: "privacy" | "terms" }) {
   return (
     <>
       <PageHero icon={kind === "privacy" ? "lock" : "file"} eyebrow="Legal" title={title}>
-        <ProtoNote className="mt-2">Draf untuk prototipe, ditulis dalam bahasa sehari-hari. Belum ditinjau ahli hukum dan belum berlaku.</ProtoNote>
+        <Notice className="mt-2">Draf ditulis dalam bahasa sehari-hari dan belum ditinjau ahli hukum.</Notice>
       </PageHero>
       <div className={`${container} grid gap-10 pb-24 lg:grid-cols-[220px_1fr] lg:gap-16`}>
         <nav aria-label="Isi halaman" className="hidden lg:block">

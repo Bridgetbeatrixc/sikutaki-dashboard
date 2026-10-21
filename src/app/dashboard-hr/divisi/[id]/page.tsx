@@ -1,16 +1,14 @@
 import type { Metadata } from "next";
 import { DivisionDetailPage } from "@/features/hr/divisions/DivisionDetailPage";
-import { teamById, TEAMS } from "@/lib/data";
+import { sampleDataset } from "@/lib/sample";
 
 type Props = { params: Promise<{ id: string }> };
 
-export const dynamicParams = false;
-export const generateStaticParams = () => TEAMS.map((t) => ({ id: t.id }));
+export const metadata: Metadata = { title: "Divisi" };
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { id } = await params;
-  return { title: teamById(id)?.name ?? "Divisi" };
-}
+// The frontend-only version has the sample company's divisions.
+export const dynamicParams = false;
+export const generateStaticParams = () => sampleDataset().teams.map((t) => ({ id: t.id }));
 
 export default async function Page({ params }: Props) {
   const { id } = await params;

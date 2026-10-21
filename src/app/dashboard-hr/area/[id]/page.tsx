@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { AreaDetailPage } from "@/features/hr/areas/AreaDetailPage";
-import { areaById, AREAS } from "@/lib/data";
+import { areaById, AREAS } from "@/lib/catalog";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -14,5 +15,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function Page({ params }: Props) {
   const { id } = await params;
+  if (!areaById(id)) notFound();
   return <AreaDetailPage id={id} />;
 }

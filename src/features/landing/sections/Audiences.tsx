@@ -5,8 +5,8 @@ import { asset, ROUTES } from "@/lib/paths";
 import { container } from "../components/ui";
 
 const AUDIENCES: { img: string; icon: IconName; title: string; text: string; href: string; cta: string }[] = [
-  { img: "card-hr.jpg", icon: "people", title: "Untuk HR", text: "Lihat kondisi tim tanpa membuka data pribadi.", href: ROUTES.hr.root, cta: "Buka dashboard HR" },
-  { img: "card-karyawan.jpg", icon: "user", title: "Untuk karyawan", text: "Kenali diri sendiri dalam 3 menit seminggu.", href: ROUTES.employee.root, cta: "Coba aplikasi karyawan" },
+  { img: "card-hr.jpg", icon: "people", title: "Untuk HR", text: "Lihat kondisi tim tanpa membuka data pribadi.", href: ROUTES.demo.hr, cta: "Buka dashboard HR" },
+  { img: "card-karyawan.jpg", icon: "user", title: "Untuk karyawan", text: "Kenali diri sendiri dalam 3 menit seminggu.", href: ROUTES.demo.employee, cta: "Coba aplikasi karyawan" },
   { img: "card-psikolog.jpg", icon: "chat", title: "Untuk psikolog mitra", text: "Terima rujukan yang sudah tersaring.", href: ROUTES.contact, cta: "Hubungi kami" },
 ];
 

@@ -1,5 +1,5 @@
 import type { IconName } from "@/components/ui/Icon";
-import { AREAS, GROUPS } from "@/lib/data";
+import { AREAS, GROUPS } from "@/lib/catalog";
 
 /* Landing page copy and sample data. Numbers inside the mock-ups are illustrative ("Data contoh"). */
 

@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { Icon } from "@/components/ui/Icon";
 import { cn } from "@/lib/cn";
 
-/* Small building blocks shared by the screens inside the phone. */
+/* Small building blocks shared by the screens of the employee app. */
 
 type Variant = "primary" | "ghost";
 
@@ -18,9 +18,9 @@ export function appButton(variant: Variant = "primary", small = false, className
 
 export const linkText = "font-bold text-app underline underline-offset-2";
 
-/** Scrolling page body; the bottom padding keeps content clear of the floating nav. */
+/** Page body; on phones the bottom padding keeps content clear of the floating tab bar. */
 export function Screen({ children, className }: { children: ReactNode; className?: string }) {
-  return <div className={cn("px-[22px] pt-3.5 pb-[104px]", className)}>{children}</div>;
+  return <div className={cn("px-[22px] pt-3.5 pb-[104px] md:px-8 md:pt-6 md:pb-10", className)}>{children}</div>;
 }
 
 export function Title({ children, className }: { children: ReactNode; className?: string }) {

@@ -74,7 +74,7 @@ export function DashboardMock() {
               <div className={tip}><Icon name="trend" size={16} /> Tingkat stres turun 17 poin sejak program jam kerja fleksibel dimulai di minggu ke-5.</div>
             </div>
           )}
-          <Link href={ROUTES.hr.root} className="inline-flex items-center gap-1.5 justify-self-start font-semibold text-brand">
+          <Link href={ROUTES.demo.hr} className="inline-flex items-center gap-1.5 justify-self-start font-semibold text-brand">
             Buka dashboard lengkap <Icon name="arrow" size={15} />
           </Link>
         </div>

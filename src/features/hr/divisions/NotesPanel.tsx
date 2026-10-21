@@ -5,18 +5,21 @@ import { Tag } from "@/components/ui/Chip";
 import { Delta } from "@/components/ui/Delta";
 import { inputClass, textareaClass } from "@/components/ui/form";
 import { Pills } from "@/components/ui/Segmented";
-import { AREAS, areaById, NOW, WEEKS } from "@/lib/data";
-import { NOTE_LABEL, noteChange, type Note, type NoteType } from "@/lib/focus";
+import { Icon } from "@/components/ui/Icon";
+import { AREAS, areaById, NOTE_LABEL, NOTE_TYPES, type NoteType } from "@/lib/catalog";
+import type { Note } from "@/lib/model";
+import { useHr } from "../HrProvider";
 import { NOTE_TONE } from "../noteTone";
 
 export type NoteDraft = { type: NoteType; area: string; text: string };
 
-const TYPE_OPTIONS = (Object.keys(NOTE_LABEL) as NoteType[]).map((k) => ({ value: k, label: NOTE_LABEL[k] }));
+const TYPE_OPTIONS = NOTE_TYPES.map((k) => ({ value: k, label: NOTE_LABEL[k] }));
 
 /** HR's own notes for a division: what was planned, done or is being watched. No owner field, not visible to employees. */
-export function NotesPanel({ notes, draft, setDraft, onSave }: {
-  notes: Note[]; draft: NoteDraft; setDraft: (d: NoteDraft) => void; onSave: () => void;
+export function NotesPanel({ notes, draft, setDraft, onSave, onDelete }: {
+  notes: Note[]; draft: NoteDraft; setDraft: (d: NoteDraft) => void; onSave: () => void; onDelete: (id: string) => void;
 }) {
+  const { m, pending } = useHr();
   return (
     <Card title="Catatan HR" sub="Untuk HR sendiri: apa yang direncanakan, dilakukan, atau dipantau. Tidak terlihat oleh karyawan.">
       <div id="note-form" className="grid gap-2 border-b border-line pb-3.5">
@@ -27,20 +30,21 @@ export function NotesPanel({ notes, draft, setDraft, onSave }: {
         </select>
         <textarea rows={3} className={textareaClass} value={draft.text} onChange={(e) => setDraft({ ...draft, text: e.target.value })}
           placeholder="Contoh: bicara dengan lead divisi soal jadwal shift minggu depan" aria-label="Isi catatan" />
-        <Button size="sm" className="justify-self-start" disabled={!draft.text.trim()} onClick={onSave}>Simpan catatan</Button>
+        <Button size="sm" className="justify-self-start" disabled={!draft.text.trim() || pending} onClick={onSave}>Simpan catatan</Button>
       </div>
       {notes.length === 0 ? <p className="text-muted">Belum ada catatan untuk divisi ini.</p> : (
         <ul className="grid">
           {notes.map((n) => {
-            const change = noteChange(n);
+            const change = m.noteChange(n);
             return (
               <li key={n.id} className="grid gap-1 border-t border-line py-3 first:border-t-0">
                 <div className="flex items-center gap-2 text-xs">
                   <Tag tone={NOTE_TONE[n.type]}>{NOTE_LABEL[n.type]}</Tag>
-                  <span className="text-muted">{WEEKS[Math.min(n.week, NOW)].label} · {n.by}</span>
+                  <span className="text-muted">{n.date} · {n.by}</span>
+                  {m.live && <button type="button" onClick={() => onDelete(n.id)} aria-label="Hapus catatan" className="ml-auto text-muted hover:text-bad"><Icon name="trash" size={14} /></button>}
                 </div>
                 <p className="text-[13.5px] leading-normal">{n.text}</p>
-                {change && n.area && n.week < NOW && (
+                {change && n.area && (
                   <small className="flex flex-wrap items-center gap-1.5 text-[12.5px] text-muted">
                     {areaById(n.area).name} sejak catatan ini: <b className="num">{change.before}</b> ke <b className="num">{change.now}</b> <Delta d={change.now - change.before} />
                   </small>

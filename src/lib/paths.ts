@@ -9,10 +9,13 @@ export const ROUTES = {
   terms: "/syarat",
   login: "/masuk",
   signup: "/daftar",
+  /** Employee sign-up with the company's invite code. */
+  join: (code?: string) => (code ? `/gabung?kode=${encodeURIComponent(code)}` : "/gabung"),
+
+  /** The frontend-only version has no demo mode: both apps open directly with data kept in the browser. */
+  demo: { hr: "/dashboard-hr", employee: "/dashboard-employee" },
   hr: {
     root: "/dashboard-hr",
-    /** Opens the dashboard as a brand-new organisation (used right after sign-up). */
-    newOrg: "/dashboard-hr?mode=baru",
     divisions: "/dashboard-hr/divisi",
     division: (id: string) => `/dashboard-hr/divisi/${id}`,
     areas: "/dashboard-hr/area",
@@ -20,6 +23,7 @@ export const ROUTES = {
     checkin: "/dashboard-hr/check-in",
     reports: "/dashboard-hr/laporan",
     settings: "/dashboard-hr/pengaturan",
+    settingsTab: (tab: string) => `/dashboard-hr/pengaturan?tab=${tab}`,
   },
   employee: {
     root: "/dashboard-employee",
@@ -28,8 +32,13 @@ export const ROUTES = {
     insight: "/dashboard-employee/insight",
     exercises: "/dashboard-employee/latihan",
     exercise: (id: string) => `/dashboard-employee/latihan/${id}`,
+    /** A practice opened as today's session of a program. */
+    session: (practice: string, enrollment: string, slot: string) => `/dashboard-employee/latihan/${practice}?program=${encodeURIComponent(enrollment)}&slot=${slot}`,
+    program: (id: string) => `/dashboard-employee/latihan/program/${id}`,
     counseling: "/dashboard-employee/konseling",
     calm: "/dashboard-employee/tenang",
+    profile: "/dashboard-employee/profil",
+    assistant: "/dashboard-employee/asisten",
   },
 } as const;
 

@@ -26,7 +26,7 @@ export function SiteFooter() {
           Butuh bantuan sekarang? Hubungi Healing119 (telepon 119 ekstensi 8). Dalam keadaan darurat, hubungi 112.{" "}
           <Link href={ROUTES.security} className="text-brand hover:underline">Cara kami menjaga data</Link>
         </p>
-        <p>Prototipe: nama, angka, dan akun di aplikasi adalah data contoh. Foto orang dari Pexels.</p>
+        <p>Foto orang dari Pexels.</p>
         <p>© 2026 Sikutaki</p>
       </div>
     </footer>

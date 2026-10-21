@@ -1,4 +1,4 @@
-import { MOODS } from "@/lib/focus";
+import { MOODS } from "@/lib/catalog";
 
 /** Diverging mood colors, shared with the employee app's mood tiles. */
 export const MOOD_COLORS = ["#B5533C", "#E3A08E", "#CBD5D1", "#8CC5AE", "#2E8A68"];

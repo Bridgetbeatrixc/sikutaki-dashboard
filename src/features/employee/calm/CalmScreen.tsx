@@ -112,7 +112,7 @@ function CrisisBar() {
     <p className="rounded-2xl bg-white/80 px-3.5 py-2.5 text-[12px] leading-snug text-body shadow-[inset_0_0_0_1px_var(--color-line)]">
       Nyeri dada atau sesak tak membaik? Telepon <a href="tel:112" className="font-semibold text-app-dark underline underline-offset-2">112</a>.
       {" "}Teman bicara: <a href="tel:119" className="font-semibold text-app-dark underline underline-offset-2">Healing119</a> (119, tekan 8).
-      {" "}Latihan relaksasi, bukan pengobatan.
+      {" "}Latihan relaksasi, bukan pengganti perawatan medis.
     </p>
   );
 }

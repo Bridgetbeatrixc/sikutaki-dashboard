@@ -32,7 +32,7 @@ export function Hero() {
           <p className="max-w-[620px] text-[19px] text-muted sm:text-[23px] sm:leading-snug">Check-in 3 menit untuk karyawan. Dashboard anonim untuk HR. 42 area, bukan cuma stres.</p>
           <div className="mt-2 flex flex-wrap items-center justify-center gap-x-7 gap-y-4">
             <a href="#demo" className={pillButton("primary", true)}>Jadwalkan demo</a>
-            <Link href={ROUTES.hr.root} className={`${textLink} text-[17px]`}>Coba dashboard HR <Icon name="chevron" size={16} /></Link>
+            <Link href={ROUTES.demo.hr} className={`${textLink} text-[17px]`}>Coba dashboard HR <Icon name="chevron" size={16} /></Link>
           </div>
         </div>
 
@@ -40,7 +40,7 @@ export function Hero() {
           <div className="size-[300px] max-w-full overflow-hidden rounded-full shadow-[0_30px_70px_rgba(0,0,0,.14)] sm:absolute sm:top-5 sm:right-2.5 sm:size-[470px]">
             <img src={asset("/img/hero-rina.jpg")} alt="Karyawan tersenyum sambil memegang ponsel" className="size-full object-cover object-[50%_30%]" />
           </div>
-          <Link href={ROUTES.employee.root} aria-label="Buka aplikasi karyawan" className="-mt-[90px] block sm:absolute sm:top-[50px] sm:left-0 sm:z-[2] sm:mt-0">
+          <Link href={ROUTES.demo.employee} aria-label="Buka aplikasi karyawan" className="-mt-[90px] block sm:absolute sm:top-[50px] sm:left-0 sm:z-[2] sm:mt-0">
             <PhoneMock />
           </Link>
           <Float className="top-0 right-0">

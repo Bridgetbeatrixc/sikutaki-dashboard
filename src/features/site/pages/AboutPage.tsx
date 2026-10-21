@@ -85,7 +85,7 @@ export function AboutPage() {
       </Band>
 
       <CtaBand title="Mau mencoba bersama tim Anda?" text="Kami sedang mencari perusahaan untuk pilot 3 bulan."
-        primary={{ label: "Hubungi kami", href: ROUTES.contact }} secondary={{ label: "Coba dashboard HR", href: ROUTES.hr.root }} />
+        primary={{ label: "Hubungi kami", href: ROUTES.contact }} secondary={{ label: "Coba dashboard HR", href: ROUTES.demo.hr }} />
     </>
   );
 }

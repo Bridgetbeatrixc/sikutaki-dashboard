@@ -1,72 +1,98 @@
-# Sikutaki Dashboard
+# Sikutaki Dashboard (versi frontend + Asisten AI)
 
-Prototipe Sikutaki: **Dashboard HR** dan **Aplikasi karyawan** dalam satu project Next.js + Tailwind CSS.
-Semua angka adalah data contoh. HR hanya melihat rata-rata kelompok minimal 5 orang, tidak pernah jawaban per orang.
+Cabang `frontend-gemini`: versi **murni frontend** dari Sikutaki, tanpa server dan database. Isinya sama dengan cabang `backend-real-app` (situs perusahaan, Dashboard HR, aplikasi karyawan, latihan mandiri, program), ditambah **Asisten AI** berbasis Google Gemini yang menyarankan latihan dari katalog.
+
+Versi dengan backend Postgres ada di cabang `backend-real-app`.
+
+- Data karyawan dan perubahan HR tersimpan di `localStorage` peramban, tidak dikirim ke server mana pun.
+- Angka Dashboard HR memakai data contoh (perusahaan fiktif), karena agregat butuh banyak karyawan.
+- HR dan karyawan di peramban yang sama berbagi data: psikolog dan praktisi mitra, bagian energi, jumlah kontak, dan laporan praktisi.
+- Situs diekspor statis (`out/`), jadi bisa dipasang di hosting statis mana saja.
+
+## Asisten AI (Gemini, untuk uji coba)
+
+Tab **Asisten** di aplikasi karyawan (`/dashboard-employee/asisten`). Karyawan menceritakan kondisinya, asisten menyarankan paling banyak 3 latihan atau program dari katalog Sikutaki, ditampilkan sebagai kartu yang langsung bisa dibuka.
+
+- Asisten tidak mendiagnosis dan hanya boleh menyarankan latihan yang ada di katalog (`src/lib/assistant.ts`).
+- Bila pesan berisi tanda krisis, aplikasi selalu menampilkan Healing119 (119 ext 8) dan 112, apa pun jawaban model.
+- Yang dikirim ke Google: pesan percakapan dan ringkasan mood, tidur, check-in minggu ini, serta program yang berjalan. Tidak ada nama lengkap atau email.
+
+### API key
+
+1. Buat key gratis di [aistudio.google.com/apikey](https://aistudio.google.com/apikey).
+2. Pilih salah satu:
+   - Tempel di aplikasi: buka tab Asisten, tekan ikon pengaturan, isi key. Key disimpan di peramban itu saja.
+   - Atau isi saat build: `NEXT_PUBLIC_GEMINI_API_KEY=...` di `.env.local` atau di Environment Variables hosting.
+3. Model bawaan `gemini-3.5-flash-lite`, bisa diganti di pengaturan asisten.
+
+> **Hanya untuk uji coba.** Key dipakai langsung dari peramban, jadi siapa pun yang membuka situs bisa melihatnya. Untuk produksi, panggilan Gemini perlu dipindah ke server, misalnya ditambahkan ke cabang `backend-real-app`.
 
 ## Route
 
 | Route | Isi |
 |---|---|
-| `/` | Beranda Sikutaki dengan tombol ke kedua dashboard |
-| `/tentang`, `/harga`, `/keamanan`, `/kontak` | Halaman perusahaan: tentang kami, paket (tanpa harga final), keamanan dan privasi, formulir kontak (membuka email) |
-| `/privasi`, `/syarat` | Draf kebijakan privasi dan syarat ketentuan (belum ditinjau ahli hukum) |
-| `/masuk`, `/daftar` | Masuk dan daftar versi demo, tanpa akun sungguhan. Daftar membuka `/dashboard-hr?mode=baru` |
-| `/dashboard-hr` | Beranda HR: metrik, mood, fokus per divisi |
-| `/dashboard-hr/divisi`, `/dashboard-hr/divisi/[id]` | Daftar divisi dan detail (fokus, penyebab, catatan HR) |
-| `/dashboard-hr/area`, `/dashboard-hr/area/[id]` | 17 area dan detail per area |
-| `/dashboard-hr/check-in` | Jadwal dan partisipasi check-in |
-| `/dashboard-hr/laporan` | Laporan bulanan |
-| `/dashboard-hr/pengaturan` | Karyawan dan privasi |
-| `/dashboard-employee` | Kenalan (janji privasi) |
+| `/`, `/tentang`, `/harga`, `/keamanan`, `/kontak`, `/privasi`, `/syarat` | Situs perusahaan |
+| `/daftar` | Daftar akun HR dan buat perusahaan |
+| `/gabung?kode=...` | Karyawan bergabung dengan kode undangan |
+| `/masuk` | Tautan ke Dashboard HR dan aplikasi karyawan |
+| `/dashboard-hr` | Beranda HR: wellbeing, partisipasi, mood, fokus per divisi |
+| `/dashboard-hr/divisi`, `/dashboard-hr/divisi/[id]` | Divisi, penyebab, catatan tindakan HR |
+| `/dashboard-hr/area`, `/dashboard-hr/area/[id]` | 42 area dan detail per area |
+| `/dashboard-hr/check-in` | Jadwal check-in dan corong partisipasi |
+| `/dashboard-hr/laporan` | Laporan bulanan, bisa disimpan sebagai PDF |
+| `/dashboard-hr/pengaturan` | Organisasi, karyawan, privasi, psikolog mitra |
+| `/dashboard-employee` | Kenalan (janji privasi), sekali saja |
 | `/dashboard-employee/beranda` | Catat mood dan tidur, rencana hari ini |
-| `/dashboard-employee/check-in` | Check-in mingguan 6 pertanyaan |
-| `/dashboard-employee/insight` | Insight pribadi |
-| `/dashboard-employee/latihan`, `/dashboard-employee/latihan/[id]` | Daftar latihan dan pemutar latihan napas |
-| `/dashboard-employee/konseling` | Pesan sesi psikolog |
-| `/dashboard-employee/tenang` | Alat tenangkan diri saat cemas atau panik: napas terpandu, grounding 5-4-3-2-1, jalur bantuan |
-
-Kedua dashboard saling terhubung lewat tombol di top bar ("Aplikasi karyawan" dan "Dashboard HR").
+| `/dashboard-employee/check-in` | Check-in mingguan |
+| `/dashboard-employee/insight` | Insight pribadi (hanya karyawan itu sendiri) |
+| `/dashboard-employee/latihan`, `/dashboard-employee/latihan/[id]` | Latihan napas dan pemutarnya |
+| `/dashboard-employee/asisten` | Asisten AI (Gemini) yang menyarankan latihan |
+| `/dashboard-employee/konseling` | Kontak psikolog mitra dan Healing119 |
+| `/dashboard-employee/tenang` | Alat tenangkan diri saat cemas atau panik |
+| `/dashboard-employee/profil` | Profil, keluar, hapus data di peramban |
 
 ## Struktur
 
 ```
 src/
   app/                    Route (App Router). page.tsx tipis, hanya merender fitur.
-    dashboard-hr/         Layout HR (HrProvider + HrShell) dan halamannya
-    dashboard-employee/   Layout karyawan (EmployeeProvider + EmployeeShell) dan halamannya
+  store/
+    local.ts              Baca dan tulis localStorage
+    hr.ts, hr-actions.ts  Data HR lokal di atas perusahaan contoh
+    employee.ts, employee-actions.ts  Data karyawan di peramban
+    account.ts            Daftar, gabung, keluar
+    gemini.ts             Panggilan ke Gemini API
   features/
-    hr/                   Shell, state, dan halaman Dashboard HR
-    employee/             Shell (mockup HP), state, konten, dan layar aplikasi karyawan
-    landing/              Landing page: section, mockup HP dan dashboard, konten
-    site/                 Header, footer, dan halaman perusahaan (tentang, harga, keamanan, kontak, legal, masuk, daftar)
-  components/
-    ui/                   Komponen dasar: Card, Button, Kpi, Icon, dll.
-    charts/               Grafik SVG: LineChart, CompareBars, MoodBar, dll.
-  lib/                    Data contoh, logika, format angka, dan daftar route (paths.ts)
+    hr/                   Dashboard HR
+    employee/             Aplikasi karyawan
+    landing/, site/       Situs perusahaan dan halaman masuk/daftar
+  components/             Komponen dasar dan grafik SVG
+  lib/
+    catalog.ts            42 area, skala jawaban, penyebab, rotasi check-in
+    model.ts              Perhitungan dashboard dari dataset agregat
+    sample.ts             Perusahaan contoh
+    assistant.ts          Aturan dan katalog untuk Asisten AI
+    week.ts               Tanggal dan minggu (WIB)
 ```
-
-Styling memakai Tailwind CSS v4. Token warna dan font ada di `src/app/globals.css` (`@theme`).
-
-## Arsitektur
-
-**Sekarang (prototipe):** front-end Next.js + Tailwind, semua halaman dibuat statis. Data adalah data contoh di `src/lib/data.ts` dan `src/features/*/content.ts`. Isian karyawan disimpan di state React (`EmployeeProvider`), jadi hilang saat halaman di-refresh. GitHub Actions menjalankan typecheck dan build di setiap push, lalu Vercel men-deploy `main`.
-
-**Usulan produksi:** front-end yang sama tersambung ke backend API dengan database dan login akun kantor. Jawaban perorangan disimpan terpisah dari identitas, dan server hanya mengirim rata-rata tim ke HR bila tim berisi minimal 5 orang, sehingga aturan anonim dijaga di server.
 
 ## Menjalankan
 
 ```bash
 npm install
-npm run dev        # http://localhost:3000
+npm run dev                  # http://localhost:3000
 npm run typecheck
-npm run build      # hasil statis di folder out/
+npm run build                # hasil statis di out/
+npx serve out                # coba hasil build
 ```
+
+Untuk GitHub Pages atau hosting di subfolder, isi `NEXT_PUBLIC_BASE_PATH` (misalnya `/sikutaki-dashboard`) saat build.
 
 ## Deploy ke Vercel
 
-1. Buka [vercel.com/new](https://vercel.com/new) dan login dengan GitHub.
-2. Pilih repo **sikutaki-dashboard**, lalu klik **Deploy**. Vercel otomatis mengenali Next.js, pengaturan bawaan sudah cukup.
+Impor repo di [vercel.com/new](https://vercel.com/new) dan pilih cabang `frontend-gemini`. Tidak perlu database. Bila ingin key Gemini bawaan, isi `NEXT_PUBLIC_GEMINI_API_KEY` di **Settings > Environment Variables**.
 
-Setiap push ke `main` akan ter-deploy ulang otomatis. Workflow `.github/workflows/ci.yml` menjalankan typecheck dan build di setiap push dan pull request.
+## Batasan versi ini
 
-Untuk hosting di sub-path (misalnya GitHub Pages di `/<nama-repo>/`), set `NEXT_PUBLIC_BASE_PATH=/<nama-repo>` saat build.
+- Data hanya ada di satu peramban. Membersihkan data situs menghapusnya.
+- Angka HR tidak berasal dari karyawan sungguhan. Menambah atau menghapus divisi belum bisa.
+- Tidak ada akun atau kata sandi sungguhan.

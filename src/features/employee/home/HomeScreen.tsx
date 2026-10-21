@@ -1,30 +1,34 @@
 "use client";
 import Link from "next/link";
+import { useState } from "react";
+import { Icon } from "@/components/ui/Icon";
 import { hours } from "@/lib/format";
 import { cn } from "@/lib/cn";
 import { ROUTES } from "@/lib/paths";
+import { lowMoodStreak, practiceById, programById, programState, SLOT_LABEL, suggestedPractices } from "@/lib/practice";
+import { addDays, DAYS_LONG, longDate, weekday } from "@/lib/week";
 import { CalmCard } from "../calm/CalmCard";
 import { Blob, type BlobIcon } from "../components/Blob";
 import { MoodFace, MoodTile } from "../components/MoodFace";
 import { appButton, CheckCircle, linkText, StartPill } from "../components/ui";
-import { MOODS, moodById, TODAY } from "../content";
+import { MOODS, moodById } from "../content";
 import { useEmployee } from "../EmployeeProvider";
 
 const MIN_SLEEP = 3;
 const MAX_SLEEP = 11;
 
 export function HomeScreen() {
+  const { user, today } = useEmployee();
   return (
     <div className="flex min-h-full flex-col">
-      <div className="px-[22px] pt-3.5 pb-1.5">
-        <div className="mt-1 flex items-center justify-between">
-          <div>
-            <span className="block text-[15px] font-bold">Hai, Dimas</span>
-            <small className="block text-xs text-muted">{TODAY.long}</small>
-          </div>
-          <span className="grid size-10 place-items-center rounded-full bg-[linear-gradient(135deg,#cddaeb,#f1e6c8)] font-bold text-app-dark">D</span>
+      <div className="px-[22px] pt-3.5 pb-1.5 md:px-8 md:pt-6">
+        <div className="mt-1">
+          <span className="block text-[15px] font-bold">Hai, {user.name.split(" ")[0]}</span>
+          <small className="block text-xs text-muted">{longDate(today)}</small>
         </div>
+        <CheckinReminder />
         <DailyNote />
+        <LowMoodSuggestion />
         <CalmCard className="mt-4" />
       </div>
       <TodayPlan />
@@ -32,21 +36,40 @@ export function HomeScreen() {
   );
 }
 
+/** In-app reminder from the third day of an open, unsent check-in (when the company turned it on). */
+function CheckinReminder() {
+  const { week, today } = useEmployee();
+  const dow = (weekday(today) + 6) % 7 + 1;
+  if (!week.reminder || !week.open || week.answers || dow < week.opensOn + 2) return null;
+  return (
+    <Link href={ROUTES.employee.checkin} className="mt-3.5 flex items-center gap-3 rounded-2xl border border-[#cfe0f7] bg-[#eef5ff] px-3.5 py-3 text-[13.5px] text-ink">
+      <Icon name="calendar" size={18} className="shrink-0 text-app" />
+      <span className="flex-1"><b>Check-in minggu ini belum diisi.</b> Ditutup Minggu 23.59, sekitar 3 menit.</span>
+      <Icon name="chevron" size={16} className="text-muted" />
+    </Link>
+  );
+}
+
 /** Mood + sleep entry, or a summary once saved. */
 function DailyNote() {
-  const { mood, sleep, saved, update } = useEmployee();
+  const { todayLog, saveDaily } = useEmployee();
+  const [editing, setEditing] = useState(false);
+  const [mood, setMood] = useState<number | null>(todayLog?.mood ?? null);
+  const [sleep, setSleep] = useState(todayLog?.sleep ?? 7);
+  const [busy, setBusy] = useState(false);
   const current = mood ? moodById(mood) : null;
 
-  if (saved && current) {
+  if (todayLog && !editing) {
+    const saved = moodById(todayLog.mood);
     return (
       <div className="mt-4 grid grid-cols-[52px_1fr_auto] items-center gap-3 rounded-[18px] bg-soft p-3">
-        <MoodFace mood={current} size={52} className="rounded-[14px]" />
+        <MoodFace mood={saved} size={52} className="rounded-[14px]" />
         <div>
           <small className="block text-xs font-semibold text-app">Catatan hari ini tersimpan</small>
-          <b className="block text-[15px]">{current.label} · tidur {hours(sleep)}</b>
+          <b className="block text-[15px]">{saved.label} · tidur {hours(todayLog.sleep)}</b>
         </div>
-        <button type="button" className={cn(linkText, "text-sm")} onClick={() => update({ saved: false })}>Ubah</button>
-        {current.id <= 2 && (
+        <button type="button" className={cn(linkText, "text-sm")} onClick={() => { setMood(todayLog.mood); setSleep(todayLog.sleep); setEditing(true); }}>Ubah</button>
+        {saved.id <= 2 && (
           <p className="col-span-full mt-0.5 text-[13px] leading-normal text-body">
             Hari yang berat. Latihan napas 3 menit bisa membantu, atau{" "}
             <Link href={ROUTES.employee.counseling} className={linkText}>bicara dengan psikolog</Link>.
@@ -56,22 +79,30 @@ function DailyNote() {
     );
   }
 
+  const save = async () => {
+    if (!mood) return;
+    setBusy(true);
+    const ok = await saveDaily(mood, sleep);
+    setBusy(false);
+    if (ok) setEditing(false);
+  };
+
   return (
     <>
       <h1 className="mt-4 mb-3.5 text-[28px] font-semibold text-ink">Bagaimana perasaanmu hari ini?</h1>
       <div className="grid grid-cols-5 gap-2">
-        {MOODS.map((m) => <MoodTile key={m.id} mood={m} selected={mood === m.id} onSelect={() => update({ mood: m.id })} />)}
+        {MOODS.map((m) => <MoodTile key={m.id} mood={m} selected={mood === m.id} onSelect={() => setMood(m.id)} />)}
       </div>
       {current ? (
         <div className="mt-3.5 grid grid-cols-[1fr_auto] items-center gap-x-2.5 gap-y-2 rounded-[18px] bg-soft px-3.5 py-3 text-sm font-semibold">
           <span>Tidur semalam</span>
           <div className="flex items-center gap-2.5">
-            <StepButton label="Kurangi jam tidur" onClick={() => update({ sleep: Math.max(MIN_SLEEP, sleep - 0.5) })}>−</StepButton>
+            <StepButton label="Kurangi jam tidur" onClick={() => setSleep(Math.max(MIN_SLEEP, sleep - 0.5))}>−</StepButton>
             <b className="num">{hours(sleep)}</b>
-            <StepButton label="Tambah jam tidur" onClick={() => update({ sleep: Math.min(MAX_SLEEP, sleep + 0.5) })}>+</StepButton>
+            <StepButton label="Tambah jam tidur" onClick={() => setSleep(Math.min(MAX_SLEEP, sleep + 0.5))}>+</StepButton>
           </div>
-          <button type="button" className={appButton("primary", false, "col-span-full mt-0.5")} onClick={() => update({ saved: true })}>
-            Simpan catatan hari ini
+          <button type="button" disabled={busy} className={appButton("primary", false, "col-span-full mt-0.5")} onClick={save}>
+            {busy ? "Menyimpan..." : "Simpan catatan hari ini"}
           </button>
         </div>
       ) : (
@@ -90,20 +121,51 @@ function StepButton({ label, onClick, children }: { label: string; onClick: () =
   );
 }
 
+/** Three heavy days in a row: suggest the 7-day stress program, and a psychologist. */
+function LowMoodSuggestion() {
+  const { days, today, programs } = useEmployee();
+  if (!lowMoodStreak(days, [addDays(today, -2), addDays(today, -1), today])) return null;
+  if (programs.some((e) => programById(e.program)?.kind === "praktis")) return null;
+  return (
+    <div className="mt-3.5 grid gap-1.5 rounded-[18px] border border-[#f3ddb8] bg-[#fff7ec] px-3.5 py-3 text-[13.5px] leading-normal text-[#5b4520]">
+      <b>Tiga hari terakhir terasa berat</b>
+      <span>Program 7 Hari Lepas Stres bisa membantu, sekitar 10 menit pagi dan malam. Bila terasa makin berat, <Link href={ROUTES.employee.counseling} className="font-bold underline underline-offset-2">bicara dengan psikolog</Link>.</span>
+      <Link href={ROUTES.employee.program("stres-7")} className={appButton("primary", true)}>Lihat program</Link>
+    </div>
+  );
+}
+
 type PlanItem = { id: string; title: string; meta: string; icon: BlobIcon; hue: string; done: boolean; href?: string };
 
 /** Today's three steps on a green timeline. */
 function TodayPlan() {
-  const { saved, checkin, done } = useEmployee();
+  const { todayLog, week, done, programs, today } = useEmployee();
+  const mood = todayLog?.mood ?? null;
+  // Today's program sessions; without a running program, one suggested practice.
+  const sessions: PlanItem[] = programs.filter((e) => !e.paused).flatMap((e) => {
+    const st = programState(e, today, mood);
+    if (st.finished) return [];
+    return st.slots.map((s) => {
+      const p = practiceById(s.practice)!;
+      return {
+        id: `${e.id}-${s.slot}`, title: p.title, meta: `${st.program.title} · ${SLOT_LABEL[s.slot]} · ${p.minutes} menit`,
+        icon: "lungs" as const, hue: "#C27510", done: s.done, href: ROUTES.employee.session(p.id, e.id, s.slot),
+      };
+    });
+  });
+  const exercise = practiceById(suggestedPractices(mood, todayLog?.sleep ?? 7)[0])!;
+  const checkinMeta = week.answers ? "Terkirim minggu ini" : week.open ? `${week.areas.length} pertanyaan · 3 menit · tutup Minggu` : `Dibuka ${DAYS_LONG[week.opensOn]}`;
   const plan: PlanItem[] = [
-    { id: "mood", title: "Catat mood harian", meta: "10 detik", icon: "smile", hue: "#3B8EF7", done: saved },
-    { id: "checkin", title: "Check-in mingguan", meta: "8 pertanyaan · 3 menit · tutup Minggu", icon: "clip", hue: "#2F8F9D", done: !!checkin, href: ROUTES.employee.checkin },
-    { id: "napas", title: "Latihan Napas 4-7-8", meta: "3 menit", icon: "lungs", hue: "#C27510", done: done.includes("napas"), href: ROUTES.employee.exercise("napas") },
+    { id: "mood", title: "Catat mood harian", meta: "10 detik", icon: "smile", hue: "#3B8EF7", done: Boolean(todayLog) },
+    { id: "checkin", title: "Check-in mingguan", meta: checkinMeta, icon: "clip", hue: "#2F8F9D", done: Boolean(week.answers), href: week.open ? ROUTES.employee.checkin : undefined },
+    ...(sessions.length ? sessions : [
+      { id: exercise.id, title: `Latihan ${exercise.title}`, meta: `${exercise.minutes} menit`, icon: "lungs" as const, hue: "#C27510", done: done.includes(exercise.id), href: ROUTES.employee.exercise(exercise.id) },
+    ]),
   ];
   const count = plan.filter((p) => p.done).length;
 
   return (
-    <section className="relative mt-[18px] min-h-[360px] flex-1 rounded-t-[30px] bg-app px-4 pt-[18px] pb-[104px] text-white">
+    <section className="relative mt-[18px] min-h-[360px] flex-1 rounded-t-[30px] bg-app px-4 pt-[18px] pb-[104px] text-white md:px-6 md:pb-8">
       <div className="mb-3.5 flex justify-between px-1 text-[15px] font-semibold">
         <span>Rencana hari ini</span>
         <span className="text-[13px] font-medium opacity-85">{count}/{plan.length} selesai</span>

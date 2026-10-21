@@ -3,7 +3,7 @@ import { Icon } from "@/components/ui/Icon";
 import { cn } from "@/lib/cn";
 import { ROUTES } from "@/lib/paths";
 import { pillButton } from "@/features/landing/components/ui";
-import { Band, BandHead, CtaBand, PageHero, ProtoNote } from "../ui";
+import { Band, BandHead, CtaBand, PageHero, Notice } from "../ui";
 
 const PLANS = [
   {
@@ -27,7 +27,7 @@ const PLANS = [
 ];
 
 const FAQ = [
-  { q: "Berapa harganya?", a: "Harga per karyawan per bulan akan kami tetapkan setelah pilot pertama selesai. Selama tahap prototipe, kami membahasnya langsung saat demo." },
+  { q: "Berapa harganya?", a: "Harga per karyawan per bulan akan kami tetapkan setelah pilot pertama selesai. Untuk sekarang, kami membahasnya langsung saat demo." },
   { q: "Apakah karyawan perlu instal aplikasi?", a: "Tidak. Check-in dibuka lewat browser di ponsel, dan hanya butuh sekitar 3 menit seminggu." },
   { q: "Apa yang dilihat HR?", a: "Rata-rata per divisi untuk tim dengan minimal 5 orang. HR tidak pernah melihat jawaban perorangan." },
   { q: "Bagaimana kalau tim kami kurang dari 5 orang?", a: "Datanya disembunyikan sampai ada minimal 5 orang yang mengisi, supaya tidak ada yang bisa dikenali." },
@@ -38,7 +38,7 @@ export function PricingPage() {
     <>
       <PageHero icon="spark" eyebrow="Harga" title="Mulai kecil. Lihat hasilnya dulu."
         text="Setiap kerja sama dimulai dengan pilot 3 bulan bersama satu tim, lalu laporan hasil yang terbuka.">
-        <ProtoNote className="mt-2">Sikutaki masih prototipe. Paket di bawah adalah rencana, dan harga final belum ditetapkan.</ProtoNote>
+        <Notice className="mt-2">Harga final belum ditetapkan. Paket di bawah adalah rencana yang kami bahas bersama perusahaan pilot.</Notice>
       </PageHero>
 
       <Band tone="grey">
@@ -79,7 +79,7 @@ export function PricingPage() {
       </Band>
 
       <CtaBand title="Siap mencoba dengan satu tim?" text="Ceritakan tim Anda, dan kami siapkan pilotnya."
-        primary={{ label: "Ajukan pilot", href: ROUTES.contact }} secondary={{ label: "Coba dashboard HR", href: ROUTES.hr.root }} />
+        primary={{ label: "Ajukan pilot", href: ROUTES.contact }} secondary={{ label: "Coba dashboard HR", href: ROUTES.demo.hr }} />
     </>
   );
 }
