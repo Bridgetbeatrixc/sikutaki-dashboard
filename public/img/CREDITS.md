@@ -1,0 +1,43 @@
+# Foto
+
+Foto di `latihan/`, `program/`, `auth/`, dan `tentang/` berasal dari [Unsplash](https://unsplash.com) dan dipakai sesuai [Lisensi Unsplash](https://unsplash.com/license) (gratis untuk penggunaan komersial, tanpa wajib atribusi). ID foto Unsplash:
+
+- `latihan/leher.jpg`: photo-1552196563-55cd4e45efb3
+- `latihan/mata.jpg`: photo-1506905925346-21bda4d32df4
+- `latihan/hadir.jpg`: photo-1508672019048-805c876b67e2
+- `latihan/lega.jpg`: photo-1499209974431-9dddcece7f88
+- `latihan/napas.jpg`: photo-1506126613408-eca07ce68773
+- `latihan/jeda.jpg`: photo-1591228127791-8e2eaef098d3
+- `latihan/tidur.jpg`: photo-1531353826977-0941b4779a1c
+- `latihan/fokus.jpg`: photo-1499750310107-5fef28a66643
+- `latihan/lepas.jpg`: photo-1474418397713-7ede21d49118
+- `latihan/otot.jpg`: photo-1510894347713-fc3ed6fdf539
+- `latihan/pindai.jpg`: photo-1532798442725-41036acc7489
+- `latihan/meja.jpg`: photo-1515378791036-0648a3ef77b2
+- `latihan/jalan.jpg`: photo-1486218119243-13883505764c
+- `latihan/chikung.jpg`: photo-1545389336-cf090694435e
+- `latihan/jinjit.jpg`: photo-1476480862126-209bfaa8edc8
+- `latihan/hujan.jpg`: photo-1428592953211-077101b2021b
+- `latihan/sungai.jpg`: photo-1432405972618-c60b0225b8f9
+- `latihan/ombak.jpg`: photo-1505142468610-359e7d316be0
+- `latihan/burung.jpg`: photo-1444464666168-49d633b86797
+- `latihan/syukur.jpg`: photo-1490750967868-88aa4486c946
+- `latihan/refleksi.jpg`: photo-1484480974693-6ca0a78fb36b
+- `latihan/ekspresif.jpg`: photo-1455390582262-044cdead277a
+- `latihan/hening.jpg`: photo-1470252649378-9c29740c9fa8
+- `latihan/mangkuk.jpg`: photo-1593811167562-9cef47bfc4d7
+- `latihan/gong.jpg`: photo-1500964757637-c85e8a162699
+- `latihan/rasa-energi.jpg`: photo-1474631245212-32dc3c8310c6
+- `latihan/prana.jpg`: photo-1528715471579-d1bcf0ba5e83
+- `program/tidur-7.jpg`: photo-1510798831971-661eb04b3739
+- `program/stres-7.jpg`: photo-1501785888041-af3ef285b470
+- `program/tidur-12.jpg`: photo-1519681393784-d120267933ba
+- `program/gerak-8.jpg`: photo-1571019613454-1cb2f99b2d8b
+- `program/syukur-4.jpg`: photo-1502082553048-f009c37129b9
+- `auth/daftar.jpg`: photo-1543269865-cbf427effbad
+- `auth/masuk.jpg`: photo-1611095973763-414019e72400
+- `tentang/ritme.jpg`: photo-1552664730-d307ca884978
+- `tentang/bersama.jpg`: photo-1531545514256-b1400bc00f31
+- `tentang/rayakan.jpg`: photo-1600880292203-757bb62b4baf
+- `tentang/obrolan.jpg`: photo-1556761175-5973dc0f32e7
+- `tentang/tangan.jpg`: photo-1600880292089-90a7e086ee0c
