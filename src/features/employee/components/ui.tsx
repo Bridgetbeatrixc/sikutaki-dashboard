@@ -20,7 +20,7 @@ export const linkText = "font-bold text-app underline underline-offset-2";
 
 /** Page body; on phones the bottom padding keeps content clear of the floating tab bar. */
 export function Screen({ children, className }: { children: ReactNode; className?: string }) {
-  return <div className={cn("px-[22px] pt-3.5 pb-[104px] md:px-8 md:pt-6 md:pb-10", className)}>{children}</div>;
+  return <div className={cn("px-[22px] pt-3.5 pb-[104px] md:px-8 md:pt-6 md:pb-12 lg:px-10", className)}>{children}</div>;
 }
 
 export function Title({ children, className }: { children: ReactNode; className?: string }) {

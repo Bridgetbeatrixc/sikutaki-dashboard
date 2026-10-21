@@ -28,29 +28,29 @@ export function EmployeeShell({ children }: { children: ReactNode }) {
   const initial = user.name.trim()[0]?.toUpperCase() ?? "?";
 
   return (
-    <div className="min-h-dvh bg-white text-ink md:bg-[radial-gradient(1200px_700px_at_15%_10%,#dde4f1,transparent_60%),radial-gradient(900px_600px_at_90%_90%,#eef3df,transparent_60%),#f1f3f7]">
+    <div className="min-h-dvh bg-white text-ink">
       <div className="bg-ink px-4 py-2 text-center text-[13px] text-white print:hidden">Versi frontend: datamu tersimpan di peramban ini saja.</div>
 
       <header className={cn("sticky top-0 z-20 print:hidden border-b border-line bg-white/90 backdrop-blur md:border-0 md:bg-white/70", full && "hidden md:block")}>
-        <div className="mx-auto flex h-14 max-w-[1080px] items-center gap-3 px-4 md:h-16 md:px-6">
+        <div className="mx-auto flex h-14 max-w-[1200px] items-center gap-3 px-4 md:h-16 md:px-8">
           <div className="flex items-center gap-2">
             <Logo size={26} href={E.home} />
-            <span className="hidden text-[13px] font-medium text-muted lg:inline">· {company.name}</span>
+            <span className="hidden text-[13px] font-medium whitespace-nowrap text-muted xl:inline">· {company.name}</span>
           </div>
-          <nav aria-label="Menu aplikasi" className="ml-6 hidden items-center gap-1 md:flex">
+          <nav aria-label="Menu aplikasi" className="ml-2 hidden items-center gap-0.5 md:flex lg:ml-6 lg:gap-1">
             {APP_NAV.map((item) => {
               const on = within(path, item.href);
               return (
                 <Link key={item.href} href={item.href} aria-current={on ? "page" : undefined}
-                  className={cn("inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-[14px] font-semibold", on ? "bg-app text-white" : "text-[#4b5768] hover:bg-soft")}>
+                  className={cn("inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-[14px] font-semibold whitespace-nowrap lg:px-3.5", on ? "bg-app text-white" : "text-[#4b5768] hover:bg-soft")}>
                   <Icon name={item.icon} size={17} />{item.label}
                 </Link>
               );
             })}
           </nav>
           <div className="ml-auto flex items-center gap-2">
-            <Link href={E.calm} className="hidden items-center gap-1.5 rounded-full bg-[#fdf0f2] px-3.5 py-2 text-[13px] font-semibold text-[#8a2b3d] md:inline-flex">
-              <Icon name="heart" size={15} />Saat cemas
+            <Link href={E.calm} aria-label="Saat cemas" className="hidden items-center gap-1.5 rounded-full bg-[#fdf0f2] px-3 py-2 text-[13px] font-semibold whitespace-nowrap text-[#8a2b3d] md:inline-flex lg:px-3.5">
+              <Icon name="heart" size={15} /><span className="hidden lg:inline">Saat cemas</span>
             </Link>
             <Link href={E.profile} aria-label="Profil dan akun" aria-current={path === E.profile ? "page" : undefined}
               className={cn("grid size-9 place-items-center rounded-full bg-[linear-gradient(135deg,#cddaeb,#f1e6c8)] text-[15px] font-bold text-app-dark", path === E.profile && "ring-2 ring-app")}>
@@ -60,11 +60,11 @@ export function EmployeeShell({ children }: { children: ReactNode }) {
         </div>
       </header>
 
-      <div className="md:px-6 md:pt-4 md:pb-10 print:p-0">
+      <div className="print:p-0">
+        {/* No frame: the page uses the screen width; focused flows stay in a readable centred column. */}
         <main className={cn(
-          "relative mx-auto flex w-full flex-col bg-white md:max-w-[560px] md:overflow-hidden md:rounded-[32px] md:shadow-[0_24px_60px_rgba(15,23,42,.12)] print:max-w-none print:rounded-none print:shadow-none print:min-h-0",
-          "md:min-h-[min(780px,calc(100dvh-120px))] [&>*]:flex-1",
-          full ? "min-h-dvh" : "min-h-[calc(100dvh-56px)]",
+          "relative mx-auto flex w-full flex-col bg-white [&>*]:flex-1 print:max-w-none print:min-h-0",
+          full ? "min-h-dvh md:min-h-[calc(100dvh-64px)] md:max-w-[720px] md:pt-4" : "min-h-[calc(100dvh-56px)] max-w-[1200px] md:min-h-[calc(100dvh-100px)]",
         )}>
           {children}
         </main>

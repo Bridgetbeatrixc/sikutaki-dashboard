@@ -21,8 +21,8 @@ const MAX_SLEEP = 11;
 export function HomeScreen() {
   const { user, today } = useEmployee();
   return (
-    <div className="flex min-h-full flex-col">
-      <div className="px-[22px] pt-3.5 pb-1.5 md:px-8 md:pt-6">
+    <div className="flex min-h-full flex-col lg:grid lg:grid-cols-[minmax(0,1.45fr)_minmax(360px,1fr)] lg:items-start lg:gap-8 lg:px-10 lg:pt-6 lg:pb-12">
+      <div className="px-[22px] pt-3.5 pb-1.5 md:px-8 md:pt-6 lg:p-0">
         <Greeting name={user.name.split(" ")[0]} date={today} />
         <CheckinReminder />
         <DailyNote />
@@ -71,12 +71,12 @@ function Greeting({ name, date }: { name: string; date: string }) {
   return (
     <section className="relative mt-1 overflow-hidden rounded-[24px] text-white shadow-[0_10px_30px_rgba(15,23,42,.18)]"
       style={{ background: `linear-gradient(180deg,rgba(10,25,50,.55),rgba(10,25,50,.25) 45%,rgba(10,25,50,.8)), url("${asset(`/img/latihan/${g.photo}.jpg`)}") center / cover no-repeat, #1f4f8f` }}>
-      <div className="grid gap-3 px-5 pt-5 pb-5 md:px-6 md:pt-6">
+      <div className="grid gap-3 px-5 pt-5 pb-5 md:px-7 md:pt-7 md:pb-6">
         <div>
           <small className="block text-xs font-medium opacity-85">{longDate(date)}</small>
           <h1 className="mt-0.5 text-[24px] font-bold leading-tight text-white [text-shadow:0_1px_8px_rgba(0,0,0,.35)] md:text-[26px]">{g.label}, {name}</h1>
         </div>
-        <figure className="mt-6 rounded-2xl bg-white/15 px-4 py-3 backdrop-blur-md">
+        <figure className="mt-6 max-w-[640px] rounded-2xl md:mt-10 bg-white/15 px-4 py-3 backdrop-blur-md">
           <figcaption className="mb-1 flex items-center gap-1.5 text-[11px] font-bold tracking-wide uppercase opacity-85">
             <Icon name="heart" size={13} />Pesan hari ini
           </figcaption>
@@ -97,14 +97,14 @@ function ForYou() {
         <b className="text-[15px]">Latihan untukmu</b>
         <Link href={ROUTES.employee.exercises} className={cn(linkText, "text-[13px]")}>Lihat semua</Link>
       </div>
-      <ul className="grid grid-cols-3 gap-2.5">
+      <ul className="grid grid-cols-3 gap-2.5 md:gap-3.5">
         {ids.map((id) => {
           const p = practiceById(id);
           if (!p) return null;
           return (
             <li key={id}>
               <Link href={ROUTES.employee.exercise(id)} className="block overflow-hidden rounded-[18px] bg-soft shadow-[0_4px_14px_rgba(15,23,42,.08)]">
-                <span className="relative block h-[92px]" style={{ background: practiceArt(p) }}>
+                <span className="relative block h-[92px] md:h-[130px]" style={{ background: practiceArt(p) }}>
                   {done.includes(id) && <span className="absolute top-2 right-2 rounded-full bg-white/90 px-2 py-0.5 text-[10.5px] font-bold text-app-dark">Sudah</span>}
                 </span>
                 <span className="block px-2.5 py-2">
@@ -174,7 +174,7 @@ function DailyNote() {
   return (
     <>
       <h2 className="mt-4 mb-3.5 text-[24px] font-semibold text-ink">Bagaimana perasaanmu hari ini?</h2>
-      <div className="grid grid-cols-5 gap-2">
+      <div className="grid max-w-[620px] grid-cols-5 gap-2 md:gap-3">
         {MOODS.map((m) => <MoodTile key={m.id} mood={m} selected={mood === m.id} onSelect={() => setMood(m.id)} />)}
       </div>
       {current ? (
@@ -249,7 +249,7 @@ function TodayPlan() {
   const count = plan.filter((p) => p.done).length;
 
   return (
-    <section className="relative mt-[18px] min-h-[300px] flex-1 rounded-t-[30px] bg-app px-4 pt-[18px] pb-[104px] text-white md:mx-6 md:mb-6 md:min-h-0 md:flex-none md:rounded-[26px] md:px-5 md:pb-5">
+    <section className="relative mt-[18px] min-h-[300px] flex-1 rounded-t-[30px] bg-app px-4 pt-[18px] pb-[104px] text-white md:mx-8 md:mb-8 md:min-h-0 md:flex-none md:rounded-[26px] md:px-5 md:pb-5 lg:sticky lg:top-24 lg:m-0">
       <div className="mb-3.5 flex justify-between px-1 text-[15px] font-semibold">
         <span>Rencana hari ini</span>
         <span className="text-[13px] font-medium opacity-85">{count}/{plan.length} selesai</span>

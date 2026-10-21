@@ -48,7 +48,7 @@ export function ProfileScreen() {
   };
 
   return (
-    <Screen>
+    <Screen className="md:mx-auto md:w-full md:max-w-[760px]">
       <Title>Profil</Title>
       <Lead>{user.email} · {company.name}</Lead>
 

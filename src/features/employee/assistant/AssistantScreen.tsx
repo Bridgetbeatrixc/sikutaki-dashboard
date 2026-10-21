@@ -73,7 +73,7 @@ export function AssistantScreen() {
   const crisisShown = messages.some((m) => m.role === "user" && isCrisis(m.text));
 
   return (
-    <div className="flex min-h-full flex-col px-[22px] pt-3.5 pb-[104px] md:px-8 md:pt-6 md:pb-8">
+    <div className="mx-auto flex min-h-full w-full max-w-[900px] flex-col px-[22px] pt-3.5 pb-[104px] md:px-8 md:pt-6 md:pb-8">
       <div className="flex items-start justify-between gap-3">
         <div>
           <h1 className="mt-2.5 text-[26px] font-semibold text-ink">Asisten AI</h1>

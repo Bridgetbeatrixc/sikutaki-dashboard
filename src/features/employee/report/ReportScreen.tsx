@@ -41,7 +41,7 @@ export function ReportScreen() {
   const mine = requests.filter((r) => r.createdAt.slice(0, 10) >= from);
 
   return (
-    <div className="px-[22px] pt-4 pb-28 md:px-8 md:pb-10 print:p-0">
+    <div className="mx-auto w-full max-w-[920px] px-[22px] pt-4 pb-28 md:px-8 md:pb-12 print:max-w-none print:p-0">
       <div className="flex flex-wrap items-center gap-2 print:hidden">
         <Link href={ROUTES.employee.insight} className="mr-auto inline-flex items-center gap-1 text-[13px] font-semibold text-muted">
           <Icon name="chevron" size={14} className="rotate-180" />Insight
@@ -72,7 +72,7 @@ export function ReportScreen() {
       </Block>
       <p className="mt-4 text-[11px] text-muted">Dibuat {longDate(today)} dari aplikasi Sikutaki. Sikutaki bukan alat diagnosis dan bukan layanan krisis.</p>
 
-      <div className="sticky bottom-24 mt-5 grid gap-2 md:bottom-4 print:hidden">
+      <div className="sticky bottom-24 mt-5 grid gap-2 md:static md:max-w-[360px] print:hidden">
         <button type="button" className={appButton("primary", true, "mt-0")} onClick={() => window.print()}>
           <span className="flex items-center justify-center gap-2"><Icon name="file" size={16} />Simpan sebagai PDF</span>
         </button>

@@ -35,7 +35,7 @@ export function CounselingScreen() {
           Perusahaanmu belum menambahkan psikolog mitra. Untuk sekarang, kamu bisa memakai layanan gratis Healing119 dari Kemenkes di bawah.
         </div>
       ) : (
-        <ul className="grid gap-2.5">{psych.map((p) => <PartnerCard key={p.id} p={p} />)}</ul>
+        <ul className="grid gap-2.5 md:grid-cols-2 xl:grid-cols-3">{psych.map((p) => <PartnerCard key={p.id} p={p} />)}</ul>
       )}
       <Note>Sesi dengan psikolog bersifat rahasia.</Note>
       <ScheduleRequests />
@@ -47,7 +47,7 @@ export function CounselingScreen() {
           <p className="-mt-1 mb-2.5 rounded-xl bg-[#fff7ec] px-3 py-2 text-[12.5px] leading-normal text-[#5b4520]">
             <b>Praktisi komplementer, bukan dokter atau psikolog.</b> Untuk relaksasi dan kebiasaan sehat. Bila kamu sedang menjalani perawatan medis atau psikologis, tetap lanjutkan.
           </p>
-          <ul className="grid gap-2.5">{compl.map((p) => <PartnerCard key={p.id} p={p} />)}</ul>
+          <ul className="grid gap-2.5 md:grid-cols-2 xl:grid-cols-3">{compl.map((p) => <PartnerCard key={p.id} p={p} />)}</ul>
           <details className="mt-2.5 rounded-2xl bg-soft p-3.5 text-[13px]">
             <summary className="cursor-pointer font-semibold text-ink">Kode etik praktisi</summary>
             <ul className="mt-2 grid list-disc gap-0.5 pl-5 text-body">{PRACTITIONER_CODE.map((c) => <li key={c}>{c}</li>)}</ul>

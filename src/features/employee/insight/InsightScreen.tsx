@@ -29,8 +29,10 @@ export function InsightScreen() {
     <Screen>
       <Title>Insight-mu</Title>
       <Lead>Dari catatan harian dan check-in. <b>Hanya kamu yang bisa melihat halaman ini.</b></Lead>
-      <SleepAndMood />
-      <CheckinResult />
+      <div className="grid gap-x-10 lg:grid-cols-2">
+        <SleepAndMood />
+        <CheckinResult />
+      </div>
       <Link href={ROUTES.employee.report} className="mt-5 flex items-center gap-3 rounded-[18px] border-[1.5px] border-line px-3.5 py-3 text-ink hover:bg-soft">
         <span className="grid size-10 place-items-center rounded-xl bg-mint text-app-dark"><Icon name="file" size={18} /></span>
         <span className="flex-1"><b className="block text-[14px]">Laporan pribadi (PDF)</b><small className="text-xs text-muted">Ringkasan 30 atau 90 hari untuk disimpan atau dibawa ke psikolog</small></span>
