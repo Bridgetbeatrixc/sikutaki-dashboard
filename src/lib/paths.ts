@@ -43,6 +43,8 @@ export const ROUTES = {
     calm: "/dashboard-employee/tenang",
     profile: "/dashboard-employee/profil",
     assistant: "/dashboard-employee/asisten",
+    /** The assistant with a first message already sent, e.g. "Bantu aku memahami hasil check-in". */
+    ask: (message: string) => `/dashboard-employee/asisten?tanya=${encodeURIComponent(message)}`,
     /** The employee's own report, printable as PDF. */
     report: "/dashboard-employee/laporan",
     /** Konseling with the "ask HR for a schedule" form open. */

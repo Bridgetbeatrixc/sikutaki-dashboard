@@ -9,7 +9,7 @@ import { Kpi, KpiGrid } from "@/components/ui/Kpi";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { CompareBars } from "@/components/charts/CompareBars";
 import { fitRange, LineChart } from "@/components/charts/LineChart";
-import { AREA_COUNT, AREAS, GROUPS, groupOf, NOTE_LABEL } from "@/lib/catalog";
+import { AREA_COUNT, AREAS, GROUPS, groupOf, NOTE_LABEL, wellbeingBand } from "@/lib/catalog";
 import { decimal } from "@/lib/format";
 import { ROUTES } from "@/lib/paths";
 import { addNote, deleteNote } from "@/store/hr-actions";
@@ -49,7 +49,7 @@ export function DivisionDetailPage({ id }: { id: string }) {
   }
 
   const { NOW } = m;
-  const wb = m.wellbeing(id) ?? 0, status = m.teamStatus(id), sleep = m.sleepHours(id), mood = m.moodAvg(id);
+  const wb = m.wellbeing(id), status = m.teamStatus(id), sleep = m.sleepHours(id), mood = m.moodAvg(id);
   const prevWb = m.wellbeing(id, NOW - 2), prevSleep = m.sleepHours(id, NOW - 4), part = m.part(id);
   const companyMood = m.moodAvg("all");
   const focus = m.focusAreas(id);
@@ -65,7 +65,7 @@ export function DivisionDetailPage({ id }: { id: string }) {
       <PageHeader title={team.name} crumbs={crumbs} sub={<>{sub} · <StatusChip s={status} small /></>} />
 
       <KpiGrid>
-        <Kpi label="Indeks wellbeing" value={wb} unit="/100" delta={prevWb === null ? undefined : wb - prevWb} goodWhenUp foot={`perusahaan ${m.wellbeing("all") ?? "-"}`} />
+        <Kpi label="Indeks wellbeing" value={wb ?? "Belum cukup data"} unit={wb === null ? undefined : "/100"} delta={prevWb === null || wb === null ? undefined : wb - prevWb} goodWhenUp foot={`${wb === null ? "" : `${wellbeingBand(wb).label} · `}perusahaan ${m.wellbeing("all") ?? "belum cukup data"}`} />
         <Kpi label="Partisipasi check-in" value={part} unit="%" delta={(() => { const prev = m.participationSeries(id)[NOW - 1]; return prev == null ? undefined : part - prev; })()} goodWhenUp foot={`${m.respondents(id)} dari ${team.size} orang`} />
         <Kpi label="Mood harian" value={mood === null ? "-" : decimal(mood)} unit={mood === null ? undefined : "/5"} foot={mood === null ? `tampil mulai ${m.MIN_GROUP} orang mencatat` : `perusahaan ${companyMood === null ? "-" : decimal(companyMood)}`} />
         <Kpi label="Jam tidur" value={sleep === null ? "-" : decimal(sleep)} unit={sleep === null ? undefined : " jam"} delta={sleep === null || prevSleep === null ? undefined : Math.round((sleep - prevSleep) * 10) / 10} goodWhenUp foot="dibanding 4 minggu lalu" />

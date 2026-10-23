@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useEffect, useState, type ReactNode } from "react";
 import { Icon } from "@/components/ui/Icon";
-import { areaById, CAUSES, causesFor, followUpArea, followUpQuestion, SCALE } from "@/lib/catalog";
+import { areaById, CAUSES, causesFor, followUpArea, followUpQuestion, OTHER_CAUSE, SCALE } from "@/lib/catalog";
 import { cn } from "@/lib/cn";
 import { ROUTES } from "@/lib/paths";
 import { DAYS_LONG } from "@/lib/week";
@@ -22,6 +22,7 @@ export function CheckinScreen() {
   const [index, setIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, number>>({});
   const [causes, setCauses] = useState<string[]>([]);
+  const [other, setOther] = useState("");
   const [sending, setSending] = useState(false);
 
   // Counts toward "opened" in HR's funnel (a number only).
@@ -34,9 +35,9 @@ export function CheckinScreen() {
   const total = areas.length + (causeArea ? 1 : 0);
   const area = areas[index];
 
-  const submit = async (final: Record<string, number>, picked: string[]) => {
+  const submit = async (final: Record<string, number>, picked: string[], note = "") => {
     setSending(true);
-    const ok = await submitCheckin(final, picked);
+    const ok = await submitCheckin(final, picked, note);
     setSending(false);
     if (!ok) setIndex(areas.length - 1);
   };
@@ -77,13 +78,22 @@ export function CheckinScreen() {
         <>
           <Tag>Pertanyaan terakhir · {areaById(causeArea).name}</Tag>
           <Question>{followUpQuestion(causeArea)}</Question>
-          <p className="text-[13.5px] leading-normal text-muted">Boleh pilih lebih dari satu. HR hanya melihat persentasenya per divisi, untuk tahu apa yang perlu diperbaiki.</p>
+          <p className="text-[13.5px] leading-normal text-muted">Boleh pilih lebih dari satu. Bila tidak ada yang pas, pilih Lainnya dan tulis sendiri. HR hanya melihat persentase pilihan per divisi, untuk tahu apa yang perlu diperbaiki.</p>
           <div className="flex flex-wrap gap-2">
             {causesFor(causeArea).map((id) => (
-              <Chip key={id} on={causes.includes(id)} onClick={() => toggleCause(id)}>{CAUSES[id].label}</Chip>
+              <Chip key={id} on={causes.includes(id)} onClick={() => toggleCause(id)}>{id === OTHER_CAUSE ? "Lainnya, tulis sendiri" : CAUSES[id].label}</Chip>
             ))}
           </div>
-          <button type="button" disabled={sending} className={appButton()} onClick={() => submit(answers, causes)}>
+          {causes.includes(OTHER_CAUSE) && (
+            <label className="grid gap-1.5 text-[13px] text-body">
+              <span className="font-semibold text-ink">Ceritakan singkat apa yang terjadi</span>
+              <textarea value={other} onChange={(e) => setOther(e.target.value)} maxLength={200} rows={3} autoFocus
+                placeholder="Misalnya: pindah rumah, anak sakit, laptop kerja sering rusak..."
+                className="w-full resize-none rounded-[14px] border-[1.5px] border-line bg-white px-3.5 py-3 text-[15px] text-ink focus:border-app focus:outline-none" />
+              <small className="flex items-center gap-1.5 text-[12px] text-muted"><Icon name="lock" size={12} />Tulisan ini hanya untukmu dan Asisten. HR hanya melihat bahwa ada yang memilih Lainnya. {other.length}/200</small>
+            </label>
+          )}
+          <button type="button" disabled={sending} className={appButton()} onClick={() => submit(answers, causes, causes.includes(OTHER_CAUSE) ? other.trim() : "")}>
             {sending ? "Mengirim..." : causes.length ? "Kirim" : "Lewati dan kirim"}
           </button>
         </>

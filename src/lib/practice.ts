@@ -4,6 +4,8 @@
  * Scripts are drafts until the partner psychologist has reviewed them.
  */
 
+import { guideOf } from "./area-guide";
+
 export type PracticeGroup = "singkat" | "napas" | "relaksasi" | "gerak" | "suara" | "tulis" | "hening" | "energi";
 export type SoundId = "hujan" | "sungai" | "ombak" | "burung" | "mangkuk" | "gong";
 export type JournalId = "syukur" | "refleksi" | "ekspresif";
@@ -319,26 +321,34 @@ export const progressLabel = (p: Program, day: number) =>
 
 /* ---------- Suggestions ---------- */
 
-/** What to suggest after a check-in, by the area with the highest score. */
-export const AREA_SUGGESTION: Record<string, { program?: string; counsel?: boolean; calm?: boolean }> = {
+/** What to suggest after a check-in, by the area with the highest score. Self-guided first: practice, program, assistant. */
+export const AREA_SUGGESTION: Record<string, { program?: string; calm?: boolean }> = {
   insomnia: { program: "tidur-7" },
   burnout: { program: "stres-7" },
   stres: { program: "stres-7" },
-  galau: { calm: true, counsel: true },
-  eksistensial: { program: "syukur-4", counsel: true },
+  overthinking: { program: "stres-7" },
+  anxiety: { calm: true },
+  panik: { calm: true },
+  galau: { calm: true },
+  eksistensial: { program: "syukur-4" },
+  hampa: { program: "syukur-4" },
   baterai: { program: "gerak-8" },
+  gadget: { program: "tidur-12" },
 };
 
-/** The mapped area with the highest answer, from "Sedang" (2) up. */
-export function suggestionFromCheckin(answers: Record<string, number> | null) {
+/**
+ * The area with the highest answer from "Kadang-kadang" (2) up, mapped areas first on a tie, with a program,
+ * the calm-down tool, or the practice from the area guide.
+ */
+export function suggestionFromCheckin(answers: Record<string, number> | null): { area: string; program?: string; calm?: boolean; practice?: string } | null {
   if (!answers) return null;
   let best: string | null = null;
-  for (const area of Object.keys(AREA_SUGGESTION)) {
-    const v = answers[area];
-    if (v === undefined || v < 2) continue;
-    if (!best || v > answers[best]) best = area;
+  for (const [area, v] of Object.entries(answers)) {
+    if (v < 2) continue;
+    if (!best || v > answers[best] || (v === answers[best] && AREA_SUGGESTION[area] && !AREA_SUGGESTION[best])) best = area;
   }
-  return best ? { area: best, ...AREA_SUGGESTION[best] } : null;
+  if (!best) return null;
+  return AREA_SUGGESTION[best] ? { area: best, ...AREA_SUGGESTION[best] } : { area: best, practice: guideOf(best).practice };
 }
 
 /** Mood "Kurang" or lower on each of the last three days. */
@@ -373,8 +383,11 @@ export const REPORT_REASONS = [
 
 /* ---------- Danger signs ---------- */
 
-/** Areas where "Sering" or more calls for a psychologist before any self-guided practice. */
-const DANGER_AREAS = ["depresi", "skizofrenia", "bipolar", "panik", "galau", "trauma", "selfesteem"];
+/**
+ * Screening areas where "Sering" or more means a professional should also be offered. Everything else is handled
+ * in the app first (assistant, practices, programs); crisis words in the assistant always show the crisis lines.
+ */
+const DANGER_AREAS = ["depresi", "skizofrenia", "bipolar"];
 
 export const dangerSigns = (answers: Record<string, number> | null) =>
   Boolean(answers) && DANGER_AREAS.some((a) => (answers![a] ?? 0) >= 3);

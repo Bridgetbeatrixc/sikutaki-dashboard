@@ -11,7 +11,7 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { CompareBars } from "@/components/charts/CompareBars";
 import { fitRange, LineChart } from "@/components/charts/LineChart";
 import { MoodBar } from "@/components/charts/MoodBar";
-import { AREA_COUNT, areaById, groupOf, NOTE_LABEL, wellbeingStatus } from "@/lib/catalog";
+import { AREA_COUNT, areaById, groupOf, NOTE_LABEL, wellbeingBand } from "@/lib/catalog";
 import { decimal } from "@/lib/format";
 import { ROUTES } from "@/lib/paths";
 import { useHr } from "../HrProvider";
@@ -27,7 +27,7 @@ export function OverviewPage() {
   const { NOW, TEAMS, REFERRALS, ds } = m;
   const notes = ds.notes;
   const weekLabels = m.WEEKS.map((w) => w.label);
-  const wb = m.wellbeing("all") ?? 0, part = m.participation("all");
+  const wb = m.wellbeing("all"), part = m.participation("all");
   const mood = m.moodAvg("all"), sleep = m.sleepHours("all");
   const visible = TEAMS.filter((t) => !m.isHidden(t.id));
   const attention = visible.filter((t) => m.teamStatus(t.id) === "perhatian");
@@ -42,8 +42,8 @@ export function OverviewPage() {
     const focus = hidden ? undefined : m.focusAreas(t.id)[0];
     const cause = focus ? m.causeShares(t.id, focus.area).rows[0] : undefined;
     const last = notes.filter((n) => n.team === t.id).sort((a, b) => b.week - a.week)[0];
-    return { t, hidden, focus, cause, last, wb: m.wellbeing(t.id) ?? 0, st: m.teamStatus(t.id) };
-  }).sort((a, b) => Number(a.hidden) - Number(b.hidden) || a.wb - b.wb);
+    return { t, hidden, focus, cause, last, wb: m.wellbeing(t.id), st: m.teamStatus(t.id) };
+  }).sort((a, b) => Number(a.hidden) - Number(b.hidden) || (a.wb ?? 101) - (b.wb ?? 101));
 
   const doneMarkers = notes.filter((n) => n.type === "dilakukan" && n.week >= 0 && n.week <= NOW).sort((a, b) => a.week - b.week)
     .map((n) => ({ i: n.week, label: m.teamById(n.team)?.name ?? "Divisi" }));
@@ -54,13 +54,14 @@ export function OverviewPage() {
       <LiveSummary />
 
       <KpiGrid cols={3}>
-        <Kpi label="Indeks wellbeing" value={wb} unit="/100" delta={diff(wb, m.wellbeing("all", NOW - 1))} goodWhenUp foot={<StatusChip s={wellbeingStatus(wb)} small />} />
+        <Kpi label="Indeks wellbeing" value={wb ?? "Belum cukup data"} unit={wb === null ? undefined : "/100"} delta={diff(wb, m.wellbeing("all", NOW - 1))} goodWhenUp
+          foot={wb === null ? `Tampil setelah ${m.MIN_GROUP} orang mengisi check-in` : <span className="inline-flex flex-wrap items-center gap-1.5"><StatusChip s={wellbeingBand(wb).status} small />{wellbeingBand(wb).label} · <Link href={ROUTES.hr.reports} className="font-semibold text-brand">arti skor</Link></span>} />
         <Kpi label="Partisipasi check-in" value={part} unit="%" delta={diff(part, m.participationSeries("all")[NOW - 1] ?? null)} goodWhenUp foot={`${m.respondentsScope("all")} dari ${m.sizeScope("all")} orang`} />
         <Kpi label="Divisi perlu perhatian" value={attention.length} foot={attention.length ? attention.map((t) => t.name).join(", ") : `dari ${visible.length} divisi`} />
         <Kpi label="Rata-rata mood harian" value={mood === null ? "-" : decimal(mood)} unit={mood === null ? undefined : "/5"} delta={diff(mood, m.moodAvg("all", NOW - 1), 10)} goodWhenUp
           foot={mood === null ? `Tampil mulai ${m.MIN_GROUP} orang mencatat` : `${m.dailyActive("all")}% karyawan mencatat minggu ini`} />
         <Kpi label="Rata-rata jam tidur" value={sleep === null ? "-" : decimal(sleep)} unit={sleep === null ? undefined : " jam"} delta={diff(sleep, m.sleepHours("all", NOW - 4), 10)} goodWhenUp foot="dibanding 4 minggu lalu" />
-        <Kpi label="Rujukan psikolog" value={REFERRALS.thisMonth} delta={REFERRALS.thisMonth - REFERRALS.lastMonth} goodWhenUp foot="bulan ini, jumlah saja" />
+        <Kpi label="Kontak psikolog" value={REFERRALS.thisMonth} foot={`bulan ini, bulan lalu ${REFERRALS.lastMonth}. Baca bersama wellbeing, bukan ukuran keberhasilan tunggal`} />
       </KpiGrid>
 
       <div className="grid items-start gap-[18px] xl:grid-cols-[1.6fr_1fr]">
@@ -97,7 +98,7 @@ export function OverviewPage() {
                   </td>
                   {r.hidden ? <td colSpan={4} className="col-span-2"><HiddenNote /></td> : (
                     <>
-                      <td><b className="num">{r.wb}</b> <StatusChip s={r.st} small /></td>
+                      <td>{r.wb === null ? <span className="text-muted">Belum cukup data</span> : <><b className="num">{r.wb}</b> <StatusChip s={r.st} small /></>}</td>
                       <td>{r.focus
                         ? <span className="inline-flex flex-wrap items-center gap-1.5"><Dot color={groupOf(areaById(r.focus.area).group).color} />{areaById(r.focus.area).name} <b className="num">{r.focus.v}</b> <Delta d={r.focus.d} /></span>
                         : <span className="text-muted">Tidak ada, semua area baik</span>}</td>
@@ -118,10 +119,10 @@ export function OverviewPage() {
       <div className="grid items-start gap-[18px] xl:grid-cols-2">
         <Card title="Wellbeing per divisi" sub="Garis kecil = rata-rata perusahaan. Makin panjang makin baik.">
           <CompareBars onSelect={(id) => router.push(ROUTES.hr.division(id))}
-            items={visible.map((t) => ({ id: t.id, label: t.name, color: "#3B8EF7", v: m.wellbeing(t.id) ?? 0, ref: wb })).sort((a, b) => a.v - b.v)} />
+            items={visible.flatMap((t) => { const v = m.wellbeing(t.id); return v === null ? [] : [{ id: t.id, label: t.name, color: "#3B8EF7", v, ref: wb ?? undefined }]; }).sort((a, b) => a.v - b.v)} />
           {hiddenTeams.length > 0 && <HiddenNote text={`${hiddenTeams.map((t) => t.name).join(", ")}: disembunyikan, kurang dari 5 orang`} />}
         </Card>
-        <Card title="Area tertinggi di perusahaan" sub="Skor 0 sampai 100, makin tinggi makin perlu perhatian. Perubahan dibanding 4 minggu lalu."
+        <Card title="Area tertinggi di perusahaan" sub="Skor 0 sampai 100 = rata-rata seberapa sering dialami (50 = kadang-kadang, 75 = sering). Makin tinggi makin perlu perhatian. Perubahan dibanding 4 minggu lalu."
           action={<Link href={ROUTES.hr.areas} className="inline-flex items-center gap-1 font-semibold whitespace-nowrap text-brand">{AREA_COUNT} area <Icon name="arrow" size={14} /></Link>}>
           <CompareBars onSelect={(id) => router.push(ROUTES.hr.area(id))} items={top.map((x) => ({ id: x.area.id, label: x.area.name, color: groupOf(x.area.group).color, v: x.v }))} />
           <ul className="flex flex-wrap gap-x-3.5 gap-y-1.5 text-[12.5px] text-muted">{top.map((x) => <li key={x.area.id}>{x.area.name} {x.d === null ? <span className="text-muted">baru diukur</span> : <Delta d={x.d} />}</li>)}</ul>

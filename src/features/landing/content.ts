@@ -12,7 +12,7 @@ export const AREA_GROUPS = GROUPS.map((g) => ({ id: g.id, name: g.name, color: G
 export const ALL_AREAS = AREA_GROUPS.flatMap((g) => g.areas.map((name) => ({ name, color: g.color })));
 
 /** The mock heatmap shows a sample of areas so it stays readable. */
-const HEAT_AREA_NAMES = ["Stres Kronis", "Anxiety", "Overthinking", "Burnout", "Insomnia", "Baterai Sosial", "Kesedihan Mendalam", "Perasaan Hampa",
+const HEAT_AREA_NAMES = ["Stres Kronis", "Anxiety", "Overthinking", "Burnout", "Insomnia", "Kelelahan Sosial", "Kesedihan Mendalam", "Perasaan Hampa",
   "Minder", "Social Anxiety", "Anger Issue", "Kecanduan Digital", "Prokrastinasi Kronis", "Depresi"];
 export const HEAT_AREAS = HEAT_AREA_NAMES.map((name) => ALL_AREAS.find((a) => a.name === name)!);
 

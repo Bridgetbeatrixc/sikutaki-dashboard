@@ -26,6 +26,8 @@ export type EmployeeData = {
     answers: Record<string, number> | null;
     causeArea: string | null;
     causes: string[];
+    /** What the employee wrote under "Lainnya". Kept in their own account only, never sent to HR. */
+    causeNote: string;
   };
   /** Earlier check-ins (up to 12 weeks), oldest first, for the employee's own trend. */
   history: { week: string; answers: Record<string, number> }[];
@@ -43,7 +45,7 @@ export type EmployeeLocal = {
   profile: { name: string; email: string; teamId: string | null };
   onboarded: boolean;
   days: { day: string; mood: number; sleep: number }[];
-  checkins: Record<string, { answers: Record<string, number>; causeArea: string | null; causes: string[] }>;
+  checkins: Record<string, { answers: Record<string, number>; causeArea: string | null; causes: string[]; note?: string }>;
   done: Record<string, string[]>;
   programs: Enrollment[];
   energyOptIn: boolean;
@@ -100,6 +102,7 @@ export function loadEmployee(): EmployeeData {
       answers: mine?.answers ?? null,
       causeArea: mine?.causeArea ?? null,
       causes: mine?.causes ?? [],
+      causeNote: mine?.note ?? "",
     },
     history: Object.entries(e.checkins)
       .filter(([w]) => w < win.start && w >= addDays(win.start, -7 * 11))
@@ -117,7 +120,7 @@ export function saveEmployee(s: EmployeeData) {
   updateEmployeeLocal((e) => {
     const days = [...e.days.filter((d) => !s.days.some((x) => x.day === d.day)), ...s.days]
       .filter((d) => d.day > addDays(s.today, -400));
-    const checkins = s.week.answers ? { ...e.checkins, [s.week.start]: { answers: s.week.answers, causeArea: s.week.causeArea, causes: s.week.causes } } : e.checkins;
+    const checkins = s.week.answers ? { ...e.checkins, [s.week.start]: { answers: s.week.answers, causeArea: s.week.causeArea, causes: s.week.causes, note: s.week.causeNote || undefined } } : e.checkins;
     // Practices done per day are kept for 120 days, for the personal report.
     const done = Object.fromEntries(Object.entries({ ...e.done, [s.today]: s.done }).filter(([d, list]) => d > addDays(s.today, -120) && list.length));
     return { ...e, days, checkins, done, programs: s.programs, energyOptIn: s.energy.optIn };

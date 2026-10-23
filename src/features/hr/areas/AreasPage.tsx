@@ -12,7 +12,7 @@ export function AreasPage() {
   const { m, scope } = useHr();
   return (
     <>
-      <PageHeader title={`${AREA_COUNT} Area`} sub={`${scope === "all" ? "Seluruh perusahaan" : m.teamById(scope)?.name} · intensitas 0 sampai 100, makin tinggi makin perlu perhatian`} />
+      <PageHeader title={`${AREA_COUNT} Area`} sub={`${scope === "all" ? "Seluruh perusahaan" : m.teamById(scope)?.name} · skor 0 sampai 100 = rata-rata seberapa sering dialami (50 kadang-kadang, 75 sering). Makin tinggi makin perlu perhatian`} />
       {GROUPS.map((g) => (
         <section key={g.id} className="grid gap-2.5">
           <h2 className="flex items-center gap-2 text-[15px] font-bold" style={{ color: g.color }}><Dot color={g.color} className="size-2.5" />{g.name}</h2>
@@ -27,7 +27,7 @@ export function AreasPage() {
                     {a.core && <Tag className="hidden sm:inline-block">mingguan</Tag>}
                   </span>
                   {v === null ? (
-                    <span className="grid gap-1 text-[12.5px] text-muted"><b className="num text-[26px] font-bold text-[#c3c8d0]">-</b>Belum terukur. Masuk rotasi check-in dalam 8 minggu.</span>
+                    <span className="grid gap-1 text-[12.5px] text-muted"><b className="text-[15px] font-semibold text-[#9aa3b0]">Belum cukup data</b>Masuk rotasi check-in dalam 8 minggu.</span>
                   ) : (
                     <>
                       <span className="flex items-baseline gap-2"><b className="num text-[26px] font-bold text-head">{v}</b>{d !== null && <Delta d={d} />}</span>

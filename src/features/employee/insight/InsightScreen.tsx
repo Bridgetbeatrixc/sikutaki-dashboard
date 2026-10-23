@@ -10,17 +10,12 @@ import { addDays, DAYS_SHORT, shortDate, weekday } from "@/lib/week";
 import { dangerSigns } from "@/lib/practice";
 import { Recommendation } from "../components/Recommendation";
 import { appButton, Lead, Note, Screen, Section, Title } from "../components/ui";
-import { level, MOODS, moodById, type Level } from "../content";
+import { AreaRow, ScoreKey } from "../components/AreaRow";
+import { MOODS, moodById } from "../content";
 import { useEmployee } from "../EmployeeProvider";
 
 /** Bar height scale: 9 hours fills the track. */
 const MAX_SLEEP = 9;
-
-const LEVEL_CLASS: Record<Level, string> = {
-  lo: "bg-mint text-app-dark",
-  mid: "bg-warn-bg text-[#8a5300]",
-  hi: "bg-bad-bg text-[#a2341f]",
-};
 
 const average = (days: { sleep: number }[]) => Math.round((days.reduce((s, d) => s + d.sleep, 0) / days.length) * 10) / 10;
 
@@ -35,7 +30,7 @@ export function InsightScreen() {
       </div>
       <Link href={ROUTES.employee.report} className="mt-5 flex items-center gap-3 rounded-[18px] border-[1.5px] border-line px-3.5 py-3 text-ink hover:bg-soft">
         <span className="grid size-10 place-items-center rounded-xl bg-mint text-app-dark"><Icon name="file" size={18} /></span>
-        <span className="flex-1"><b className="block text-[14px]">Laporan pribadi (PDF)</b><small className="text-xs text-muted">Ringkasan 30 atau 90 hari untuk disimpan atau dibawa ke psikolog</small></span>
+        <span className="flex-1"><b className="block text-[14px]">Laporan pribadi lengkap</b><small className="text-xs text-muted">Kondisimu, profil 42 area, rencana pribadi, dan perkembangan dari waktu ke waktu</small></span>
         <Icon name="chevron" size={16} className="text-muted" />
       </Link>
     </Screen>
@@ -107,44 +102,37 @@ function SleepAndMood() {
 function CheckinResult() {
   const { week, history } = useEmployee();
   const last = history[history.length - 1];
-  const shown = week.answers ? { label: "minggu ini", answers: week.answers } : last ? { label: `minggu ${shortDate(last.week)}`, answers: last.answers } : null;
+  const shown = week.answers ? { label: "minggu ini", answers: week.answers, week: week.start } : last ? { label: `minggu ${shortDate(last.week)}`, answers: last.answers, week: last.week } : null;
   return (
     <section className="mt-1.5">
       <Section>Hasil check-in {shown?.label ?? "minggu ini"}</Section>
       {!week.answers && (
         <div className="mb-3 grid gap-1.5 rounded-2xl bg-soft p-3.5">
-          <p className="text-[13.5px] leading-normal text-body">Isi check-in mingguan untuk melihat tingkat stres, burnout, dan kualitas tidurmu.</p>
+          <p className="text-[13.5px] leading-normal text-body">Belum cukup data minggu ini. Isi check-in mingguan untuk melihat seberapa sering kamu mengalami stres, kelelahan, dan sulit tidur.</p>
           {week.open && <Link href={ROUTES.employee.checkin} className={appButton("primary", true)}>Mulai check-in · 3 menit</Link>}
         </div>
       )}
-      {shown && <CheckinLevels answers={shown.answers} />}
+      {shown && <CheckinLevels answers={shown.answers} week={shown.week} />}
       {shown && <Recommendation answers={shown.answers} className="mt-3" />}
     </section>
   );
 }
 
-function CheckinLevels({ answers }: { answers: Record<string, number> }) {
-  const areas = Object.keys(answers).filter((a) => areaById(a));
+function CheckinLevels({ answers, week }: { answers: Record<string, number>; week: string }) {
+  const areas = Object.keys(answers).filter((a) => areaById(a)).sort((a, b) => (answers[b] ?? 0) - (answers[a] ?? 0));
   const high = areas.filter((a) => (answers[a] ?? 0) >= 3);
   return (
     <>
+      <ScoreKey className="mb-2" />
       <ul className="grid gap-2">
-        {areas.map((a) => {
-          const l = level(answers[a] ?? 0);
-          return (
-            <li key={a} className="flex items-center justify-between rounded-[14px] bg-soft px-3.5 py-[11px] text-sm">
-              <span>{areaById(a).name}</span>
-              <span className={cn("rounded-full px-2.5 py-[3px] text-xs font-bold", LEVEL_CLASS[l.tone])}>{l.label}</span>
-            </li>
-          );
-        })}
+        {areas.map((a) => <AreaRow key={a} area={a} answer={answers[a] ?? 0} date={week} />)}
       </ul>
-      <Note>Ini gambaran dari jawabanmu, bukan diagnosis.</Note>
+      <Note>Ketuk area untuk melihat penjelasan dan langkah yang bisa dicoba. Ini gambaran dari jawabanmu, bukan diagnosis.</Note>
       {high.length > 0 && !dangerSigns(answers) && (
-        <div className="mt-3 grid gap-1 rounded-2xl border border-[#f3ddb8] bg-[#fff7ec] px-3.5 py-3 text-[13px] leading-normal text-[#5b4520]">
-          <b>{listJoin(high.map((a) => areaById(a).name))} sedang tinggi</b>
-          <span>Bicara dengan psikolog bisa membantu. Sesinya rahasia dan perusahaan tidak tahu namamu.</span>
-          <Link href={ROUTES.employee.counseling} className={appButton("primary", true)}>Lihat jadwal psikolog</Link>
+        <div className="mt-3 grid gap-1 rounded-2xl border border-[#cfe0f7] bg-[#eef5ff] px-3.5 py-3 text-[13px] leading-normal text-body">
+          <b className="text-ink">{listJoin(high.map((a) => areaById(a).name))} perlu perhatian minggu ini</b>
+          <span>Asisten bisa membantumu memahami hasil ini, mencari tahu pemicunya, dan memilih latihan yang cocok.</span>
+          <Link href={ROUTES.employee.ask("Bantu aku memahami hasil check-in minggu ini")} className={appButton("primary", true)}>Bahas hasilku dengan Asisten</Link>
         </div>
       )}
     </>
