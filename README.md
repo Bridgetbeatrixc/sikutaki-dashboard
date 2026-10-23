@@ -1,40 +1,36 @@
-# Sikutaki Dashboard (versi frontend + Asisten AI)
+# Sikutaki Dashboard
 
-Cabang `frontend-gemini`: versi **murni frontend** dari Sikutaki, tanpa server dan database. Isinya sama dengan cabang `backend-real-app` (situs perusahaan, Dashboard HR, aplikasi karyawan, latihan mandiri, program), ditambah **Asisten AI** berbasis Google Gemini yang menyarankan latihan dari katalog.
+Sikutaki: situs perusahaan, **Dashboard HR**, dan **aplikasi karyawan** untuk memantau kesehatan mental tim secara anonim. Next.js di Vercel (atau Cloudflare Workers), akun dan data di **Supabase**, dan **Asisten AI** berbasis Google Gemini yang berjalan di server.
 
-Versi dengan backend Postgres ada di cabang `backend-real-app`.
+- **Akun sungguhan.** HR mendaftarkan perusahaan di `/daftar`, karyawan bergabung dengan kode undangan di `/gabung`, semua masuk di `/masuk` dengan email dan kata sandi (Supabase Auth). Ada lupa kata sandi dan keluar.
+- **Data tersimpan di Supabase.** Mood dan jam tidur harian, check-in mingguan, latihan dan program, permintaan konseling, serta pengaturan, catatan, dan psikolog mitra milik HR.
+- **Privasi dijaga database.** Row level security di `supabase/schema.sql`: data karyawan hanya bisa dibaca karyawan itu sendiri. HR hanya mendapat jumlah dan rata-rata kelompok minimal 5 orang, dan permintaan konseling sampai ke HR tanpa id akun.
+- **Asisten AI di server.** Key Gemini (`GEMINI_API_KEY`) hanya ada di server dan tidak pernah sampai ke peramban. Asisten hanya bisa dipakai karyawan yang sudah masuk.
+- **Mode demo tetap ada.** `/demo/hr` dan `/demo/karyawan` membuka aplikasi dengan perusahaan contoh tanpa akun; isiannya tersimpan di peramban saja.
 
-- Data karyawan dan perubahan HR tersimpan di `localStorage` peramban, tidak dikirim ke server mana pun.
-- Angka Dashboard HR memakai data contoh (perusahaan fiktif), karena agregat butuh banyak karyawan.
-- HR dan karyawan di peramban yang sama berbagi data: psikolog dan praktisi mitra, bagian energi, jumlah kontak, dan laporan praktisi.
-- Situs diekspor statis (`out/`), jadi bisa dipasang di hosting statis mana saja.
+Angka grafik Dashboard HR masih memakai perusahaan contoh, karena rata-rata kelompok butuh banyak karyawan. Di Beranda HR ada kartu **Data asli perusahaan Anda** yang membaca jumlah karyawan, check-in, dan rata-rata mood dari Supabase.
 
-## Asisten AI (Gemini, untuk uji coba)
+## Asisten AI (Gemini)
 
 Tab **Asisten** di aplikasi karyawan (`/dashboard-employee/asisten`). Karyawan menceritakan kondisinya. Asisten mendengarkan dan bertanya dulu, lalu bila dibutuhkan menyarankan paling banyak 3 latihan atau program dari katalog Sikutaki, ditampilkan sebagai kartu yang langsung bisa dibuka.
 
-- Asisten tidak mendiagnosis dan hanya boleh menyarankan latihan yang ada di katalog (`src/lib/assistant.ts`).
+- Peramban mengirim percakapan dan ringkasan konteks ke `/api/assistant`. Server memeriksa sesi Supabase, menyusun instruksi sistem (`src/lib/assistant.ts`), lalu memanggil Gemini.
+- Asisten tidak mendiagnosis dan hanya boleh menyarankan latihan yang ada di katalog.
 - Bila pesan berisi tanda krisis, aplikasi selalu menampilkan Healing119 (119 ext 8) dan 112, apa pun jawaban model.
-- Yang dikirim ke Google: pesan percakapan dan ringkasan mood, tidur, check-in minggu ini, serta program yang berjalan. Tidak ada nama lengkap atau email.
-
-### API key
-
-1. Buat key gratis di [aistudio.google.com/apikey](https://aistudio.google.com/apikey).
-2. Pilih salah satu:
-   - Tempel di aplikasi: buka tab Asisten, tekan ikon pengaturan, isi key. Key disimpan di peramban itu saja.
-   - Atau isi saat build: `NEXT_PUBLIC_GEMINI_API_KEY=...` di `.env.local` atau di Environment Variables hosting.
-3. Model bawaan `gemini-3.5-flash-lite`, bisa diganti di pengaturan asisten.
-
-> **Hanya untuk uji coba.** Key dipakai langsung dari peramban, jadi siapa pun yang membuka situs bisa melihatnya. Untuk produksi, panggilan Gemini perlu dipindah ke server, misalnya ditambahkan ke cabang `backend-real-app`.
+- Yang dikirim ke Google: pesan percakapan dan ringkasan mood, tidur, check-in minggu ini, serta program yang berjalan. Tidak ada nama lengkap atau email. Percakapan tidak disimpan di database.
 
 ## Route
 
 | Route | Isi |
 |---|---|
 | `/`, `/tentang`, `/harga`, `/keamanan`, `/kontak`, `/privasi`, `/syarat` | Situs perusahaan |
-| `/daftar` | Daftar akun HR dan buat perusahaan |
-| `/gabung?kode=...` | Karyawan bergabung dengan kode undangan |
-| `/masuk` | Tautan ke Dashboard HR dan aplikasi karyawan |
+| `/masuk` | Masuk dengan email dan kata sandi (HR dan karyawan), plus tombol mode demo |
+| `/daftar` | HR membuat akun dan perusahaan |
+| `/gabung?kode=...` | Karyawan membuat akun dengan kode undangan |
+| `/lupa-sandi`, `/atur-sandi` | Minta tautan reset lewat email, lalu buat kata sandi baru |
+| `/demo/hr`, `/demo/karyawan` | Buka aplikasi dalam mode demo, tanpa akun |
+| `/auth/callback` | Tujuan tautan dari email Supabase (konfirmasi, reset) |
+| `/api/assistant` | Asisten AI di server (Gemini) |
 | `/dashboard-hr` | Beranda HR: wellbeing, partisipasi, mood, fokus per divisi |
 | `/dashboard-hr/divisi`, `/dashboard-hr/divisi/[id]` | Divisi, penyebab, catatan tindakan HR |
 | `/dashboard-hr/area`, `/dashboard-hr/area/[id]` | 42 area dan detail per area |
@@ -49,25 +45,31 @@ Tab **Asisten** di aplikasi karyawan (`/dashboard-employee/asisten`). Karyawan m
 | `/dashboard-employee/asisten` | Asisten AI (Gemini) yang menyarankan latihan |
 | `/dashboard-employee/konseling` | Kontak psikolog mitra dan Healing119 |
 | `/dashboard-employee/tenang` | Alat tenangkan diri saat cemas atau panik |
-| `/dashboard-employee/profil` | Profil, keluar, hapus data di peramban |
+| `/dashboard-employee/profil` | Profil, keluar, hapus akun |
 
 ## Struktur
 
 ```
 src/
   app/                    Route (App Router). page.tsx tipis, hanya merender fitur.
+  middleware.ts           Memperbarui sesi Supabase, mengarahkan tamu ke /masuk
+  app/api/assistant/      Asisten AI: memanggil Gemini dari server
+  app/auth/callback/      Tautan dari email Supabase
+  server/gemini.ts        Panggilan ke Gemini API (hanya server)
   store/
-    local.ts              Baca dan tulis localStorage
-    hr.ts, hr-actions.ts  Data HR lokal di atas perusahaan contoh
-    employee.ts, employee-actions.ts  Data karyawan di peramban
-    account.ts            Daftar, gabung, keluar
-    gemini.ts             Panggilan ke Gemini API
+    cloud.ts              Sinkron dengan Supabase: muat saat aplikasi dibuka, simpan setiap perubahan
+    local.ts              Salinan data di peramban (satu-satunya salinan di mode demo)
+    hr.ts, hr-actions.ts  Data dan perubahan HR
+    employee.ts, employee-actions.ts  Data dan perubahan karyawan
+    account.ts            Masuk, daftar, gabung, reset kata sandi, keluar
+    assistant.ts          Kirim percakapan ke /api/assistant
   features/
     hr/                   Dashboard HR
     employee/             Aplikasi karyawan
     landing/, site/       Situs perusahaan dan halaman masuk/daftar
   components/             Komponen dasar dan grafik SVG
   lib/
+    supabase/             Klien Supabase untuk peramban dan server
     catalog.ts            42 area, skala jawaban, penyebab, rotasi check-in
     model.ts              Perhitungan dashboard dari dataset agregat
     sample.ts             Perusahaan contoh
@@ -75,33 +77,72 @@ src/
     week.ts               Tanggal dan minggu (WIB)
 ```
 
-## Menjalankan
+## Menyiapkan Supabase
+
+1. Buat project di [supabase.com](https://supabase.com) (region terdekat, misalnya Singapore).
+2. **SQL Editor > New query**, tempel seluruh isi `supabase/schema.sql`, lalu **Run**. Aman dijalankan ulang.
+3. **Authentication > URL Configuration**
+   - **Site URL**: alamat situs, misalnya `https://sikutaki-dashboard.vercel.app`
+   - **Redirect URLs**: tambahkan `https://sikutaki-dashboard.vercel.app/auth/callback`, `http://localhost:3000/auth/callback`, dan `http://localhost:8787/auth/callback` (ditambah alamat Cloudflare bila dipakai)
+4. **Authentication > Sign In / Providers > Email**: biarkan *Confirm email* menyala bila pengguna harus mengonfirmasi email dulu, atau matikan agar akun langsung bisa dipakai saat uji coba. Email bawaan Supabase dibatasi beberapa email per jam; untuk dipakai sungguhan, atur SMTP sendiri di **Authentication > Emails > SMTP Settings**.
+5. Salin **Project URL** dan **Publishable key** (atau *anon key*) dari tombol **Connect** atau **Project Settings > API Keys**.
+
+## Deploy ke Vercel
+
+Alamat Supabase dan publishable key sudah ada di `.env.production`, jadi Vercel hanya perlu key Gemini.
+
+1. Impor repo di [vercel.com/new](https://vercel.com/new). Framework: **Next.js**. Biarkan *Build Command* dan *Output Directory* bawaan (versi lama memakai folder `out/`; hapus isian itu bila pernah diubah).
+2. **Settings > Environment Variables**, untuk Production dan Preview: `GEMINI_API_KEY` dari [aistudio.google.com/apikey](https://aistudio.google.com/apikey) (tanpa awalan `NEXT_PUBLIC_`), dan opsional `GEMINI_MODEL` (bawaan `gemini-3.5-flash-lite`). Hapus `NEXT_PUBLIC_GEMINI_API_KEY` bila pernah diisi.
+3. **Deployments > Redeploy** setelah mengisi variabel. Setiap push ke `main` ter-deploy ulang otomatis.
+
+## Deploy ke Cloudflare Workers (pilihan lain)
+
+Situs berjalan sebagai Cloudflare Worker lewat adapter [OpenNext](https://opennext.js.org/cloudflare). Paket gratis Workers boleh dipakai komersial (100.000 request per hari); ukuran worker sekitar 1,8 MB terkompresi, di bawah batas 3 MB.
+
+Alamat Supabase dan publishable key ada di `.env.production` karena memang publik (data dilindungi row level security). Ganti isinya bila memakai project Supabase lain. `GEMINI_API_KEY` tidak pernah masuk repo.
+
+**Lewat dashboard (deploy otomatis tiap push ke `main`)**
+
+1. [dash.cloudflare.com](https://dash.cloudflare.com) > **Workers & Pages > Create > Import a repository**, pilih repo ini.
+2. Project name: `sikutaki` (harus sama dengan `name` di `wrangler.jsonc`). Build command: `npx opennextjs-cloudflare build`. Deploy command: `npx opennextjs-cloudflare deploy`.
+3. Setelah worker dibuat: **Settings > Variables and Secrets > Add**, tipe **Secret**, nama `GEMINI_API_KEY`, isi key dari [aistudio.google.com/apikey](https://aistudio.google.com/apikey). Opsional: variabel `GEMINI_MODEL` (bawaan `gemini-3.5-flash-lite`).
+4. Alamat situs tampil di **Settings > Domains & Routes** (`https://sikutaki.<akun>.workers.dev`), atau tambahkan domain sendiri di sana. Masukkan alamat itu ke Supabase (lihat langkah 3 di atas).
+
+**Lewat terminal**
 
 ```bash
+npx wrangler login
+npx wrangler secret put GEMINI_API_KEY
+npm run deploy               # build + deploy
+```
+
+Workflow `.github/workflows/ci.yml` menjalankan typecheck dan build di setiap push dan pull request.
+
+## Menjalankan di komputer
+
+```bash
+cp .env.example .env.local   # isi key Supabase dan Gemini
 npm install
 npm run dev                  # http://localhost:3000
 npm run typecheck
-npm run build                # hasil statis di out/
-npx serve out                # coba hasil build
+npm run build && npm start
+npm run preview              # versi Cloudflare di http://localhost:8787 (key Gemini di .dev.vars)
 ```
 
-Untuk GitHub Pages atau hosting di subfolder, isi `NEXT_PUBLIC_BASE_PATH` (misalnya `/sikutaki-dashboard`) saat build.
+Tanpa variabel Supabase, situs tetap jalan dalam mode demo saja.
 
 ### Foto masuk/daftar
 
 Foto di samping formulir masuk, daftar, dan gabung masih sementara (Unsplash):
 
-- `public/img/auth/masuk.jpg` untuk `/masuk`
+- `public/img/auth/masuk.jpg` untuk `/masuk`, `/lupa-sandi`, `/atur-sandi`
 - `public/img/auth/daftar.jpg` untuk `/daftar` dan `/gabung`
 
 Panduan mengganti, ukuran yang disarankan, dan prompt siap pakai untuk ChatGPT (DALL·E) ada di `proposal/Prompt_Foto_Masuk_Daftar.md` di folder proyek. Cukup timpa file dengan nama yang sama (JPG, di bawah ~300 KB); kode tidak perlu diubah.
 
-## Deploy ke Vercel
+## Batasan saat ini
 
-Impor repo di [vercel.com/new](https://vercel.com/new) dan pilih cabang `frontend-gemini`. Tidak perlu database. Bila ingin key Gemini bawaan, isi `NEXT_PUBLIC_GEMINI_API_KEY` di **Settings > Environment Variables**.
-
-## Batasan versi ini
-
-- Data hanya ada di satu peramban. Membersihkan data situs menghapusnya.
-- Angka HR tidak berasal dari karyawan sungguhan. Menambah atau menghapus divisi belum bisa.
-- Tidak ada akun atau kata sandi sungguhan.
+- Grafik Dashboard HR memakai angka perusahaan contoh dengan 8 divisi contoh. Nama divisi bisa diganti, tapi menambah atau menghapus divisi belum bisa.
+- Jurnal latihan tersimpan di peramban saja, tidak dikirim ke server.
+- Pesan antara HR dan karyawan di permintaan konseling muncul setelah halaman dimuat ulang (belum realtime).
+- Mode demo tidak memakai Asisten AI, agar key Gemini tidak bisa dipakai siapa pun tanpa akun.

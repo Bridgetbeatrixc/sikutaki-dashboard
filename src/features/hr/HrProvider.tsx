@@ -3,6 +3,8 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState, t
 import { makeModel, type Dataset, type Model, type Scope } from "@/lib/model";
 import { localDataset } from "@/store/hr";
 import type { Result } from "@/store/hr-actions";
+import { currentAccount, startApp } from "@/store/cloud";
+import { AppLoadError } from "@/components/ui/AppLoadError";
 
 type HrState = {
   /** All numbers of the dashboard: the sample company with HR's local changes. */
@@ -19,11 +21,21 @@ type HrState = {
 
 const HrContext = createContext<HrState | null>(null);
 
-/** The dashboard reads the sample company with HR's own changes from this browser on top. */
+/** The dashboard reads the sample numbers with the company's own settings on top (from Supabase when signed in). */
 export function HrProvider({ children }: { children: ReactNode }) {
   const [dataset, setDataset] = useState<Dataset | null>(null);
-  // localStorage exists only in the browser, so the data loads after the first render.
-  useEffect(() => setDataset(localDataset()), []);
+  const [error, setError] = useState<string | null>(null);
+  // The browser copy is filled after the first render: from Supabase when signed in, from this browser in demo mode.
+  useEffect(() => {
+    let live = true;
+    startApp("hr").then((r) => {
+      if (!live) return;
+      if (r.ready) setDataset(localDataset());
+      else if (r.error) setError(r.error);
+    });
+    return () => { live = false; };
+  }, []);
+  if (error) return <AppLoadError message={error} />;
   if (!dataset) return <div className="grid min-h-dvh place-items-center text-sm text-muted">Memuat dashboard...</div>;
   return <HrState dataset={dataset} reload={() => setDataset(localDataset())}>{children}</HrState>;
 }
@@ -45,7 +57,7 @@ function HrState({ dataset, reload, children }: { dataset: Dataset; reload: () =
     try {
       res = await action();
     } catch {
-      res = { ok: false, error: "Gagal menyimpan di peramban ini." };
+      res = { ok: false, error: "Gagal menyimpan. Coba lagi." };
     }
     setPending(false);
     if (!res.ok) toast(res.error);
@@ -58,7 +70,7 @@ function HrState({ dataset, reload, children }: { dataset: Dataset; reload: () =
 
   // A division that no longer exists (or is hidden) falls back to the whole company.
   const safeScope = scope === "all" || m.teamById(scope) ? scope : "all";
-  const value = useMemo(() => ({ m, demo: false, scope: safeScope, setScope, toastMsg, toast, run, pending }), [m, safeScope, toastMsg, toast, run, pending]);
+  const value = useMemo(() => ({ m, demo: !currentAccount(), scope: safeScope, setScope, toastMsg, toast, run, pending }), [m, safeScope, toastMsg, toast, run, pending]);
   return <HrContext.Provider value={value}>{children}</HrContext.Provider>;
 }
 

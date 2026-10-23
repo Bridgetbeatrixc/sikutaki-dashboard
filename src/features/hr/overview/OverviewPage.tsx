@@ -16,6 +16,7 @@ import { decimal } from "@/lib/format";
 import { ROUTES } from "@/lib/paths";
 import { useHr } from "../HrProvider";
 import { NOTE_TONE } from "../noteTone";
+import { LiveSummary } from "./LiveSummary";
 import { Onboarding } from "./Onboarding";
 
 export function OverviewPage() {
@@ -50,6 +51,7 @@ export function OverviewPage() {
   return (
     <>
       <PageHeader title="Beranda" sub={<>Minggu {m.WEEKS[NOW].label} · {m.respondentsScope("all")} dari {m.sizeScope("all")} karyawan mengisi check-in</>} />
+      <LiveSummary />
 
       <KpiGrid cols={3}>
         <Kpi label="Indeks wellbeing" value={wb} unit="/100" delta={diff(wb, m.wellbeing("all", NOW - 1))} goodWhenUp foot={<StatusChip s={wellbeingStatus(wb)} small />} />

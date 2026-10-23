@@ -4,10 +4,12 @@ import { followUpArea } from "@/lib/catalog";
 import { programById, programState, type Slot } from "@/lib/practice";
 import { loadEmployee, logFinishedProgram, saveEmployee, type EmployeeData } from "@/store/employee";
 import * as actions from "@/store/employee-actions";
+import { startApp } from "@/store/cloud";
+import { AppLoadError } from "@/components/ui/AppLoadError";
 
 /*
- * The employee's own data, kept in this browser (frontend-only version). Loaded after the first render,
- * because localStorage exists only in the browser, and saved again after every change.
+ * The employee's own data. Loaded after the first render: from Supabase for a signed-in employee (into the
+ * browser copy), or from the browser alone in demo mode. Saved again after every change.
  */
 
 type Day = EmployeeData["days"][number];
@@ -35,7 +37,17 @@ const EmployeeContext = createContext<EmployeeContextValue | null>(null);
 
 export function EmployeeProvider({ children }: { children: ReactNode }) {
   const [data, setData] = useState<EmployeeData | null>(null);
-  useEffect(() => setData(loadEmployee()), []);
+  const [error, setError] = useState<string | null>(null);
+  useEffect(() => {
+    let live = true;
+    startApp("employee").then((r) => {
+      if (!live) return;
+      if (r.ready) setData(loadEmployee());
+      else if (r.error) setError(r.error);
+    });
+    return () => { live = false; };
+  }, []);
+  if (error) return <AppLoadError message={error} />;
   if (!data) return <div className="grid min-h-dvh place-items-center text-sm text-muted">Memuat...</div>;
   return <EmployeeState data={data}>{children}</EmployeeState>;
 }
@@ -58,7 +70,7 @@ function EmployeeState({ data, children }: { data: EmployeeData; children: React
       if (!res.ok) toast(res.error);
       return res.ok;
     } catch {
-      toast("Gagal menyimpan di peramban ini.");
+      toast("Gagal menyimpan. Coba lagi.");
       return false;
     }
   }, [data.live, toast]);
@@ -94,7 +106,7 @@ function EmployeeState({ data, children }: { data: EmployeeData; children: React
         if (!res.ok) { toast(res.error); return null; }
         id = res.id;
       } catch {
-        toast("Gagal menyimpan di peramban ini.");
+        toast("Gagal menyimpan. Coba lagi.");
         return null;
       }
     }

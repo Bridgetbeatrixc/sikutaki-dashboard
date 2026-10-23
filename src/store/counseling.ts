@@ -1,10 +1,12 @@
 import { longDate, today } from "@/lib/week";
+import { syncRequest } from "./cloud";
 import { KEYS, newId, read, write } from "./local";
 
 /*
  * Counseling requests: the employee asks HR to arrange a session (from the Konseling screen or the AI assistant),
- * they can talk it over in a short thread, and HR sends back a schedule. Kept in this browser, shared by the
- * employee app and the HR dashboard. The session itself stays between the employee and the psychologist.
+ * they can talk it over in a short thread, and HR sends back a schedule. Kept in this browser and, when signed in,
+ * saved to Supabase, where HR sees its company's requests without the account behind them. The session itself
+ * stays between the employee and the psychologist.
  */
 
 export type CounselStatus = "menunggu" | "dijadwalkan" | "selesai" | "dibatalkan";
@@ -39,6 +41,8 @@ const save = (list: CounselRequest[]) => write(KEYS.counsel, list);
 const change = (id: string, f: (r: CounselRequest) => CounselRequest) => {
   const list = loadRequests().map((r) => (r.id === id ? f(r) : r));
   save(list);
+  const changed = list.find((r) => r.id === id);
+  if (changed) syncRequest(changed);
   return list;
 };
 
@@ -52,6 +56,7 @@ export function createRequest(input: NewRequest): CounselRequest {
     messages: note.trim() ? [{ from: "karyawan", text: note.trim(), at: now() }] : [],
   };
   save([r, ...loadRequests()]);
+  syncRequest(r);
   return r;
 }
 

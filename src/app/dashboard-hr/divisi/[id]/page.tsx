@@ -6,7 +6,7 @@ type Props = { params: Promise<{ id: string }> };
 
 export const metadata: Metadata = { title: "Divisi" };
 
-// The frontend-only version has the sample company's divisions.
+// The dashboard uses the sample company's divisions (their names can be changed per company).
 export const dynamicParams = false;
 export const generateStaticParams = () => sampleDataset().teams.map((t) => ({ id: t.id }));
 

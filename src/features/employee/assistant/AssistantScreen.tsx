@@ -2,13 +2,13 @@
 import Link from "next/link";
 import { Fragment, useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { Icon } from "@/components/ui/Icon";
-import { isCrisis, parseReply, systemPrompt, type Action, type Piece } from "@/lib/assistant";
+import { isCrisis, parseReply, type Action, type Piece } from "@/lib/assistant";
 import { cn } from "@/lib/cn";
 import { asset, ROUTES } from "@/lib/paths";
 import { practiceById, programById, programState, SLOT_LABEL } from "@/lib/practice";
 import { loadRequests, STATUS_LABEL } from "@/store/counseling";
-import { askGemini, GEMINI_MODELS, geminiKey, hasBuiltInKey, loadGemini, saveGemini, type ChatTurn, type GeminiSettings } from "@/store/gemini";
-import { appButton, Note } from "../components/ui";
+import { askAssistant, type ChatTurn } from "@/store/assistant";
+import { currentAccount } from "@/store/cloud";
 import { useEmployee } from "../EmployeeProvider";
 import { practiceArt, programArt } from "../exercises/ProgramCard";
 
@@ -21,17 +21,14 @@ const input = "w-full rounded-[14px] border-[1.5px] border-line bg-white px-3.5 
 
 export function AssistantScreen() {
   const emp = useEmployee();
-  const [settings, setSettings] = useState<GeminiSettings>({ apiKey: "", model: GEMINI_MODELS[0] });
-  const [showSettings, setShowSettings] = useState(false);
+  const [demo, setDemo] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [text, setText] = useState("");
   const [busy, setBusy] = useState(false);
   const end = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const s = loadGemini();
-    setSettings(s);
-    if (!geminiKey(s)) setShowSettings(true);
+    setDemo(!currentAccount());
     try { setMessages(JSON.parse(window.sessionStorage.getItem(CHAT_KEY) ?? "[]") as Message[]); } catch { /* storage blocked */ }
   }, []);
   useEffect(() => {
@@ -50,7 +47,7 @@ export function AssistantScreen() {
     setBusy(true);
     try {
       const mood = emp.todayLog?.mood ?? null;
-      const system = systemPrompt({
+      const context = {
         name: emp.user.name, energy: emp.energy.allowed && emp.energy.optIn, days: emp.days, todayMood: mood, answers: emp.week.answers,
         programs: emp.programs.map((e) => {
           const st = programState(e, emp.today, mood);
@@ -59,8 +56,8 @@ export function AssistantScreen() {
         doneToday: emp.done,
         requests: loadRequests().filter((r) => r.status !== "dibatalkan").slice(0, 3)
           .map((r) => (r.schedule && r.status === "dijadwalkan" ? `dijadwalkan ${r.schedule.date} ${r.schedule.time}` : STATUS_LABEL[r.status].toLowerCase())),
-      });
-      const reply = await askGemini(settings, system, history.slice(-12));
+      };
+      const reply = await askAssistant(context, history.slice(-12).map(({ role, text }) => ({ role, text })));
       setMessages((m) => [...m, { role: "model", text: reply }]);
     } catch (e) {
       setMessages((m) => [...m, { role: "model", text: e instanceof Error ? e.message : "Terjadi kesalahan.", error: true }]);
@@ -79,15 +76,13 @@ export function AssistantScreen() {
           <h1 className="mt-2.5 text-[26px] font-semibold text-ink">Asisten AI</h1>
           <p className="text-sm leading-relaxed text-body">Ceritakan yang kamu rasakan. Asisten mendengarkan dulu, lalu menyarankan latihan bila kamu butuh.</p>
         </div>
-        <button type="button" onClick={() => setShowSettings(!showSettings)} aria-label="Pengaturan asisten" aria-expanded={showSettings}
-          className="mt-3 grid size-10 shrink-0 place-items-center rounded-full bg-soft text-ink"><Icon name="cog" size={18} /></button>
       </div>
 
-      {showSettings && <Settings settings={settings} onSave={(s) => { setSettings(s); saveGemini(s); setShowSettings(false); }} />}
+      {demo && <p className="mt-3 rounded-2xl bg-[#fdf6e7] px-3.5 py-2.5 text-[13px] leading-normal text-body">Asisten AI hanya untuk akun karyawan. <Link href={ROUTES.join()} className="font-semibold underline">Buat akun</Link> atau <Link href={ROUTES.login} className="font-semibold underline">masuk</Link> untuk memakainya.</p>}
 
       <p className="mt-3 flex gap-2 rounded-2xl bg-soft px-3.5 py-2.5 text-[12px] leading-normal text-body">
         <Icon name="info" size={15} className="mt-px shrink-0 text-app" />
-        <span>Versi uji coba. Pesanmu, beserta ringkasan mood, tidur, dan check-in minggu ini, dikirim ke Google Gemini untuk dijawab. Jangan menulis nama lengkap atau data pribadi. Asisten bukan psikolog dan tidak mendiagnosis.</span>
+        <span>Pesanmu, beserta ringkasan mood, tidur, dan check-in minggu ini, dikirim lewat server Sikutaki ke Google Gemini untuk dijawab dan tidak disimpan. Jangan menulis nama lengkap atau data pribadi. Asisten bukan psikolog dan tidak mendiagnosis.</span>
       </p>
       {crisisShown && <Crisis />}
 
@@ -246,22 +241,3 @@ function Crisis() {
   );
 }
 
-function Settings({ settings, onSave }: { settings: GeminiSettings; onSave: (s: GeminiSettings) => void }) {
-  const [key, setKey] = useState(settings.apiKey);
-  const [model, setModel] = useState(settings.model);
-  return (
-    <form onSubmit={(e) => { e.preventDefault(); onSave({ apiKey: key.trim(), model: model.trim() || GEMINI_MODELS[0] }); }}
-      className="mt-3 grid gap-3 rounded-[18px] border border-line p-3.5">
-      <b className="text-[14px] text-ink">Pengaturan Gemini (uji coba)</b>
-      <label className="grid gap-1.5 text-[13px] font-semibold text-body">API key Gemini
-        <input type="password" autoComplete="off" value={key} onChange={(e) => setKey(e.target.value)} placeholder={hasBuiltInKey() ? "Memakai key bawaan situs" : "Tempel API key dari Google AI Studio"} className={input} />
-      </label>
-      <label className="grid gap-1.5 text-[13px] font-semibold text-body">Model
-        <input list="gemini-models" value={model} onChange={(e) => setModel(e.target.value)} className={input} />
-        <datalist id="gemini-models">{GEMINI_MODELS.map((m) => <option key={m} value={m} />)}</datalist>
-      </label>
-      <Note>Key disimpan di peramban ini saja dan dikirim langsung ke Google. Untuk uji coba saja, jangan pakai key berbayar produksi. Buat key gratis di aistudio.google.com.</Note>
-      <button type="submit" className={appButton("primary", true, "mt-0")}>Simpan</button>
-    </form>
-  );
-}

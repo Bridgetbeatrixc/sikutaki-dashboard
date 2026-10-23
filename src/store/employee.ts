@@ -2,6 +2,7 @@ import { checkinAreas } from "@/lib/catalog";
 import type { Enrollment } from "@/lib/practice";
 import { sampleDataset } from "@/lib/sample";
 import { addDays, rotationIndex, today, weekday, weekStart } from "@/lib/week";
+import { scheduleEmployeeSync } from "./cloud";
 import { loadHr } from "./hr";
 import { KEYS, read, remove, write } from "./local";
 
@@ -37,7 +38,7 @@ export type EmployeeData = {
   partners: { id: string; kind: "psikolog" | "komplementer"; practice: string; name: string; focus: string; schedule: string; contact: string }[];
 };
 
-/** What this browser keeps for the employee. */
+/** The employee's data in this browser: a copy of their Supabase rows when signed in, the only copy in demo mode. */
 export type EmployeeLocal = {
   profile: { name: string; email: string; teamId: string | null };
   onboarded: boolean;
@@ -62,7 +63,10 @@ const EMPTY: EmployeeLocal = {
 };
 
 export const loadEmployeeLocal = (): EmployeeLocal => ({ ...EMPTY, ...read<Partial<EmployeeLocal>>(KEYS.employee, {}) });
-export const saveEmployeeLocal = (e: EmployeeLocal) => write(KEYS.employee, e);
+export const saveEmployeeLocal = (e: EmployeeLocal) => {
+  write(KEYS.employee, e);
+  scheduleEmployeeSync();
+};
 export const updateEmployeeLocal = (change: (e: EmployeeLocal) => EmployeeLocal) => saveEmployeeLocal(change(loadEmployeeLocal()));
 
 /** Removes everything the employee app kept in this browser, journal entries included. */

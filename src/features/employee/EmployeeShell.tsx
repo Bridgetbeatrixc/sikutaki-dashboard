@@ -8,6 +8,7 @@ import { cn } from "@/lib/cn";
 import { ROUTES } from "@/lib/paths";
 import { APP_NAV } from "./content";
 import { useEmployee } from "./EmployeeProvider";
+import { currentAccount } from "@/store/cloud";
 
 const E = ROUTES.employee;
 const strip = (p: string) => p.replace(/\/$/, "") || "/";
@@ -26,10 +27,11 @@ export function EmployeeShell({ children }: { children: ReactNode }) {
   const { user, company, toastMsg } = useEmployee();
   const full = isFullScreen(path);
   const initial = user.name.trim()[0]?.toUpperCase() ?? "?";
+  const demo = !currentAccount();
 
   return (
     <div className="min-h-dvh bg-white text-ink">
-      <div className="bg-ink px-4 py-2 text-center text-[13px] text-white print:hidden">Versi frontend: datamu tersimpan di peramban ini saja.</div>
+      {demo && <div className="bg-ink px-4 py-2 text-center text-[13px] text-white print:hidden">Mode demo: datamu tersimpan di peramban ini saja. <Link href={ROUTES.join()} className="underline">Buat akun</Link></div>}
 
       <header className={cn("sticky top-0 z-20 print:hidden border-b border-line bg-white/90 backdrop-blur md:border-0 md:bg-white/70", full && "hidden md:block")}>
         <div className="mx-auto flex h-14 max-w-[1200px] items-center gap-3 px-4 md:h-16 md:px-8">

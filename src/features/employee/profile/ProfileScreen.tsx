@@ -4,6 +4,7 @@ import { useState, type FormEvent } from "react";
 import { Icon } from "@/components/ui/Icon";
 import { cn } from "@/lib/cn";
 import { logout } from "@/store/account";
+import { currentAccount } from "@/store/cloud";
 import { ENERGY_NOTE } from "@/lib/practice";
 import { deleteAccount } from "@/store/employee-actions";
 import { ROUTES } from "@/lib/paths";
@@ -16,6 +17,7 @@ const label = "grid gap-1.5 text-[13px] font-semibold text-body";
 /** The employee's account: name, division, password, sign out, and deleting the account with all its data. */
 export function ProfileScreen() {
   const { user, teams, company, toast, updateUser } = useEmployee();
+  const cloud = Boolean(currentAccount());
   const [name, setName] = useState(user.name);
   const [team, setTeam] = useState(user.teamId ?? "");
   const [busy, setBusy] = useState<string | null>(null);
@@ -43,8 +45,8 @@ export function ProfileScreen() {
   };
   const remove = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!window.confirm("Hapus semua catatan harian, check-in, program, dan jurnal di peramban ini? Ini tidak bisa dibatalkan.")) return;
-    if (await guard("delete", deleteAccount, "Data dihapus")) window.location.assign(`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}${ROUTES.join()}`);
+    if (!window.confirm(cloud ? "Hapus akun beserta semua catatan harian, check-in, program, dan jurnal? Ini tidak bisa dibatalkan." : "Hapus semua catatan harian, check-in, program, dan jurnal di peramban ini? Ini tidak bisa dibatalkan.")) return;
+    if (await guard("delete", deleteAccount, "Data dihapus")) window.location.assign(`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}${cloud ? `${ROUTES.login}?hapus=1` : ROUTES.join()}`);
   };
 
   return (
@@ -72,10 +74,12 @@ export function ProfileScreen() {
       </form>
 
       <details className="mt-6 rounded-2xl border border-[#f1c9c9] p-3.5">
-        <summary className="cursor-pointer text-sm font-semibold text-bad">Hapus semua data di peramban ini</summary>
+        <summary className="cursor-pointer text-sm font-semibold text-bad">{cloud ? "Hapus akun dan semua data" : "Hapus semua data di peramban ini"}</summary>
         <form onSubmit={remove} className="mt-3 grid gap-3">
-          <p className="text-[13px] leading-normal text-body">Di versi frontend semua datamu hanya tersimpan di peramban ini. Catatan harian, check-in, program, dan jurnal dihapus permanen.</p>
-          <button type="submit" disabled={busy === "delete"} className="rounded-2xl bg-bad p-3 text-sm font-semibold text-white disabled:opacity-50">Hapus data saya</button>
+          <p className="text-[13px] leading-normal text-body">{cloud
+            ? "Akunmu, catatan harian, check-in, program, permintaan konseling, dan jurnal dihapus permanen dari server dan peramban ini."
+            : "Di mode demo semua datamu hanya tersimpan di peramban ini. Catatan harian, check-in, program, dan jurnal dihapus permanen."}</p>
+          <button type="submit" disabled={busy === "delete"} className="rounded-2xl bg-bad p-3 text-sm font-semibold text-white disabled:opacity-50">{cloud ? "Hapus akun saya" : "Hapus data saya"}</button>
         </form>
       </details>
     </Screen>
