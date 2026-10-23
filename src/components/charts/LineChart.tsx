@@ -9,9 +9,9 @@ export type Series = { name: string; color: string; values: (number | null)[] };
 export type Marker = { i: number; label: string };
 
 /** Single-axis line chart with a crosshair tooltip, dashed event markers and direct end labels. */
-export function LineChart({ series, labels, min = 0, max = 100, height = 220, markers = [], unit = "", band, tipPrefix = "Minggu " }: {
+export function LineChart({ series, labels, min = 0, max = 100, height = 220, markers = [], unit = "", band }: {
   series: Series[]; labels: string[]; min?: number; max?: number; height?: number;
-  markers?: Marker[]; unit?: string; band?: { from: number; to: number }; tipPrefix?: string;
+  markers?: Marker[]; unit?: string; band?: { from: number; to: number };
 }) {
   const box = useRef<HTMLDivElement>(null);
   const [W, setW] = useState(640);
@@ -109,7 +109,7 @@ export function LineChart({ series, labels, min = 0, max = 100, height = 220, ma
 
       {hover !== null && (
         <div className="pointer-events-none absolute top-1 z-10 grid -translate-x-1/2 gap-1 whitespace-nowrap rounded-[10px] bg-ink px-2.5 py-2 text-xs text-white" style={{ left: `${(x(hover) / W) * 100}%` }}>
-          <b>{tipPrefix}{labels[hover]}</b>
+          <b>Minggu {labels[hover]}</b>
           {series.map((s) => (
             <span key={s.name} className="flex items-center gap-1.5">
               <i className="size-2 rounded-full" style={{ background: s.color }} />{s.name}
