@@ -10,6 +10,23 @@ Sikutaki: situs perusahaan, **Dashboard HR**, dan **aplikasi karyawan** untuk me
 
 Angka grafik Dashboard HR masih memakai perusahaan contoh, karena rata-rata kelompok butuh banyak karyawan. Di Beranda HR ada kartu **Data asli perusahaan Anda** yang membaca jumlah karyawan, check-in, dan rata-rata mood dari Supabase.
 
+## BrainQ Workforce (`/brainq`)
+
+Dashboard untuk perusahaan yang memakai [BrainQ](https://sikutaki-brainq.vercel.app): tim mana yang perlu perhatian, kenapa, dan langkah apa yang diambil. Datanya hasil scan karyawan yang tersimpan anonim di Supabase.
+
+| Route | Isi |
+|---|---|
+| `/brainq?kode=DEMO` | Dashboard HR. Tanpa kode membuka perusahaan contoh (PT Contoh Nusantara) |
+| `/brainq/scan?kode=DEMO` | Scan 20 pertanyaan untuk karyawan. Hasil pribadi tampil langsung; perusahaan hanya mendapat angka per tim |
+| `/api/brainq/submit` | Menghitung skor lewat mesin BrainQ (`sikutaki-brainq.vercel.app/api/score`), lalu menyimpan angkanya tanpa identitas |
+
+Urutan dashboard: ringkasan satu kalimat, tim yang perlu perhatian (dengan alasan dan langkah), angka utama (partisipasi, rata-rata BrainQ, brain fog risk, penghambat terbanyak), tren per siklus Pulse, Brain 6 Map perusahaan, penghambat utama, tabel semua tim, dan Cognitive Readiness Gap.
+
+- **Privasi:** tabel `bq_*` tertutup untuk peramban. Dashboard hanya membaca lewat fungsi `bq_dashboard`, yang menyembunyikan tim dengan kurang dari 8 hasil di satu siklus (termasuk jumlahnya). Jawaban cek keamanan tidak pernah dikirim ke server.
+- **Siklus:** Pulse 2 mingguan, tanggal 1–14 dan 15–akhir bulan (WIB). Perubahan di bawah 3 poin ditulis *stabil*.
+- **Database:** jalankan `supabase/brainq.sql` di SQL Editor (sudah diterapkan di project `sikutaki`). Contoh menambah perusahaan ada di akhir file.
+- **Batasan prototipe:** siapa pun yang tahu kode perusahaan bisa membuka dashboard (isinya hanya rata-rata tim) dan mengirim scan. Untuk dipakai sungguhan, dashboard perlu login HR dan scan perlu tautan undangan per karyawan.
+
 ## Asisten AI (Gemini)
 
 Tab **Asisten** di aplikasi karyawan (`/dashboard-employee/asisten`). Karyawan menceritakan kondisinya. Asisten mendengarkan dan bertanya dulu, lalu bila dibutuhkan menyarankan paling banyak 3 latihan atau program dari katalog Sikutaki, ditampilkan sebagai kartu yang langsung bisa dibuka.
