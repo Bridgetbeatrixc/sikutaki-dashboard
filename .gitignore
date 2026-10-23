@@ -5,6 +5,6 @@ next-env.d.ts
 *.tsbuildinfo
 .DS_Store
 
-# local env (DATABASE_URL)
+# local env (Supabase and Gemini keys)
 .env*
 !.env.example

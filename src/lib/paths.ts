@@ -9,11 +9,14 @@ export const ROUTES = {
   terms: "/syarat",
   login: "/masuk",
   signup: "/daftar",
+  /** Ask for a link to choose a new password, and the page that link opens. */
+  forgotPassword: "/lupa-sandi",
+  newPassword: "/atur-sandi",
   /** Employee sign-up with the company's invite code. */
   join: (code?: string) => (code ? `/gabung?kode=${encodeURIComponent(code)}` : "/gabung"),
 
-  /** The frontend-only version has no demo mode: both apps open directly with data kept in the browser. */
-  demo: { hr: "/dashboard-hr", employee: "/dashboard-employee" },
+  /** Demo mode: the apps open with the sample company and no account; data stays in the browser. */
+  demo: { hr: "/demo/hr", employee: "/demo/karyawan" },
   hr: {
     root: "/dashboard-hr",
     divisions: "/dashboard-hr/divisi",

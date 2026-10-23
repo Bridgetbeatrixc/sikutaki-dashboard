@@ -15,7 +15,7 @@ import { EmptyState } from "./EmptyState";
 /** Frame of the HR dashboard: sidebar (icon rail on tablet), sticky top bar, bottom bar on phones. */
 export function HrShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  const { m, scope, setScope, toastMsg } = useHr();
+  const { m, demo, scope, setScope, toastMsg } = useHr();
   const [bellOpen, setBellOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
   const [userOpen, setUserOpen] = useState(false);
@@ -53,7 +53,9 @@ export function HrShell({ children }: { children: ReactNode }) {
 
       <div className="flex min-w-0 flex-1 flex-col">
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1 bg-ink print:hidden px-4 py-2 text-[13px] text-white sm:px-7">
-          <span>Versi frontend: angka dashboard memakai data contoh. Perubahan Anda tersimpan di peramban ini saja.</span>
+          <span>{demo
+            ? <>Mode demo: perusahaan dan angka contoh, perubahan tersimpan di peramban ini saja. <Link href={ROUTES.signup} className="underline">Daftarkan perusahaan</Link></>
+            : "Grafik memakai angka contoh sampai data karyawan cukup. Pengaturan, catatan, dan permintaan konseling tersimpan di akun perusahaan."}</span>
         </div>
         <header className="sticky top-0 z-20 print:hidden flex flex-wrap items-center gap-2.5 border-b border-line bg-canvas/90 px-4 py-2.5 backdrop-blur sm:flex-nowrap sm:gap-4 sm:px-7 sm:py-3">
           <div>

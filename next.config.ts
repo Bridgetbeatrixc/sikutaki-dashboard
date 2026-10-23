@@ -1,13 +1,10 @@
 import type { NextConfig } from "next";
 
-// Frontend-only version: a static export that runs anywhere (GitHub Pages, Vercel, any static host).
-// Data is kept in the browser; the AI assistant calls the Gemini API from the browser.
-// On GitHub Pages the site lives under /<repo-name>, set through NEXT_PUBLIC_BASE_PATH.
+// Runs on Vercel (or any Node host): the login proxy, the auth callback and the AI assistant's API route need a server.
+// For hosting under a sub-path, set NEXT_PUBLIC_BASE_PATH (e.g. /sikutaki).
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
 const nextConfig: NextConfig = {
-  output: "export",
-  trailingSlash: true,
   basePath,
   images: { unoptimized: true },
 };

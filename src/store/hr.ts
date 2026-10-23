@@ -4,8 +4,8 @@ import { monthKey, today } from "@/lib/week";
 import { KEYS, read, write } from "./local";
 
 /*
- * HR side of the frontend-only version. The dashboard numbers come from the sample company;
- * what HR changes (company settings, division names, notes, partners) is kept in this browser.
+ * HR side. The dashboard numbers come from the sample company; the company's own settings, division names,
+ * notes and partners are kept in this browser's copy, loaded from and saved to Supabase when signed in.
  */
 
 export type HrLocal = {

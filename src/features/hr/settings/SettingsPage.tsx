@@ -123,29 +123,23 @@ function OrganisationTab() {
 function EmployeesTab() {
   const { m, run, pending } = useHr();
   const [email, setEmail] = useState("");
-  const [link, setLink] = useState<string | null>(null);
+  const [sentTo, setSentTo] = useState<string | null>(null);
   const reset = async (e: FormEvent) => {
     e.preventDefault();
-    setLink(null);
-    const res = await run(() => createResetLink(email));
-    if (res.ok && res.value) setLink(`${window.location.origin}${res.value}`);
+    setSentTo(null);
+    const res = await run(() => createResetLink(email), "Email atur ulang kata sandi dikirim");
+    if (res.ok) setSentTo(email);
   };
   return (
     <div className="grid items-start gap-[18px] xl:grid-cols-2">
       <div className="grid min-w-0 gap-[18px]">
         <InviteCard />
-        <Card title="Karyawan lupa kata sandi" sub="Buat tautan sekali pakai, lalu kirimkan ke karyawan itu secara pribadi. Berlaku 3 hari.">
+        <Card title="Karyawan lupa kata sandi" sub="Kirim email berisi tautan untuk membuat kata sandi baru. Karyawan juga bisa memintanya sendiri lewat “Lupa kata sandi?” di halaman masuk.">
           <form onSubmit={reset} className="flex flex-wrap gap-2">
             <input type="email" required aria-label="Email karyawan" placeholder="email@perusahaan.com" className={cn(inputClass, "min-w-0 flex-1")} value={email} onChange={(e) => setEmail(e.target.value)} />
-            <Button type="submit" disabled={pending}>Buat tautan</Button>
+            <Button type="submit" disabled={pending}>Kirim email</Button>
           </form>
-          {link && (
-            <div className="grid gap-1.5 rounded-xl bg-mint p-3 text-[13px]">
-              <b>Tautan reset untuk {email}</b>
-              <input readOnly value={link} aria-label="Tautan reset" className={cn(inputClass, "text-[12.5px]")} onFocus={(e) => e.currentTarget.select()} />
-              <span className="text-muted">Tautan ini hanya bisa dipakai sekali. Jangan bagikan di grup.</span>
-            </div>
-          )}
+          {sentTo && <p className="rounded-xl bg-mint p-3 text-[13px]">Bila {sentTo} terdaftar, tautan sudah dikirim ke email itu. Tautan hanya bisa dipakai sekali.</p>}
         </Card>
       </div>
       <Card title="Jumlah per divisi" sub="Hanya jumlah. Status per orang tidak ditampilkan.">
