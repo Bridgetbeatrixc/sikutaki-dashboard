@@ -8,3 +8,9 @@ next-env.d.ts
 # local env (Supabase and Gemini keys)
 .env*
 !.env.example
+!.env.production
+
+# Cloudflare build output and local secrets
+.open-next/
+.wrangler/
+.dev.vars*

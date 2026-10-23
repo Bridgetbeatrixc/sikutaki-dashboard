@@ -284,3 +284,11 @@ end $$;
 -- Internal helpers are not callable from the app.
 revoke execute on function public.handle_new_user() from public, anon, authenticated;
 revoke execute on function public.new_invite_code() from public, anon, authenticated;
+
+-- App functions: only signed-in accounts may call them (company_by_invite is also open to visitors on the join page).
+revoke execute on function public.my_company(), public.is_hr(), public.regenerate_invite(), public.record_referral(text, text),
+  public.report_partner(text), public.hr_counseling_requests(), public.hr_save_counseling(text, jsonb),
+  public.company_summary(date), public.delete_my_account() from public, anon;
+grant execute on function public.my_company(), public.is_hr(), public.regenerate_invite(), public.record_referral(text, text),
+  public.report_partner(text), public.hr_counseling_requests(), public.hr_save_counseling(text, jsonb),
+  public.company_summary(date), public.delete_my_account() to authenticated, service_role;

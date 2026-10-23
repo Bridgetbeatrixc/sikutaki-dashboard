@@ -5,8 +5,9 @@ import { DEMO_COOKIE, SUPABASE_KEY, SUPABASE_URL, supabaseReady } from "@/lib/su
 /*
  * Runs before the dashboards and the API: refreshes the Supabase session cookie and sends visitors who are
  * neither signed in nor in demo mode to the login page.
+ * Kept as an edge middleware (not Next 16's proxy.ts, which runs on Node) because Cloudflare Workers support it fully.
  */
-export async function proxy(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   let response = NextResponse.next({ request });
   let signedIn = false;
   if (supabaseReady) {

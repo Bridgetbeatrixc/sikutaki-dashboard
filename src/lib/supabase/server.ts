@@ -11,7 +11,7 @@ export async function serverSupabase() {
       setAll(list) {
         try {
           for (const { name, value, options } of list) store.set(name, value, options);
-        } catch { /* called from a place that cannot set cookies; the proxy refreshes them */ }
+        } catch { /* called from a place that cannot set cookies; the middleware refreshes them */ }
       },
     },
   });

@@ -1,6 +1,6 @@
 # Sikutaki Dashboard
 
-Sikutaki: situs perusahaan, **Dashboard HR**, dan **aplikasi karyawan** untuk memantau kesehatan mental tim secara anonim. Next.js di Vercel, akun dan data di **Supabase**, dan **Asisten AI** berbasis Google Gemini yang berjalan di server.
+Sikutaki: situs perusahaan, **Dashboard HR**, dan **aplikasi karyawan** untuk memantau kesehatan mental tim secara anonim. Next.js di Cloudflare Workers, akun dan data di **Supabase**, dan **Asisten AI** berbasis Google Gemini yang berjalan di server.
 
 - **Akun sungguhan.** HR mendaftarkan perusahaan di `/daftar`, karyawan bergabung dengan kode undangan di `/gabung`, semua masuk di `/masuk` dengan email dan kata sandi (Supabase Auth). Ada lupa kata sandi dan keluar.
 - **Data tersimpan di Supabase.** Mood dan jam tidur harian, check-in mingguan, latihan dan program, permintaan konseling, serta pengaturan, catatan, dan psikolog mitra milik HR.
@@ -52,7 +52,7 @@ Tab **Asisten** di aplikasi karyawan (`/dashboard-employee/asisten`). Karyawan m
 ```
 src/
   app/                    Route (App Router). page.tsx tipis, hanya merender fitur.
-  proxy.ts                Memperbarui sesi Supabase, mengarahkan tamu ke /masuk
+  middleware.ts           Memperbarui sesi Supabase, mengarahkan tamu ke /masuk
   app/api/assistant/      Asisten AI: memanggil Gemini dari server
   app/auth/callback/      Tautan dari email Supabase
   server/gemini.ts        Panggilan ke Gemini API (hanya server)
@@ -82,27 +82,33 @@ src/
 1. Buat project di [supabase.com](https://supabase.com) (region terdekat, misalnya Singapore).
 2. **SQL Editor > New query**, tempel seluruh isi `supabase/schema.sql`, lalu **Run**. Aman dijalankan ulang.
 3. **Authentication > URL Configuration**
-   - **Site URL**: alamat situs di Vercel, misalnya `https://sikutaki-dashboard.vercel.app`
-   - **Redirect URLs**: tambahkan `https://sikutaki-dashboard.vercel.app/auth/callback` dan `http://localhost:3000/auth/callback`
+   - **Site URL**: alamat situs di Cloudflare, misalnya `https://sikutaki.nama-akun.workers.dev`
+   - **Redirect URLs**: tambahkan `https://sikutaki.nama-akun.workers.dev/auth/callback`, `http://localhost:3000/auth/callback`, dan `http://localhost:8787/auth/callback`
 4. **Authentication > Sign In / Providers > Email**: biarkan *Confirm email* menyala bila pengguna harus mengonfirmasi email dulu, atau matikan agar akun langsung bisa dipakai saat uji coba. Email bawaan Supabase dibatasi beberapa email per jam; untuk dipakai sungguhan, atur SMTP sendiri di **Authentication > Emails > SMTP Settings**.
 5. Salin **Project URL** dan **Publishable key** (atau *anon key*) dari tombol **Connect** atau **Project Settings > API Keys**.
 
-## Deploy ke Vercel
+## Deploy ke Cloudflare Workers
 
-1. Impor repo di [vercel.com/new](https://vercel.com/new). Framework: **Next.js**. Production branch: `main`. Biarkan *Build Command* dan *Output Directory* kosong (bawaan); versi lama memakai folder `out/`, jadi hapus isian itu bila pernah diubah.
-2. **Settings > Environment Variables**, isi untuk Production dan Preview:
+Situs berjalan sebagai Cloudflare Worker lewat adapter [OpenNext](https://opennext.js.org/cloudflare). Paket gratis Workers boleh dipakai komersial (100.000 request per hari); ukuran worker sekitar 1,8 MB terkompresi, di bawah batas 3 MB.
 
-   | Nama | Isi |
-   |---|---|
-   | `NEXT_PUBLIC_SUPABASE_URL` | Project URL dari Supabase |
-   | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Publishable key (atau anon key) dari Supabase |
-   | `GEMINI_API_KEY` | Key dari [aistudio.google.com/apikey](https://aistudio.google.com/apikey). Jangan diberi awalan `NEXT_PUBLIC_` |
-   | `GEMINI_MODEL` | Opsional, bawaan `gemini-3.5-flash-lite` |
+Alamat Supabase dan publishable key ada di `.env.production` karena memang publik (data dilindungi row level security). Ganti isinya bila memakai project Supabase lain. `GEMINI_API_KEY` tidak pernah masuk repo.
 
-3. **Deployments > Redeploy** setelah mengisi variabel. Variabel `NEXT_PUBLIC_` dibaca saat build, jadi perlu build ulang.
-4. Hapus `NEXT_PUBLIC_GEMINI_API_KEY` bila pernah diisi; key itu dulu terbuka untuk semua pengunjung.
+**Lewat dashboard (deploy otomatis tiap push ke `main`)**
 
-Setiap push ke `main` ter-deploy ulang otomatis. Workflow `.github/workflows/ci.yml` menjalankan typecheck dan build di setiap push dan pull request.
+1. [dash.cloudflare.com](https://dash.cloudflare.com) > **Workers & Pages > Create > Import a repository**, pilih repo ini.
+2. Project name: `sikutaki` (harus sama dengan `name` di `wrangler.jsonc`). Build command: `npx opennextjs-cloudflare build`. Deploy command: `npx opennextjs-cloudflare deploy`.
+3. Setelah worker dibuat: **Settings > Variables and Secrets > Add**, tipe **Secret**, nama `GEMINI_API_KEY`, isi key dari [aistudio.google.com/apikey](https://aistudio.google.com/apikey). Opsional: variabel `GEMINI_MODEL` (bawaan `gemini-3.5-flash-lite`).
+4. Alamat situs tampil di **Settings > Domains & Routes** (`https://sikutaki.<akun>.workers.dev`), atau tambahkan domain sendiri di sana. Masukkan alamat itu ke Supabase (lihat langkah 3 di atas).
+
+**Lewat terminal**
+
+```bash
+npx wrangler login
+npx wrangler secret put GEMINI_API_KEY
+npm run deploy               # build + deploy
+```
+
+Workflow `.github/workflows/ci.yml` menjalankan typecheck dan build di setiap push dan pull request.
 
 ## Menjalankan di komputer
 
@@ -112,6 +118,7 @@ npm install
 npm run dev                  # http://localhost:3000
 npm run typecheck
 npm run build && npm start
+npm run preview              # versi Cloudflare di http://localhost:8787 (key Gemini di .dev.vars)
 ```
 
 Tanpa variabel Supabase, situs tetap jalan dalam mode demo saja.
