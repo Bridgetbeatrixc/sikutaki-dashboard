@@ -39,6 +39,20 @@
   --color-mind: #7b61d1;
   --color-energy: #e39b3b;
 
+  /* BrainQ (/brainq): the purple palette of sikutaki-brainq.vercel.app */
+  --font-manrope: "Manrope", system-ui, sans-serif;
+  --color-bq-bg: #f7f5fe;
+  --color-bq-ink: #2a2340;
+  --color-bq-ink-2: #5b5470;
+  --color-bq-ink-3: #8a84a0;
+  --color-bq-line: #e6e1f5;
+  --color-bq-mist: #f3eeff;
+  --color-bq-lilac: #ddcdfa;
+  --color-bq-violet: #b9a2f8;
+  --color-bq-purple: #7c5ce0;
+  --color-bq-deep: #5b3fc4;
+  --color-bq-plum: #3e2a8f;
+
   --radius-card: 16px;
 
   --animate-fade-up: fade-up 0.25s ease-out;
