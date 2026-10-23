@@ -22,15 +22,20 @@ const int = (v: unknown, min: number, max: number) => { const n = num(v, min, ma
 /** Keeps only what the prompt uses, in the expected shapes and sizes. */
 function cleanContext(raw: unknown): AssistantContext {
   const c = (raw && typeof raw === "object" ? raw : {}) as Record<string, unknown>;
-  const answers = c.answers && typeof c.answers === "object"
-    ? Object.fromEntries(Object.entries(c.answers as Record<string, unknown>).slice(0, 20).flatMap(([k, v]) => { const n = int(v, 0, 4); return n === null ? [] : [[k.slice(0, 40), n]]; }))
+  const scores = (v: unknown) => v && typeof v === "object"
+    ? Object.fromEntries(Object.entries(v as Record<string, unknown>).slice(0, 20).flatMap(([k, x]) => { const n = int(x, 0, 4); return n === null ? [] : [[k.slice(0, 40), n]]; }))
     : null;
   return {
     name: str(c.name, 40) || "teman",
     energy: c.energy === true,
     days: list(c.days, 7, (d) => { const mood = int(d.mood, 1, 5); return mood ? { day: str(d.day, 10), mood, sleep: num(d.sleep, 0, 16) ?? 0 } : null; }),
     todayMood: int(c.todayMood, 1, 5),
-    answers,
+    answers: scores(c.answers),
+    previous: scores(c.previous),
+    causes: strings(c.causes, 8, 60),
+    causeNote: str(c.causeNote, 200).replace(/["\n]/g, " "),
+    recent: strings(c.recent, 10, 60),
+    opener: str(c.opener, 400).replace(/"/g, "'"),
     programs: list(c.programs, 2, (p) => ({
       id: str(p.id, 40), day: int(p.day, 0, 400) ?? 0, days: int(p.days, 1, 400) ?? 1, paused: p.paused === true,
       sessions: list(p.sessions, 4, (s) => ({ slot: str(s.slot, 20), practice: str(s.practice, 40), done: s.done === true })),

@@ -6,7 +6,7 @@ import { Ring } from "./Ring";
 import { Track } from "./ui";
 
 const RESULT_BARS: [string, number, string][] = [
-  ["Baterai Sosial", 72, "#E39B3B"],
+  ["Kelelahan Sosial", 72, "#E39B3B"],
   ["Overthinking", 54, "#7B61D1"],
   ["Insomnia", 40, "#3D7FD9"],
 ];

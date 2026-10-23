@@ -9,9 +9,11 @@ export type Series = { name: string; color: string; values: (number | null)[] };
 export type Marker = { i: number; label: string };
 
 /** Single-axis line chart with a crosshair tooltip, dashed event markers and direct end labels. */
-export function LineChart({ series, labels, min = 0, max = 100, height = 220, markers = [], unit = "", band }: {
+export function LineChart({ series, labels, min = 0, max = 100, height = 220, markers = [], unit = "", band, xBand }: {
   series: Series[]; labels: string[]; min?: number; max?: number; height?: number;
   markers?: Marker[]; unit?: string; band?: { from: number; to: number };
+  /** Highlights a range of points, e.g. the weeks of the reported month, with a label on top. */
+  xBand?: { from: number; to: number; label: string };
 }) {
   const box = useRef<HTMLDivElement>(null);
   const [W, setW] = useState(640);
@@ -43,6 +45,16 @@ export function LineChart({ series, labels, min = 0, max = 100, height = 220, ma
     <div className="relative" ref={box}>
       <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} className="block h-auto w-full overflow-visible" role="img" aria-label={series.map((s) => s.name).join(", ")}>
         {band && <rect x={pl} width={W - pl - pr} y={y(band.to)} height={y(band.from) - y(band.to)} fill="#F2F4F7" />}
+        {xBand && (() => {
+          const half = n > 1 ? (W - pl - pr) / (n - 1) / 2 : 0;
+          const x0 = Math.max(pl, x(xBand.from) - half), x1 = Math.min(W - pr, x(xBand.to) + half);
+          return (
+            <g>
+              <rect x={x0} width={Math.max(2, x1 - x0)} y={pt - 6} height={H - pb - pt + 6} fill="#0A66F5" opacity={0.07} rx={6} />
+              <text x={(x0 + x1) / 2} y={pt + 4} textAnchor="middle" className="fill-[#0857d6] text-[10.5px] font-semibold">{xBand.label}</text>
+            </g>
+          );
+        })()}
         {ticks.map((t) => (
           <g key={t}>
             <line x1={pl} x2={W - pr} y1={y(t)} y2={y(t)} stroke={GRID} />

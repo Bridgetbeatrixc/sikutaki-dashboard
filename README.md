@@ -12,12 +12,18 @@ Angka grafik Dashboard HR masih memakai perusahaan contoh, karena rata-rata kelo
 
 ## Asisten AI (Gemini)
 
-Tab **Asisten** di aplikasi karyawan (`/dashboard-employee/asisten`). Karyawan menceritakan kondisinya. Asisten mendengarkan dan bertanya dulu, lalu bila dibutuhkan menyarankan paling banyak 3 latihan atau program dari katalog Sikutaki, ditampilkan sebagai kartu yang langsung bisa dibuka.
+Tab **Asisten** di aplikasi karyawan (`/dashboard-employee/asisten`). Asisten membuka percakapan dengan follow-up dari aktivitas terakhir (hasil check-in, program berjalan, latihan terakhir), menggali konteks dulu, membantu memahami hasil check-in, lalu menyarankan paling banyak 3 latihan atau program dari katalog Sikutaki sebagai kartu yang langsung bisa dibuka. Psikolog hanya disebut bila ada tanda krisis atau karyawan sendiri memintanya. Tombol "Bahas dengan Asisten" di Insight dan laporan membuka asisten dengan pertanyaannya (`/dashboard-employee/asisten?tanya=...`).
 
 - Peramban mengirim percakapan dan ringkasan konteks ke `/api/assistant`. Server memeriksa sesi Supabase, menyusun instruksi sistem (`src/lib/assistant.ts`), lalu memanggil Gemini.
 - Asisten tidak mendiagnosis dan hanya boleh menyarankan latihan yang ada di katalog.
 - Bila pesan berisi tanda krisis, aplikasi selalu menampilkan Healing119 (119 ext 8) dan 112, apa pun jawaban model.
 - Yang dikirim ke Google: pesan percakapan dan ringkasan mood, tidur, check-in minggu ini, serta program yang berjalan. Tidak ada nama lengkap atau email. Percakapan tidak disimpan di database.
+
+## Cara membaca skor
+
+- Setiap pertanyaan check-in menanyakan **seberapa sering** sesuatu dialami (0 Tidak pernah sampai 4 Hampir selalu). Skor area 0-100 = rata-rata frekuensi; makin tinggi makin perlu perhatian. Penjelasan tiap area (apa yang diukur, arti skor tinggi, langkah kecil, latihan yang cocok) ada di `src/lib/area-guide.ts`.
+- Indeks wellbeing = 100 dikurangi rata-rata skor area (inti berbobot 3x), dengan 5 kategori (`WELLBEING_BANDS` di `src/lib/catalog.ts`). Perubahan 10 poin atau lebih dianggap bermakna, di bawah 5 poin naik-turun biasa (`changeMeaning`). Dasar dan sumbernya tercantum di `SCORE_BASIS` dan di bagian akhir laporan HR.
+- Pertanyaan pemicu (eksploratif) punya pilihan **Lainnya** dengan isian. Isiannya hanya tersimpan di akun karyawan (`employee_state`); HR hanya melihat persentase yang memilih Lainnya.
 
 ## Route
 

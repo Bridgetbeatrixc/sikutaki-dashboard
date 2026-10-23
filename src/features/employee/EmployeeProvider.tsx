@@ -18,7 +18,7 @@ type EmployeeContextValue = EmployeeData & {
   /** Today's mood and sleep, once saved. */
   todayLog: Day | null;
   saveDaily: (mood: number, sleep: number) => Promise<boolean>;
-  submitCheckin: (answers: Record<string, number>, causes: string[]) => Promise<boolean>;
+  submitCheckin: (answers: Record<string, number>, causes: string[], note?: string) => Promise<boolean>;
   markDone: (exercise: string) => void;
   /** Starts a program; resolves to the enrollment id, or null when it could not start. */
   startProgram: (programId: string) => Promise<string | null>;
@@ -81,9 +81,9 @@ function EmployeeState({ data, children }: { data: EmployeeData; children: React
     return ok;
   }, [send]);
 
-  const submitCheckin = useCallback(async (answers: Record<string, number>, causes: string[]) => {
+  const submitCheckin = useCallback(async (answers: Record<string, number>, causes: string[], note = "") => {
     const ok = await send(() => actions.submitCheckin(answers, causes));
-    if (ok) setState((s) => ({ ...s, week: { ...s.week, answers, causes, causeArea: followUpArea(s.week.areas, answers) } }));
+    if (ok) setState((s) => ({ ...s, week: { ...s.week, answers, causes, causeNote: note, causeArea: followUpArea(s.week.areas, answers) } }));
     return ok;
   }, [send]);
 

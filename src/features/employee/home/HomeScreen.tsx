@@ -156,7 +156,7 @@ function DailyNote() {
         {saved.id <= 2 && (
           <p className="col-span-full mt-0.5 text-[13px] leading-normal text-body">
             Hari yang berat. Latihan napas 3 menit bisa membantu, atau{" "}
-            <Link href={ROUTES.employee.counseling} className={linkText}>bicara dengan psikolog</Link>.
+            <Link href={ROUTES.employee.ask("Hari ini terasa berat")} className={linkText}>ceritakan ke Asisten</Link>.
           </p>
         )}
       </div>
@@ -205,7 +205,7 @@ function StepButton({ label, onClick, children }: { label: string; onClick: () =
   );
 }
 
-/** Three heavy days in a row: suggest the 7-day stress program, and a psychologist. */
+/** Three heavy days in a row: suggest the 7-day stress program, and the assistant to talk it through. */
 function LowMoodSuggestion() {
   const { days, today, programs } = useEmployee();
   if (!lowMoodStreak(days, [addDays(today, -2), addDays(today, -1), today])) return null;
@@ -213,7 +213,7 @@ function LowMoodSuggestion() {
   return (
     <div className="mt-3.5 grid gap-1.5 rounded-[18px] border border-[#f3ddb8] bg-[#fff7ec] px-3.5 py-3 text-[13.5px] leading-normal text-[#5b4520]">
       <b>Tiga hari terakhir terasa berat</b>
-      <span>Program 7 Hari Lepas Stres bisa membantu, sekitar 10 menit pagi dan malam. Bila terasa makin berat, <Link href={ROUTES.employee.counseling} className="font-bold underline underline-offset-2">bicara dengan psikolog</Link>.</span>
+      <span>Program 7 Hari Lepas Stres bisa membantu, sekitar 10 menit pagi dan malam. Ingin cerita dulu? <Link href={ROUTES.employee.ask("Tiga hari terakhir terasa berat")} className="font-bold underline underline-offset-2">Ngobrol dengan Asisten</Link>.</span>
       <Link href={ROUTES.employee.program("stres-7")} className={appButton("primary", true)}>Lihat program</Link>
     </div>
   );

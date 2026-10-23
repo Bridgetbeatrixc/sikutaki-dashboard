@@ -101,7 +101,7 @@ function causes(team: string, area: string, v: number) {
   const n = Math.round((respondents(team, NOW) * (sev[1] + sev[2])) / 100);
   const planted = PLANTED[`${team}-${area}`];
   const pct: Record<string, number> = {};
-  causesFor(area).forEach((id, i) => { pct[id] = planted?.[id] ?? Math.round(10 + r(i + area.length, team.length + i) * 40); });
+  causesFor(area).forEach((id, i) => { pct[id] = id === "lainnya" ? Math.round(3 + r(i, team.length) * 8) : planted?.[id] ?? Math.round(10 + r(i + area.length, team.length + i) * 40); });
   return { n, pct };
 }
 
@@ -173,5 +173,10 @@ export function sampleDataset(): Dataset {
       { id: "p3", name: "Layanan Konseling Mitra (24 jam)", focus: "Krisis dan rujukan lanjutan", schedule: "Setiap hari", contact: "", kind: "psikolog", practice: "", credential: "", verifiedBy: "", suspended: false, reports: 0 },
     ],
     funnel: { registered: employees, opened: Math.round(completed * 1.1), completed },
+    programUse: [
+      { team: "sales", program: "stres-7", area: "anxiety", startWeek: 9, invited: 40, started: 34, finished: 28, before: VAL.sales.anxiety[8], after: VAL.sales.anxiety[NOW] - 6, paired: 22 },
+      { team: "tech", program: "tidur-7", area: "insomnia", startWeek: 5, invited: 72, started: 31, finished: 24, before: VAL.tech.insomnia[4], after: VAL.tech.insomnia[NOW] - 3, paired: 19 },
+      { team: "cs", program: "stres-7", area: "burnout", startWeek: 10, invited: 98, started: 21, finished: 6, before: null, after: null, paired: 3 },
+    ],
   };
 }

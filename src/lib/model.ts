@@ -2,7 +2,7 @@
 // aggregates (never single answers): live data from the database, or the demo company's sample data.
 // Groups below the company's minimum size arrive with `hidden: true` and no scores.
 
-import { AREAS, areaStatus, CAUSES, followUpQuestion, MOODS, type Cause, type NoteType, type Status } from "./catalog";
+import { AREAS, areaStatus, CAUSES, followUpQuestion, MOODS, wellbeingFrom, wellbeingStatus, type Cause, type NoteType, type Status } from "./catalog";
 
 /** One group (the whole company or one division) in one week. */
 export type WeekAgg = {
@@ -54,6 +54,17 @@ export type Dataset = {
   partners: Partner[];
   /** This week's check-in funnel for the whole company. */
   funnel: { registered: number; opened: number; completed: number };
+  /**
+   * Use of in-app programs per division, counted by the app (numbers only). `before` and `after` are the
+   * program's area score among participants with a check-in before and after; null when too few have both.
+   */
+  programUse: ProgramUse[];
+};
+
+export type ProgramUse = {
+  team: string; program: string; area: string; startWeek: number;
+  invited: number; started: number; finished: number;
+  before: number | null; after: number | null; paired: number;
 };
 
 export type Scope = "all" | string;
@@ -109,14 +120,7 @@ export function makeModel(ds: Dataset) {
   function wellbeing(s: Scope, w = NOW): number | null {
     const a = agg(s, at(w));
     if (a.hidden || w < 0) return null;
-    let sum = 0, wt = 0;
-    for (const ar of AREAS) {
-      const v = a.areas[ar.id];
-      if (v === undefined) continue;
-      const k = ar.core ? 3 : 1;
-      sum += v * k; wt += k;
-    }
-    return wt ? Math.round(Math.max(0, Math.min(100, 114 - (sum / wt) * 1.15))) : null;
+    return wellbeingFrom(a.areas);
   }
   const wellbeingSeries = (s: Scope) => WEEKS.map((_, w) => wellbeing(s, w));
 
@@ -132,9 +136,10 @@ export function makeModel(ds: Dataset) {
   function teamStatus(team: string, w = NOW): Status {
     const scores = scoredAreas(team, w).map((x) => x.v);
     const top = scores.length ? Math.max(...scores) : 0;
-    const wb = wellbeing(team, w) ?? 100;
-    if (top >= 62 || wb < 55) return "perhatian";
-    if (top >= 54 || wb < 63) return "waspada";
+    const wb = wellbeing(team, w);
+    const ws = wb === null ? "baik" : wellbeingStatus(wb);
+    if (top >= 62 || ws === "perhatian") return "perhatian";
+    if (top >= 54 || ws === "waspada") return "waspada";
     return "baik";
   }
   const topAreas = (s: Scope, n = 3, w = NOW) => scoredAreas(s, w).sort((x, y) => y.v - x.v).slice(0, n);

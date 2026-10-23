@@ -34,7 +34,7 @@ export const AREAS: Area[] = [
   { id: "eksistensial", name: "Krisis Eksistensial", alias: "Krisis makna hidup", group: "mind", desc: "Mempertanyakan arti dan tujuan hidup hingga terasa membebani." },
   { id: "burnout", name: "Burnout", alias: "Kerja atau hidup", group: "energy", core: true, desc: "Kelelahan fisik dan emosional akibat beban kerja atau hidup yang berlangsung lama." },
   { id: "insomnia", name: "Insomnia", alias: "Pikiran terlalu aktif", group: "energy", core: true, desc: "Sulit tidur karena pikiran aktif, sering terbangun, atau bangun tanpa merasa segar." },
-  { id: "baterai", name: "Baterai Sosial", alias: "Energi sosial terkuras", group: "energy", desc: "Seberapa terkuras energi untuk berinteraksi dengan orang lain." },
+  { id: "baterai", name: "Kelelahan Sosial", alias: "Baterai sosial terkuras", group: "energy", desc: "Seberapa sering energi habis setelah berinteraksi dengan orang lain. Skor tinggi berarti baterai sosial terkuras (kapasitasnya sedang rendah), bukan berarti banyak bersosialisasi." },
   { id: "minder", name: "Minder", group: "self", desc: "Rasa kurang percaya diri atau merasa tidak cukup baik dibanding orang lain." },
   { id: "selfesteem", name: "Low Self-Esteem", alias: "Merasa tidak berharga", group: "self", desc: "Merasa diri tidak berharga atau tidak layak dihargai." },
   { id: "impostor", name: "Impostor Syndrome", alias: "Merasa \u201cpalsu\u201d", group: "self", desc: "Merasa keberhasilan bukan karena kemampuan sendiri dan takut suatu saat ketahuan." },
@@ -68,8 +68,39 @@ export const areaById = (id: string) => AREAS.find((a) => a.id === id)!;
 export const MIN_GROUP = 5;
 
 export const areaStatus = (v: number): Status => (v >= 62 ? "perhatian" : v >= 52 ? "waspada" : "baik");
-export const wellbeingStatus = (v: number): Status => (v < 55 ? "perhatian" : v < 63 ? "waspada" : "baik");
 export const STATUS_LABEL: Record<Status, string> = { baik: "Baik", waspada: "Waspada", perhatian: "Perlu perhatian" };
+
+/*
+ * How scores are read. Every answer is a frequency on a 5-point scale, so an area score (0-100) is the average
+ * frequency: 0 = "Tidak pernah", 25 = "Jarang", 50 = "Kadang-kadang", 75 = "Sering", 100 = "Hampir selalu".
+ * Higher always means "happens more often, needs more attention".
+ *
+ * The wellbeing index turns that around (100 minus the weighted average), the way the WHO-5 Well-Being Index
+ * turns its 0-25 raw score into 0-100 (Topp et al., 2015): 100 means none of the measured complaints happened.
+ */
+export const SCORE_ANCHORS = [
+  { v: 0, label: "Tidak pernah" }, { v: 25, label: "Jarang" }, { v: 50, label: "Kadang-kadang" }, { v: 75, label: "Sering" }, { v: 100, label: "Hampir selalu" },
+];
+/** "antara Jarang dan Kadang-kadang" for an area score. */
+export function scoreMeaning(v: number) {
+  const i = Math.min(3, Math.floor(v / 25));
+  const lo = SCORE_ANCHORS[i], hi = SCORE_ANCHORS[i + 1];
+  if (v - lo.v <= 5) return `rata-rata \u201C${lo.label}\u201D`;
+  if (hi.v - v <= 5) return `rata-rata \u201C${hi.label}\u201D`;
+  return `antara \u201C${lo.label}\u201D dan \u201C${hi.label}\u201D`;
+}
+
+export type Band = { min: number; label: string; status: Status; text: string };
+/** Wellbeing index categories, from the best. Each band is 15 points of average complaint frequency. */
+export const WELLBEING_BANDS: Band[] = [
+  { min: 80, label: "Sangat baik", status: "baik", text: "Keluhan rata-rata jarang atau tidak pernah muncul." },
+  { min: 65, label: "Baik", status: "baik", text: "Keluhan rata-rata jarang muncul." },
+  { min: 50, label: "Cukup", status: "waspada", text: "Keluhan rata-rata muncul antara jarang dan kadang-kadang. Perlu dipantau." },
+  { min: 35, label: "Rendah", status: "perhatian", text: "Keluhan rata-rata muncul kadang-kadang atau lebih. Perlu tindakan." },
+  { min: 0, label: "Sangat rendah", status: "perhatian", text: "Keluhan rata-rata sering muncul. Perlu tindakan segera." },
+];
+export const wellbeingBand = (v: number) => WELLBEING_BANDS.find((b) => v >= b.min)!;
+export const wellbeingStatus = (v: number): Status => wellbeingBand(v).status;
 
 /** Wellbeing index 0-100 from the area scores of one week: core areas (asked every week) weigh 3x. */
 export function wellbeingFrom(scores: Record<string, number>): number | null {
@@ -80,8 +111,29 @@ export function wellbeingFrom(scores: Record<string, number>): number | null {
     const k = a.core ? 3 : 1;
     sum += v * k; wt += k;
   }
-  return wt ? Math.round(Math.max(0, Math.min(100, 114 - (sum / wt) * 1.15))) : null;
+  return wt ? Math.round(Math.max(0, Math.min(100, 100 - sum / wt))) : null;
 }
+
+/*
+ * Is a change meaningful? On the WHO-5 0-100 scale a change of 10 points is taken as clinically relevant
+ * (Topp et al., 2015), and half a standard deviation is a common threshold for a change people notice
+ * (Norman, Sloan & Wyrwich, 2003). Group averages of few people move more by chance, so small groups are flagged.
+ */
+export type ChangeLevel = "stabil" | "kecil" | "bermakna";
+export function changeMeaning(d: number, n?: number): { level: ChangeLevel; label: string; text: string } {
+  const a = Math.abs(d);
+  const few = n !== undefined && n < 20 ? " Jumlah penjawab sedikit, jadi angkanya mudah naik-turun." : "";
+  if (a < 5) return { level: "stabil", label: "Stabil", text: `Perubahan ${a} poin masih dalam naik-turun biasa, belum perlu ditanggapi.${few}` };
+  if (a < 10) return { level: "kecil", label: "Perubahan kecil", text: `Perubahan ${a} poin tergolong kecil. Pantau di periode berikutnya sebelum mengambil kesimpulan.${few}` };
+  return { level: "bermakna", label: "Perubahan bermakna", text: `Perubahan ${a} poin tergolong bermakna (10 poin atau lebih).${few}` };
+}
+
+export const SCORE_BASIS = [
+  "Skor area 0 sampai 100 adalah rata-rata frekuensi jawaban: 0 Tidak pernah, 25 Jarang, 50 Kadang-kadang, 75 Sering, 100 Hampir selalu. Makin tinggi makin perlu perhatian.",
+  "Indeks wellbeing = 100 dikurangi rata-rata skor area (stres, burnout, dan tidur berbobot 3x karena ditanyakan setiap minggu). Makin tinggi makin baik. Cara mengubah skala ke 0 sampai 100 mengikuti WHO-5 Well-Being Index (Topp dkk., 2015, Psychotherapy and Psychosomatics 84:167-176).",
+  "Perubahan 10 poin atau lebih dianggap bermakna, mengikuti ambang perubahan WHO-5 (Topp dkk., 2015) dan aturan setengah simpangan baku (Norman, Sloan & Wyrwich, 2003, Medical Care 41:582-592). Perubahan di bawah 5 poin dianggap naik-turun biasa.",
+  "Indeks Sikutaki belum divalidasi secara klinis seperti WHO-5. Pakai sebagai alat pantau tren, bukan diagnosis.",
+];
 
 /* ---------- Weekly question rotation ---------- */
 
@@ -117,7 +169,10 @@ export const CAUSES: Record<string, Cause> = {
   pikiran: { id: "pikiran", label: "Pikiran sulit berhenti", idea: "Ajak karyawan mencoba latihan tidur 14 hari di aplikasi" },
   layar: { id: "layar", label: "Main HP sebelum tidur", idea: "Ajak karyawan mencoba latihan tidur 14 hari di aplikasi" },
   pengakuan: { id: "pengakuan", label: "Merasa kurang dihargai", idea: "Biasakan apresiasi rutin dari lead divisi di rapat mingguan" },
+  lainnya: { id: "lainnya", label: "Lainnya", idea: "Tanyakan langsung ke divisi lewat obrolan santai atau survei singkat, karena penyebabnya di luar daftar" },
 };
+/** Id of the "Lainnya" choice. Its free text stays with the employee; HR only sees how many picked it. */
+export const OTHER_CAUSE = "lainnya";
 const AREA_CAUSES: Record<string, string[]> = {
   burnout: ["shift", "pelanggan", "after", "volume", "recovery", "pribadi"],
   insomnia: ["shift", "after", "pikiran", "layar", "pribadi"],
@@ -128,7 +183,7 @@ const AREA_CAUSES: Record<string, string[]> = {
 };
 const DEFAULT_CAUSES = ["atasan", "volume", "pengakuan", "pribadi"];
 /** The causes offered for an area. */
-export const causesFor = (area: string) => AREA_CAUSES[area] ?? DEFAULT_CAUSES;
+export const causesFor = (area: string) => [...(AREA_CAUSES[area] ?? DEFAULT_CAUSES), OTHER_CAUSE];
 
 export function followUpQuestion(area: string) {
   if (area === "burnout" || area === "baterai") return "Apa yang paling menguras energimu minggu ini?";

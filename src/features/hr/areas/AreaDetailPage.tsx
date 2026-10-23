@@ -10,7 +10,7 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { CompareBars } from "@/components/charts/CompareBars";
 import { LineChart } from "@/components/charts/LineChart";
 import { SeverityBar } from "@/components/charts/SeverityBar";
-import { AREA_COUNT, AREAS, areaById, areaStatus, groupOf, ROTATION } from "@/lib/catalog";
+import { AREA_COUNT, AREAS, areaById, areaStatus, changeMeaning, groupOf, ROTATION, scoreMeaning } from "@/lib/catalog";
 import { ROUTES } from "@/lib/paths";
 import { useHr } from "../HrProvider";
 
@@ -65,6 +65,10 @@ export function AreaDetailPage({ id }: { id: string }) {
         <div className="grid min-w-0 gap-[18px]">
           <Card title="Apa yang diukur">
             <p className="text-[15px]">{area.desc}</p>
+            <div className="grid gap-1.5 rounded-[12px] bg-canvas px-3 py-2.5 text-[13px] leading-normal text-body">
+              <span><b className="text-ink">Cara membaca skor.</b> Skor 0 sampai 100 adalah rata-rata seberapa sering penjawab mengalaminya: 0 tidak pernah, 25 jarang, 50 kadang-kadang, 75 sering, 100 hampir selalu. Skor tinggi selalu berarti lebih sering dialami dan perlu perhatian.</span>
+              {v !== null && <span><b className="text-ink">Saat ini {v}:</b> {scoreMeaning(v)}.{d4 !== null && ` Dalam 4 minggu: ${changeMeaning(d4, m.respondents(scope)).text}`}</span>}
+            </div>
             <Fine>Skor adalah sinyal skrining dari check-in, bukan diagnosis. Diagnosis hanya dapat diberikan oleh psikolog atau psikiater.</Fine>
           </Card>
           <Card title="Sebaran penjawab" sub="Persentase penjawab di tiap level, dari check-in terakhir yang menanyakan area ini">

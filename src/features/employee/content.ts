@@ -1,5 +1,5 @@
 import type { IconName } from "@/components/ui/Icon";
-import { MOODS as MOOD_LABELS } from "@/lib/catalog";
+import { MOODS as MOOD_LABELS, SCALE } from "@/lib/catalog";
 import { ROUTES } from "@/lib/paths";
 
 /* Static content of the employee app. HR only ever sees group averages of 5 or more people. */
@@ -65,8 +65,12 @@ export const CHECKIN_QUESTIONS: Record<string, string> = {
 };
 
 export type Level = "lo" | "mid" | "hi";
-export const level = (v: number): { label: string; tone: Level } =>
-  v >= 3 ? { label: "Tinggi", tone: "hi" } : v === 2 ? { label: "Sedang", tone: "mid" } : { label: "Rendah", tone: "lo" };
+/**
+ * How one answer reads. Every question asks how often something happened, so a higher answer always needs more
+ * attention. Labels say that directly instead of "Tinggi"/"Rendah", which read two ways for some areas.
+ */
+export const level = (v: number): { label: string; tone: Level; freq: string } =>
+  v >= 3 ? { label: "Perlu perhatian", tone: "hi", freq: SCALE[v] } : v === 2 ? { label: "Perlu dipantau", tone: "mid", freq: SCALE[v] } : { label: "Aman", tone: "lo", freq: SCALE[v] ?? SCALE[0] };
 
 /* ---------- Navigation ---------- */
 

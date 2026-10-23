@@ -153,7 +153,10 @@ export async function companySummary(week: string): Promise<CompanySummary | nul
 /* ---------- Employee ---------- */
 
 /** What the employee_state row keeps; mood notes and check-ins have their own tables. */
-type StateBlob = Pick<EmployeeLocal, "onboarded" | "done" | "programs" | "energyOptIn" | "finished">;
+type StateBlob = Pick<EmployeeLocal, "onboarded" | "done" | "programs" | "energyOptIn" | "finished"> & {
+  /** "Lainnya" answers per check-in week; private to the employee (the checkins table only holds the choice). */
+  causeNotes?: Record<string, string>;
+};
 
 async function pullEmployee() {
   const sb = supabase();
@@ -166,14 +169,14 @@ async function pullEmployee() {
     sb.from("counseling_requests").select("payload").eq("user_id", a.userId).order("updated_at", { ascending: false }),
     pullCompany(false),
   ]);
-  const blob = (check(state) as { data: Partial<StateBlob> } | null)?.data ?? {};
+  const { causeNotes = {}, ...blob } = (check(state) as { data: Partial<StateBlob> } | null)?.data ?? {};
   const local: EmployeeLocal = {
     ...loadEmployeeLocal(),
     ...blob,
     profile: { name: a.name, email: a.email, teamId: a.teamId },
     days: (check(days) as { day: string; mood: number; sleep: number | string }[]).map((d) => ({ day: d.day, mood: d.mood, sleep: Number(d.sleep) })),
     checkins: Object.fromEntries((check(checkins) as { week_start: string; answers: Record<string, number>; cause_area: string | null; causes: string[] }[])
-      .map((c) => [c.week_start, { answers: c.answers, causeArea: c.cause_area, causes: c.causes ?? [] }])),
+      .map((c) => [c.week_start, { answers: c.answers, causeArea: c.cause_area, causes: c.causes ?? [], note: causeNotes[c.week_start] }])),
   };
   write(KEYS.employee, local);
   write(KEYS.counsel, (check(requests) as { payload: CounselRequest }[]).map((r) => r.payload));
@@ -186,7 +189,8 @@ export function scheduleEmployeeSync() {
   window.clearTimeout(stateTimer);
   stateTimer = window.setTimeout(() => {
     const e = loadEmployeeLocal();
-    const data: StateBlob = { onboarded: e.onboarded, done: e.done, programs: e.programs, energyOptIn: e.energyOptIn, finished: e.finished };
+    const causeNotes = Object.fromEntries(Object.entries(e.checkins).flatMap(([w, c]) => (c.note ? [[w, c.note]] : [])));
+    const data: StateBlob = { onboarded: e.onboarded, done: e.done, programs: e.programs, energyOptIn: e.energyOptIn, finished: e.finished, causeNotes };
     void cloudWrite((a) => supabase().from("employee_state").upsert({ user_id: a.userId, data, updated_at: new Date().toISOString() }))
       .then((r) => { if (!r.ok) console.error(r.error); });
   }, 600);
