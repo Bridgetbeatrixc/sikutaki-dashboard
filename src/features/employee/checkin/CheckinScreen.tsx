@@ -66,7 +66,7 @@ export function CheckinScreen() {
             {SCALE.map((label, value) => (
               <button key={label} type="button" disabled={sending} onClick={() => answer(value)} aria-pressed={answers[area] === value}
                 className={cn(
-                  "rounded-2xl border-[1.5px] px-4 py-3.5 text-left text-[15px]",
+                  "rounded-2xl border-[1.5px] px-4 py-3.5 text-left text-[17.5px]",
                   answers[area] === value ? "border-app bg-app text-white" : "border-line bg-white text-ink hover:border-app/50",
                 )}>
                 {label}
@@ -78,19 +78,19 @@ export function CheckinScreen() {
         <>
           <Tag>Pertanyaan terakhir · {areaById(causeArea).name}</Tag>
           <Question>{followUpQuestion(causeArea)}</Question>
-          <p className="text-[13.5px] leading-normal text-muted">Boleh pilih lebih dari satu. Bila tidak ada yang pas, pilih Lainnya dan tulis sendiri. HR hanya melihat persentase pilihan per divisi, untuk tahu apa yang perlu diperbaiki.</p>
+          <p className="text-[16px] leading-normal text-muted">Boleh pilih lebih dari satu. Bila tidak ada yang pas, pilih Lainnya dan tulis sendiri. HR hanya melihat persentase pilihan per divisi, untuk tahu apa yang perlu diperbaiki.</p>
           <div className="flex flex-wrap gap-2">
             {causesFor(causeArea).map((id) => (
               <Chip key={id} on={causes.includes(id)} onClick={() => toggleCause(id)}>{id === OTHER_CAUSE ? "Lainnya, tulis sendiri" : CAUSES[id].label}</Chip>
             ))}
           </div>
           {causes.includes(OTHER_CAUSE) && (
-            <label className="grid gap-1.5 text-[13px] text-body">
+            <label className="grid gap-1.5 text-[15.5px] text-body">
               <span className="font-semibold text-ink">Ceritakan singkat apa yang terjadi</span>
               <textarea value={other} onChange={(e) => setOther(e.target.value)} maxLength={200} rows={3} autoFocus
                 placeholder="Misalnya: pindah rumah, anak sakit, laptop kerja sering rusak..."
-                className="w-full resize-none rounded-[14px] border-[1.5px] border-line bg-white px-3.5 py-3 text-[15px] text-ink focus:border-app focus:outline-none" />
-              <small className="flex items-center gap-1.5 text-[12px] text-muted"><Icon name="lock" size={12} />Tulisan ini hanya untukmu dan Asisten. HR hanya melihat bahwa ada yang memilih Lainnya. {other.length}/200</small>
+                className="w-full resize-none rounded-[14px] border-[1.5px] border-line bg-white px-3.5 py-3 text-[17.5px] text-ink focus:border-app focus:outline-none" />
+              <small className="flex items-center gap-1.5 text-[14.5px] text-muted"><Icon name="lock" size={12} />Tulisan ini hanya untukmu dan Asisten. HR hanya melihat bahwa ada yang memilih Lainnya. {other.length}/200</small>
             </label>
           )}
           <button type="button" disabled={sending} className={appButton()} onClick={() => submit(answers, causes, causes.includes(OTHER_CAUSE) ? other.trim() : "")}>
@@ -98,13 +98,13 @@ export function CheckinScreen() {
           </button>
         </>
       ) : (
-        <p className="py-6 text-center text-sm text-muted">{sending ? "Mengirim..." : ""}</p>
+        <p className="py-6 text-center text-[16px] text-muted">{sending ? "Mengirim..." : ""}</p>
       )}
 
       {index > 0 && !sending && (
-        <button type="button" className="mt-0.5 justify-self-center text-sm text-muted" onClick={() => setIndex(index - 1)}>Kembali</button>
+        <button type="button" className="mt-0.5 justify-self-center text-[16px] text-muted" onClick={() => setIndex(index - 1)}>Kembali</button>
       )}
-      <p className="mt-1.5 flex items-center justify-center gap-1.5 text-xs text-muted">
+      <p className="mt-1.5 flex items-center justify-center gap-1.5 text-[14px] text-muted">
         <Icon name="lock" size={13} />Jawaban per orang tidak pernah dikirim ke HR.
       </p>
     </div>
@@ -117,7 +117,7 @@ function CheckinClosed({ opensOn }: { opensOn: number }) {
       <div className="w-full"><FlowBar closeHref={ROUTES.employee.home} title="Check-in mingguan" /></div>
       <span className="mt-12 grid size-16 place-items-center rounded-3xl bg-soft text-app"><Icon name="calendar" size={28} /></span>
       <Question>Check-in minggu ini dibuka {DAYS_LONG[opensOn]}</Question>
-      <p className="text-sm leading-relaxed text-muted">Sambil menunggu, kamu tetap bisa mencatat mood harian dan mencoba latihan singkat.</p>
+      <p className="text-[16px] leading-relaxed text-muted">Sambil menunggu, kamu tetap bisa mencatat mood harian dan mencoba latihan singkat.</p>
       <Link href={ROUTES.employee.home} className={appButton()}>Kembali ke beranda</Link>
     </div>
   );
@@ -128,20 +128,20 @@ function CheckinDone({ answers }: { answers: Record<string, number> }) {
     <div className="grid min-h-full content-start justify-items-center gap-3.5 px-[22px] pt-14 pb-6 text-center md:px-8">
       <MoodFace mood={MOODS[3]} size={96} className="rounded-3xl shadow-[0_12px_26px_rgba(0,0,0,.15)]" />
       <Question>Check-in minggu ini selesai</Question>
-      <p className="text-sm leading-relaxed text-muted">
+      <p className="text-[16px] leading-relaxed text-muted">
         Terima kasih. Hasil pribadimu sudah ada di Insight. Jawabanmu masuk ke rata-rata divisi tanpa nama, dan HR baru melihatnya bila ada minimal 5 penjawab. Check-in berikutnya dibuka minggu depan.
       </p>
       <Recommendation answers={answers} className="w-full" />
       <Link href={ROUTES.employee.insight} className={appButton()}>Lihat hasilku</Link>
-      <Link href={ROUTES.employee.home} className="text-sm text-muted">Kembali ke beranda</Link>
+      <Link href={ROUTES.employee.home} className="text-[16px] text-muted">Kembali ke beranda</Link>
     </div>
   );
 }
 
 function Tag({ children }: { children: ReactNode }) {
-  return <small className="mt-2.5 justify-self-start rounded-full bg-mint px-2.5 py-1 text-xs font-bold text-app-dark">{children}</small>;
+  return <small className="mt-2.5 justify-self-start rounded-full bg-mint px-2.5 py-1 text-[14px] font-bold text-app-dark">{children}</small>;
 }
 
 function Question({ children }: { children: ReactNode }) {
-  return <h2 className="text-[22px] leading-snug font-semibold text-ink">{children}</h2>;
+  return <h2 className="text-[24px] leading-snug font-semibold text-ink">{children}</h2>;
 }

@@ -34,8 +34,8 @@ export function WelcomeScreen() {
           <li key={p.title} className="grid grid-cols-[36px_1fr] items-start gap-3 rounded-2xl bg-soft p-3">
             <span className="grid size-9 place-items-center rounded-xl bg-white text-app"><Icon name={p.icon} size={18} /></span>
             <div>
-              <b className="block text-sm">{p.title}</b>
-              <small className="mt-px block text-[12.5px] leading-snug text-muted">{p.text}</small>
+              <b className="block text-[16px]">{p.title}</b>
+              <small className="mt-px block text-[15px] leading-snug text-muted">{p.text}</small>
             </div>
           </li>
         ))}

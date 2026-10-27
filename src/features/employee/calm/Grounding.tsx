@@ -20,13 +20,13 @@ export function Grounding({ onDone }: { onDone: () => void }) {
 
   return (
     <div className="grid content-start gap-3">
-      <h1 className="mt-3 text-[24px] font-semibold text-ink">Kenali sekitarmu</h1>
+      <h1 className="mt-3 text-[26px] font-semibold text-ink">Kenali sekitarmu</h1>
       <Lead>Arahkan perhatian ke luar dirimu. Sebutkan dalam hati atau pelan-pelan.</Lead>
 
       <div key={step} className="mt-1 grid justify-items-center gap-3 rounded-[22px] bg-white px-4 pt-5 pb-4 text-center shadow-[0_8px_24px_rgba(10,102,245,.12)] animate-rise">
         <span className="num grid size-16 place-items-center rounded-full bg-app text-[30px] font-semibold text-white">{item.count}</span>
-        <b className="text-[18px] leading-snug font-semibold text-ink" aria-live="polite">{item.prompt}</b>
-        <small className="text-[13px] text-muted">Contoh: {item.hint}</small>
+        <b className="text-[20px] leading-snug font-semibold text-ink" aria-live="polite">{item.prompt}</b>
+        <small className="text-[15.5px] text-muted">Contoh: {item.hint}</small>
         <div className="mt-1 flex gap-2.5">
           {Array.from({ length: item.count }, (_, i) => (
             <button key={i} type="button" aria-label={`Hal ke-${i + 1} yang bisa kamu ${item.sense}`} aria-pressed={i < named}

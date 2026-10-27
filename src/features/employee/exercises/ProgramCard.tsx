@@ -29,11 +29,11 @@ export function ProgramCard({ enrollment, link = true }: { enrollment: Enrollmen
     <div className="grid gap-2.5 rounded-[20px] bg-[linear-gradient(160deg,#eef4fd,#f4f8f1)] p-3.5">
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
-          <b className="block text-[14.5px] text-ink">{st.program.title}</b>
-          <small className="text-xs text-muted">{progressLabel(st.program, st.day)}{enrollment.paused && " · dijeda"}</small>
+          <b className="block text-[17px] text-ink">{st.program.title}</b>
+          <small className="text-[14px] text-muted">{progressLabel(st.program, st.day)}{enrollment.paused && " · dijeda"}</small>
         </div>
         {link && (
-          <Link href={ROUTES.employee.program(st.program.id)} className="flex shrink-0 items-center text-[12.5px] font-semibold text-app">
+          <Link href={ROUTES.employee.program(st.program.id)} className="flex shrink-0 items-center text-[15px] font-semibold text-app">
             Detail<Icon name="chevron" size={14} />
           </Link>
         )}
@@ -42,7 +42,7 @@ export function ProgramCard({ enrollment, link = true }: { enrollment: Enrollmen
         <i className="block h-full rounded-full bg-app" style={{ width: `${pct}%` }} />
       </div>
       {st.finished ? (
-        <p className="text-[13px] text-body">Semua hari program sudah dikerjakan. Buka detail untuk menutupnya.</p>
+        <p className="text-[15.5px] text-body">Semua hari program sudah dikerjakan. Buka detail untuk menutupnya.</p>
       ) : (
         <ul className="grid gap-2">
           {st.slots.map((s) => {
@@ -51,8 +51,8 @@ export function ProgramCard({ enrollment, link = true }: { enrollment: Enrollmen
               <>
                 <span className="size-10 rounded-xl" style={{ background: practiceArt(p) }} />
                 <span className="min-w-0">
-                  <b className={cn("block text-[13.5px] font-semibold", s.done && "line-through decoration-ink/35")}>{p.title}</b>
-                  <small className="text-[11.5px] text-muted">{SLOT_LABEL[s.slot]} · {p.minutes} menit</small>
+                  <b className={cn("block text-[16px] font-semibold", s.done && "line-through decoration-ink/35")}>{p.title}</b>
+                  <small className="text-[14px] text-muted">{SLOT_LABEL[s.slot]} · {p.minutes} menit</small>
                 </span>
                 {s.done ? <CheckCircle on /> : <StartPill />}
               </>

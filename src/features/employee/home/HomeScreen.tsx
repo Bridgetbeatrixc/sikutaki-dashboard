@@ -73,14 +73,14 @@ function Greeting({ name, date }: { name: string; date: string }) {
       style={{ background: `linear-gradient(180deg,rgba(10,25,50,.55),rgba(10,25,50,.25) 45%,rgba(10,25,50,.8)), url("${asset(`/img/latihan/${g.photo}.jpg`)}") center / cover no-repeat, #1f4f8f` }}>
       <div className="grid gap-3 px-5 pt-5 pb-5 md:px-7 md:pt-7 md:pb-6">
         <div>
-          <small className="block text-xs font-medium opacity-85">{longDate(date)}</small>
-          <h1 className="mt-0.5 text-[24px] font-bold leading-tight text-white [text-shadow:0_1px_8px_rgba(0,0,0,.35)] md:text-[26px]">{g.label}, {name}</h1>
+          <small className="block text-[14px] font-medium opacity-85">{longDate(date)}</small>
+          <h1 className="mt-0.5 text-[26px] font-bold leading-tight text-white [text-shadow:0_1px_8px_rgba(0,0,0,.35)] md:text-[28px]">{g.label}, {name}</h1>
         </div>
         <figure className="mt-6 max-w-[640px] rounded-2xl md:mt-10 bg-white/15 px-4 py-3 backdrop-blur-md">
-          <figcaption className="mb-1 flex items-center gap-1.5 text-[11px] font-bold tracking-wide uppercase opacity-85">
+          <figcaption className="mb-1 flex items-center gap-1.5 text-[13.5px] font-bold tracking-wide uppercase opacity-85">
             <Icon name="heart" size={13} />Pesan hari ini
           </figcaption>
-          <blockquote className="text-[15px] leading-snug font-semibold">“{quote}”</blockquote>
+          <blockquote className="text-[17.5px] leading-snug font-semibold">“{quote}”</blockquote>
         </figure>
       </div>
     </section>
@@ -94,8 +94,8 @@ function ForYou() {
   return (
     <section className="mt-5">
       <div className="mb-2.5 flex items-baseline justify-between">
-        <b className="text-[15px]">Latihan untukmu</b>
-        <Link href={ROUTES.employee.exercises} className={cn(linkText, "text-[13px]")}>Lihat semua</Link>
+        <b className="text-[17.5px]">Latihan untukmu</b>
+        <Link href={ROUTES.employee.exercises} className={cn(linkText, "text-[15.5px]")}>Lihat semua</Link>
       </div>
       <ul className="grid grid-cols-3 gap-2.5 md:gap-3.5">
         {ids.map((id) => {
@@ -105,11 +105,11 @@ function ForYou() {
             <li key={id}>
               <Link href={ROUTES.employee.exercise(id)} className="block overflow-hidden rounded-[18px] bg-soft shadow-[0_4px_14px_rgba(15,23,42,.08)]">
                 <span className="relative block h-[92px] md:h-[130px]" style={{ background: practiceArt(p) }}>
-                  {done.includes(id) && <span className="absolute top-2 right-2 rounded-full bg-white/90 px-2 py-0.5 text-[10.5px] font-bold text-app-dark">Sudah</span>}
+                  {done.includes(id) && <span className="absolute top-2 right-2 rounded-full bg-white/90 px-2 py-0.5 text-[13px] font-bold text-app-dark">Sudah</span>}
                 </span>
                 <span className="block px-2.5 py-2">
-                  <b className="block truncate text-[13px] text-ink">{p.title}</b>
-                  <small className="text-[11.5px] text-muted">{p.minutes} menit</small>
+                  <b className="block truncate text-[15.5px] text-ink">{p.title}</b>
+                  <small className="text-[14px] text-muted">{p.minutes} menit</small>
                 </span>
               </Link>
             </li>
@@ -126,7 +126,7 @@ function CheckinReminder() {
   const dow = (weekday(today) + 6) % 7 + 1;
   if (!week.reminder || !week.open || week.answers || dow < week.opensOn + 2) return null;
   return (
-    <Link href={ROUTES.employee.checkin} className="mt-3.5 flex items-center gap-3 rounded-2xl border border-[#cfe0f7] bg-[#eef5ff] px-3.5 py-3 text-[13.5px] text-ink">
+    <Link href={ROUTES.employee.checkin} className="mt-3.5 flex items-center gap-3 rounded-2xl border border-[#cfe0f7] bg-[#eef5ff] px-3.5 py-3 text-[16px] text-ink">
       <Icon name="calendar" size={18} className="shrink-0 text-app" />
       <span className="flex-1"><b>Check-in minggu ini belum diisi.</b> Ditutup Minggu 23.59, sekitar 3 menit.</span>
       <Icon name="chevron" size={16} className="text-muted" />
@@ -149,12 +149,12 @@ function DailyNote() {
       <div className="mt-4 grid grid-cols-[52px_1fr_auto] items-center gap-3 rounded-[18px] bg-soft p-3">
         <MoodFace mood={saved} size={52} className="rounded-[14px]" />
         <div>
-          <small className="block text-xs font-semibold text-app">Catatan hari ini tersimpan</small>
-          <b className="block text-[15px]">{saved.label} · tidur {hours(todayLog.sleep)}</b>
+          <small className="block text-[14px] font-semibold text-app">Catatan hari ini tersimpan</small>
+          <b className="block text-[17.5px]">{saved.label} · tidur {hours(todayLog.sleep)}</b>
         </div>
-        <button type="button" className={cn(linkText, "text-sm")} onClick={() => { setMood(todayLog.mood); setSleep(todayLog.sleep); setEditing(true); }}>Ubah</button>
+        <button type="button" className={cn(linkText, "text-[16px]")} onClick={() => { setMood(todayLog.mood); setSleep(todayLog.sleep); setEditing(true); }}>Ubah</button>
         {saved.id <= 2 && (
-          <p className="col-span-full mt-0.5 text-[13px] leading-normal text-body">
+          <p className="col-span-full mt-0.5 text-[15.5px] leading-normal text-body">
             Hari yang berat. Latihan napas 3 menit bisa membantu, atau{" "}
             <Link href={ROUTES.employee.ask("Hari ini terasa berat")} className={linkText}>ceritakan ke Asisten</Link>.
           </p>
@@ -173,12 +173,12 @@ function DailyNote() {
 
   return (
     <>
-      <h2 className="mt-4 mb-3.5 text-[24px] font-semibold text-ink">Bagaimana perasaanmu hari ini?</h2>
+      <h2 className="mt-4 mb-3.5 text-[26px] font-semibold text-ink">Bagaimana perasaanmu hari ini?</h2>
       <div className="grid max-w-[620px] grid-cols-5 gap-2 md:gap-3">
         {MOODS.map((m) => <MoodTile key={m.id} mood={m} selected={mood === m.id} onSelect={() => setMood(m.id)} />)}
       </div>
       {current ? (
-        <div className="mt-3.5 grid grid-cols-[1fr_auto] items-center gap-x-2.5 gap-y-2 rounded-[18px] bg-soft px-3.5 py-3 text-sm font-semibold">
+        <div className="mt-3.5 grid grid-cols-[1fr_auto] items-center gap-x-2.5 gap-y-2 rounded-[18px] bg-soft px-3.5 py-3 text-[16px] font-semibold">
           <span>Tidur semalam</span>
           <div className="flex items-center gap-2.5">
             <StepButton label="Kurangi jam tidur" onClick={() => setSleep(Math.max(MIN_SLEEP, sleep - 0.5))}>−</StepButton>
@@ -190,7 +190,7 @@ function DailyNote() {
           </button>
         </div>
       ) : (
-        <p className="mt-3 text-[12.5px] text-muted">Pilih satu. Hanya kamu yang bisa melihat catatan harianmu.</p>
+        <p className="mt-3 text-[15px] text-muted">Pilih satu. Hanya kamu yang bisa melihat catatan harianmu.</p>
       )}
     </>
   );
@@ -211,7 +211,7 @@ function LowMoodSuggestion() {
   if (!lowMoodStreak(days, [addDays(today, -2), addDays(today, -1), today])) return null;
   if (programs.some((e) => programById(e.program)?.kind === "praktis")) return null;
   return (
-    <div className="mt-3.5 grid gap-1.5 rounded-[18px] border border-[#f3ddb8] bg-[#fff7ec] px-3.5 py-3 text-[13.5px] leading-normal text-[#5b4520]">
+    <div className="mt-3.5 grid gap-1.5 rounded-[18px] border border-[#f3ddb8] bg-[#fff7ec] px-3.5 py-3 text-[16px] leading-normal text-[#5b4520]">
       <b>Tiga hari terakhir terasa berat</b>
       <span>Program 7 Hari Lepas Stres bisa membantu, sekitar 10 menit pagi dan malam. Ingin cerita dulu? <Link href={ROUTES.employee.ask("Tiga hari terakhir terasa berat")} className="font-bold underline underline-offset-2">Ngobrol dengan Asisten</Link>.</span>
       <Link href={ROUTES.employee.program("stres-7")} className={appButton("primary", true)}>Lihat program</Link>
@@ -250,9 +250,9 @@ function TodayPlan() {
 
   return (
     <section className="relative mt-[18px] min-h-[300px] flex-1 rounded-t-[30px] bg-app px-4 pt-[18px] pb-[104px] text-white md:mx-8 md:mb-8 md:min-h-0 md:flex-none md:rounded-[26px] md:px-5 md:pb-5 lg:sticky lg:top-24 lg:m-0">
-      <div className="mb-3.5 flex justify-between px-1 text-[15px] font-semibold">
+      <div className="mb-3.5 flex justify-between px-1 text-[17.5px] font-semibold">
         <span>Rencana hari ini</span>
-        <span className="text-[13px] font-medium opacity-85">{count}/{plan.length} selesai</span>
+        <span className="text-[15.5px] font-medium opacity-85">{count}/{plan.length} selesai</span>
       </div>
       <ol className="grid gap-3">
         {plan.map((p) => (
@@ -272,8 +272,8 @@ function PlanRow({ item }: { item: PlanItem }) {
     <>
       {item.art ? <span className="size-[52px] rounded-[14px]" style={{ background: item.art }} /> : <Blob hue={item.hue} icon={item.icon} />}
       <span>
-        <b className={cn("block text-sm font-semibold", item.done && "line-through decoration-ink/35")}>{item.title}</b>
-        <small className="mt-0.5 block text-[11.5px] text-muted">{item.meta}</small>
+        <b className={cn("block text-[16px] font-semibold", item.done && "line-through decoration-ink/35")}>{item.title}</b>
+        <small className="mt-0.5 block text-[14px] text-muted">{item.meta}</small>
       </span>
       {item.done || !item.href ? <CheckCircle on={item.done} /> : <StartPill />}
     </>

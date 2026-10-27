@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 
 const GRID = "#E8E8ED", AXIS = "#86868B", INK = "#1D1D1F";
-const axisText = "fill-[#86868b] font-mono text-[10.5px]";
+const axisText = "fill-[#86868b] font-mono text-[13px]";
 
 /** Values may contain null for weeks without a result; the line breaks there. */
 export type Series = { name: string; color: string; values: (number | null)[] };
@@ -51,7 +51,7 @@ export function LineChart({ series, labels, min = 0, max = 100, height = 220, ma
           return (
             <g>
               <rect x={x0} width={Math.max(2, x1 - x0)} y={pt - 6} height={H - pb - pt + 6} fill="#0A66F5" opacity={0.07} rx={6} />
-              <text x={(x0 + x1) / 2} y={pt + 4} textAnchor="middle" className="fill-[#0857d6] text-[10.5px] font-semibold">{xBand.label}</text>
+              <text x={(x0 + x1) / 2} y={pt + 4} textAnchor="middle" className="fill-[#0857d6] text-[13px] font-semibold">{xBand.label}</text>
             </g>
           );
         })()}
@@ -70,10 +70,10 @@ export function LineChart({ series, labels, min = 0, max = 100, height = 220, ma
             {narrow ? (
               <g>
                 <circle cx={x(m.i)} cy={pt - 6} r={8} fill="#fff" stroke={AXIS} />
-                <text x={x(m.i)} y={pt - 2.5} textAnchor="middle" className="fill-muted text-[11px] font-semibold">{k + 1}</text>
+                <text x={x(m.i)} y={pt - 2.5} textAnchor="middle" className="fill-muted text-[13.5px] font-semibold">{k + 1}</text>
               </g>
             ) : (
-              <text x={x(m.i) + (x(m.i) > W * 0.6 ? -6 : 6)} y={pt + 2} textAnchor={x(m.i) > W * 0.6 ? "end" : "start"} className="fill-muted text-[11px] font-semibold">{m.label}</text>
+              <text x={x(m.i) + (x(m.i) > W * 0.6 ? -6 : 6)} y={pt + 2} textAnchor={x(m.i) > W * 0.6 ? "end" : "start"} className="fill-muted text-[13.5px] font-semibold">{m.label}</text>
             )}
           </g>
         ))}
@@ -98,7 +98,7 @@ export function LineChart({ series, labels, min = 0, max = 100, height = 220, ma
                 <circle key={p.i} cx={x(p.i)} cy={y(p.v)} r={3.5} fill={s.color} />
               ))}
               <circle cx={x(lastP.i)} cy={y(lastP.v)} r={4.5} fill={s.color} stroke="#fff" strokeWidth={2} />
-              {series.length > 1 && <text x={x(lastP.i) + 9} y={y(lastP.v) + 4} className="fill-ink text-[11.5px] font-semibold">{s.name}</text>}
+              {series.length > 1 && <text x={x(lastP.i) + 9} y={y(lastP.v) + 4} className="fill-ink text-[14px] font-semibold">{s.name}</text>}
             </g>
           );
         })}
@@ -112,15 +112,15 @@ export function LineChart({ series, labels, min = 0, max = 100, height = 220, ma
       </svg>
 
       {narrow && markers.length > 0 && (
-        <ol className="mt-1.5 flex flex-wrap gap-x-3.5 gap-y-1.5 text-xs text-muted">
+        <ol className="mt-1.5 flex flex-wrap gap-x-3.5 gap-y-1.5 text-[14px] text-muted">
           {markers.map((m, k) => (
-            <li key={`${m.label}-${k}`}><b className="mr-1.5 inline-grid size-[18px] place-items-center rounded-full border border-[#86868b] text-[11px] text-ink">{k + 1}</b>{m.label}</li>
+            <li key={`${m.label}-${k}`}><b className="mr-1.5 inline-grid size-[18px] place-items-center rounded-full border border-[#86868b] text-[13.5px] text-ink">{k + 1}</b>{m.label}</li>
           ))}
         </ol>
       )}
 
       {hover !== null && (
-        <div className="pointer-events-none absolute top-1 z-10 grid -translate-x-1/2 gap-1 whitespace-nowrap rounded-[10px] bg-ink px-2.5 py-2 text-xs text-white" style={{ left: `${(x(hover) / W) * 100}%` }}>
+        <div className="pointer-events-none absolute top-1 z-10 grid -translate-x-1/2 gap-1 whitespace-nowrap rounded-[10px] bg-ink px-2.5 py-2 text-[14px] text-white" style={{ left: `${(x(hover) / W) * 100}%` }}>
           <b>Minggu {labels[hover]}</b>
           {series.map((s) => (
             <span key={s.name} className="flex items-center gap-1.5">

@@ -57,7 +57,7 @@ export function CheckinPage() {
             {m.TEAMS.map((t) => {
               const p = m.part(t.id, cur);
               return (
-                <div key={t.id} className="grid grid-cols-[96px_1fr_40px] items-center gap-2.5 text-[13px] sm:grid-cols-[130px_1fr_44px_56px]">
+                <div key={t.id} className="grid grid-cols-[96px_1fr_40px] items-center gap-2.5 text-[15.5px] sm:grid-cols-[130px_1fr_44px_56px]">
                   <span>{t.name}</span>
                   {m.respondents(t.id, cur) < c.minGroup ? <HiddenNote text={`Kurang dari ${c.minGroup} orang`} className="col-span-2 px-2.5 py-1 sm:col-span-3" /> : (
                     <>
@@ -79,7 +79,7 @@ export function CheckinPage() {
           <ol className="grid gap-1.5">
             {ROTATION.map((r, i) => (
               <li key={i} className={cn("grid items-center gap-2.5 rounded-[10px] px-2.5 py-2 sm:grid-cols-[130px_1fr]", i === rotationWeek && "bg-mint")}>
-                <span className="text-[13px] font-semibold">Minggu {i + 1}{i === rotationWeek && " · sekarang"}</span>
+                <span className="text-[15.5px] font-semibold">Minggu {i + 1}{i === rotationWeek && " · sekarang"}</span>
                 <span className="flex flex-wrap gap-1">{r.map((a) => <Tag key={a}>{areaById(a).name}</Tag>)}</span>
               </li>
             ))}

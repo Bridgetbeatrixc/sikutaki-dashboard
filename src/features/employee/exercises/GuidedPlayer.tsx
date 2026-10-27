@@ -33,11 +33,11 @@ export function GuidedPlayer({ practice, session }: { practice: GuidedPractice; 
   if (!started) {
     return (
       <PracticeFrame practice={practice} session={session}>
-        <p className="text-[15px] leading-relaxed text-body">{practice.blurb}</p>
+        <p className="text-[17.5px] leading-relaxed text-body">{practice.blurb}</p>
         <ol className="grid gap-2">
           {practice.steps.map((s, i) => (
-            <li key={i} className="grid grid-cols-[24px_1fr] gap-2 text-[13.5px] leading-normal text-body">
-              <span className="grid size-6 place-items-center rounded-full bg-soft text-xs font-bold text-app-dark">{i + 1}</span>{s.text}
+            <li key={i} className="grid grid-cols-[24px_1fr] gap-2 text-[16px] leading-normal text-body">
+              <span className="grid size-6 place-items-center rounded-full bg-soft text-[14px] font-bold text-app-dark">{i + 1}</span>{s.text}
             </li>
           ))}
         </ol>
@@ -55,13 +55,13 @@ export function GuidedPlayer({ practice, session }: { practice: GuidedPractice; 
         <div className="grid min-h-[220px] place-items-center rounded-[24px] bg-soft p-6 text-center">
           <div>
             <b className="block text-xl text-ink">Latihan selesai</b>
-            <p className="mt-1.5 text-sm text-body">Perhatikan sejenak bagaimana tubuhmu sekarang.</p>
+            <p className="mt-1.5 text-[16px] text-body">Perhatikan sejenak bagaimana tubuhmu sekarang.</p>
           </div>
         </div>
       ) : (
         <div className="grid min-h-[220px] content-center gap-3 rounded-[24px] bg-[linear-gradient(160deg,#eef4fd,#f6f9f4)] p-6 text-center" aria-live="polite">
-          <p className="text-[19px] leading-snug font-semibold text-ink">{step.text}</p>
-          <small className="text-[13px] text-muted">{left} detik</small>
+          <p className="text-[21px] leading-snug font-semibold text-ink">{step.text}</p>
+          <small className="text-[15.5px] text-muted">{left} detik</small>
         </div>
       )}
       {done ? (

@@ -48,9 +48,9 @@ export function DivisionsPage() {
     <>
       <PageHeader title="Divisi" sub={`${TEAMS.length} divisi · diurutkan dari yang paling perlu perhatian`} />
       <div className="overflow-hidden rounded-card border border-line bg-white">
-        <table className="w-full border-collapse">
+        <table className="w-full table-fixed border-collapse md:table-auto">
           <thead className="hidden md:table-header-group">
-            <tr className="border-b border-line bg-[#fafbfc] text-left text-xs whitespace-nowrap text-muted">
+            <tr className="border-b border-line bg-[#fafbfc] text-left text-[14px] whitespace-nowrap text-muted">
               <SortTh k="name" label="Divisi" /><SortTh k="status" label="Status" /><SortTh k="wb" label="Wellbeing" />
               <th className="px-4 py-3 font-semibold">12 minggu</th><SortTh k="part" label="Partisipasi" />
               <th className="px-4 py-3 font-semibold">Fokus utama</th><th />

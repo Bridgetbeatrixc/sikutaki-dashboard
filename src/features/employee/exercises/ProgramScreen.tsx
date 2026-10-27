@@ -39,8 +39,8 @@ export function ProgramScreen({ id }: { id: string }) {
       <FlowBar closeHref={ROUTES.employee.exercises} title="Program" />
       <div className="h-[140px] rounded-[22px] md:h-[190px]" style={{ background: programArt(p.id) }} role="img" aria-label={p.title} />
       <div>
-        <small className="rounded-full bg-mint px-2.5 py-1 text-xs font-bold text-app-dark">{kindLabel(p.kind, p.days, p.slots.length)}</small>
-        <h1 className="mt-3 text-[24px] leading-tight font-semibold text-ink">{p.title}</h1>
+        <small className="rounded-full bg-mint px-2.5 py-1 text-[14px] font-bold text-app-dark">{kindLabel(p.kind, p.days, p.slots.length)}</small>
+        <h1 className="mt-3 text-[26px] leading-tight font-semibold text-ink">{p.title}</h1>
         <Lead className="mt-1.5">{p.blurb}</Lead>
       </div>
 
@@ -58,24 +58,24 @@ export function ProgramScreen({ id }: { id: string }) {
           {mine.paused && <Note>Program dijeda. Saat kamu mengerjakan sesi berikutnya, program otomatis berlanjut.</Note>}
         </>
       ) : other ? (
-        <div className="rounded-2xl bg-soft p-3.5 text-[13.5px] leading-normal text-body">
+        <div className="rounded-2xl bg-soft p-3.5 text-[16px] leading-normal text-body">
           Kamu sedang menjalani <b>{programById(other.program)?.title}</b>. Hanya satu program {p.kind} yang bisa berjalan sekaligus, jadi hentikan program itu dulu bila ingin menggantinya.
         </div>
       ) : (
         <button type="button" disabled={busy} className={appButton()} onClick={start}>{busy ? "Memulai..." : "Mulai program"}</button>
       )}
 
-      <ul className="grid gap-1.5 text-[13px] leading-normal text-body">
+      <ul className="grid gap-1.5 text-[15.5px] leading-normal text-body">
         <li className="flex gap-2"><Icon name="check" size={15} className="mt-0.5 shrink-0 text-app" />Hari yang terlewat tidak mengulang program dari awal. Program berlanjut dari sesi terakhirmu.</li>
         <li className="flex gap-2"><Icon name="check" size={15} className="mt-0.5 shrink-0 text-app" />Bisa dijeda atau dihentikan kapan saja.</li>
         <li className="flex gap-2"><Icon name="check" size={15} className="mt-0.5 shrink-0 text-app" />Satu program praktis dan satu program rutin bisa berjalan bersamaan.</li>
       </ul>
-      {moves && <p className="rounded-2xl border border-[#f3ddb8] bg-[#fff7ec] px-3.5 py-2.5 text-[12.5px] leading-normal text-[#5b4520]">{MOVEMENT_NOTE}</p>}
+      {moves && <p className="rounded-2xl border border-[#f3ddb8] bg-[#fff7ec] px-3.5 py-2.5 text-[15px] leading-normal text-[#5b4520]">{MOVEMENT_NOTE}</p>}
 
       <Section>Rencana latihan</Section>
       <ol className="grid gap-2">
         {rows.map((r) => (
-          <li key={r.label} className="grid grid-cols-[78px_1fr] gap-2 rounded-[14px] bg-soft px-3.5 py-2.5 text-[13px]">
+          <li key={r.label} className="grid grid-cols-[78px_1fr] gap-2 rounded-[14px] bg-soft px-3.5 py-2.5 text-[15.5px]">
             <b className="text-ink">{r.label}</b>
             <span className="text-body">{r.items.join(" · ")}</span>
           </li>

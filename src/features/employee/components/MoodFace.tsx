@@ -28,7 +28,7 @@ export function MoodFace({ mood, size, className }: { mood: Mood; size?: number;
 export function MoodTile({ mood, selected, onSelect }: { mood: Mood; selected: boolean; onSelect: () => void }) {
   return (
     <button type="button" onClick={onSelect} aria-pressed={selected}
-      className={cn("group grid justify-items-center gap-1 text-[10.5px] text-muted", selected && "font-bold text-app-dark")}>
+      className={cn("group grid justify-items-center gap-1 text-[13px] text-muted", selected && "font-bold text-app-dark")}>
       <MoodFace mood={mood} className={cn(
         "aspect-square rounded-2xl shadow-[0_6px_14px_rgba(0,0,0,.12)] transition-transform",
         selected && "-translate-y-[3px] shadow-[0_0_0_2.5px_var(--color-app),0_10px_18px_rgba(0,0,0,.2)]",

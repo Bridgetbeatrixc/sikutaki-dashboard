@@ -33,7 +33,7 @@ export function PracticeFrame({ practice, session, right, children }: { practice
   return (
     <div className="grid min-h-full content-start gap-4 px-[22px] pt-2 pb-7 md:px-8 md:pt-6">
       <FlowBar closeHref={session ? ROUTES.employee.home : ROUTES.employee.exercises} title={practice.title} right={right} />
-      {program && <p className="-mt-2 text-center text-xs text-muted">{program.title}</p>}
+      {program && <p className="-mt-2 text-center text-[14px] text-muted">{program.title}</p>}
       {practice.kind !== "sound" && <div className="h-[120px] rounded-[22px] md:h-[160px]" style={{ background: practiceArt(practice) }} role="img" aria-label={practice.title} />}
       {practice.caution && <Banner icon="alert">{MOVEMENT_NOTE}</Banner>}
       {practice.group === "energi" && <Banner icon="info">{ENERGY_NOTE}</Banner>}
@@ -45,7 +45,7 @@ export function PracticeFrame({ practice, session, right, children }: { practice
 
 function Banner({ icon, children }: { icon: "alert" | "info"; children: ReactNode }) {
   return (
-    <p className="flex gap-2 rounded-2xl border border-[#f3ddb8] bg-[#fff7ec] px-3.5 py-2.5 text-[12.5px] leading-normal text-[#5b4520]">
+    <p className="flex gap-2 rounded-2xl border border-[#f3ddb8] bg-[#fff7ec] px-3.5 py-2.5 text-[15px] leading-normal text-[#5b4520]">
       <Icon name={icon} size={16} className="mt-px shrink-0" />{children}
     </p>
   );
@@ -54,7 +54,7 @@ function Banner({ icon, children }: { icon: "alert" | "info"; children: ReactNod
 /** Crisis lines, on every practice screen. */
 export function HelpLine() {
   return (
-    <p className="mt-2 rounded-2xl bg-[#fdf0f2] px-3.5 py-2.5 text-[12.5px] leading-normal text-[#6b2b39]">
+    <p className="mt-2 rounded-2xl bg-[#fdf0f2] px-3.5 py-2.5 text-[15px] leading-normal text-[#6b2b39]">
       <b>Butuh bantuan sekarang?</b> Healing119 Kemenkes: telepon <a href="tel:119" className="font-semibold underline underline-offset-2">119</a> ekstensi 8.
       Keadaan darurat: <a href="tel:112" className="font-semibold underline underline-offset-2">112</a>.
     </p>

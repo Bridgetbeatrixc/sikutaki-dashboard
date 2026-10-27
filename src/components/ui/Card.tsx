@@ -9,8 +9,8 @@ export function Card({ title, sub, action, children, className, flush = false }:
       {(title || action) && (
         <header className="flex items-start justify-between gap-3">
           <div>
-            {title && <h3 className="text-[15px] font-bold text-ink">{title}</h3>}
-            {sub && <p className="mt-0.5 text-[12.5px] text-muted">{sub}</p>}
+            {title && <h3 className="text-[17.5px] font-bold text-ink">{title}</h3>}
+            {sub && <p className="mt-0.5 text-[15px] text-muted">{sub}</p>}
           </div>
           {action}
         </header>
@@ -22,5 +22,5 @@ export function Card({ title, sub, action, children, className, flush = false }:
 
 /** Small grey footnote under a card or page. */
 export function Fine({ children, className }: { children: ReactNode; className?: string }) {
-  return <p className={cn("text-xs text-muted", className)}>{children}</p>;
+  return <p className={cn("text-[14px] text-muted", className)}>{children}</p>;
 }

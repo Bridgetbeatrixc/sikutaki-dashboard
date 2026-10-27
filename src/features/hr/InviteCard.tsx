@@ -34,11 +34,11 @@ export function InviteCard({ className }: { className?: string }) {
   return (
     <Card title="Undang karyawan" sub="Bagikan tautan ini lewat email atau grup chat kantor. Karyawan membuat akun sendiri dan memilih divisinya." className={className}>
       <div className="flex flex-wrap items-center gap-3">
-        <span className="text-[13px] text-muted">Kode undangan</span>
+        <span className="text-[15.5px] text-muted">Kode undangan</span>
         <b className="num rounded-[10px] bg-mint px-3 py-1.5 text-lg tracking-[0.18em] text-brand">{code}</b>
       </div>
       <div className="flex flex-wrap gap-2">
-        <input readOnly value={link} aria-label="Tautan undangan" className={cn(inputClass, "min-w-0 flex-1 text-[13px]")} onFocus={(e) => e.currentTarget.select()} />
+        <input readOnly value={link} aria-label="Tautan undangan" className={cn(inputClass, "min-w-0 flex-1 text-[15.5px]")} onFocus={(e) => e.currentTarget.select()} />
         <Button onClick={copy}><Icon name="copy" size={15} />Salin tautan</Button>
       </div>
       <div className="flex flex-wrap items-center justify-between gap-2">

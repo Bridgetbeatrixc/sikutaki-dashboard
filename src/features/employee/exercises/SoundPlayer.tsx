@@ -57,10 +57,10 @@ export function SoundPlayer({ practice, session }: { practice: SoundPractice; se
         <i className="absolute inset-0 rounded-full bg-[radial-gradient(circle,rgba(0,0,0,.45),rgba(0,0,0,.15))]" />
         <div className="relative text-center">
           <b className="num block text-[34px] font-semibold text-white">{clock(Math.max(left, 0))}</b>
-          <small className="text-[13px] text-white/85">{ended ? "Selesai" : playing ? "Sedang diputar" : "Siap diputar"}</small>
+          <small className="text-[15.5px] text-white/85">{ended ? "Selesai" : playing ? "Sedang diputar" : "Siap diputar"}</small>
         </div>
       </div>
-      <p className="text-center text-sm text-body">{practice.blurb}</p>
+      <p className="text-center text-[16px] text-body">{practice.blurb}</p>
       {!playing && (
         <div className="flex justify-center gap-2">
           {DURATIONS.map((m) => <Chip key={m} on={minutes === m} onClick={() => pick(m)}>{`${m} menit`}</Chip>)}

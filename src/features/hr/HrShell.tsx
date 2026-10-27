@@ -28,7 +28,7 @@ export function HrShell({ children }: { children: ReactNode }) {
   const showEmpty = empty && ["divisi", "area", "laporan"].includes(section ?? "");
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen text-[16px]">
       <aside className="sticky top-0 hidden print:hidden h-screen w-[72px] shrink-0 flex-col items-center gap-[18px] border-r border-line bg-white px-2.5 py-4 sm:flex xl:w-[232px] xl:items-stretch xl:px-3 xl:py-[18px]">
         <Logo href={ROUTES.hr.root} className="px-0 text-lg xl:px-2 [&>span]:hidden xl:[&>span]:inline" />
         <nav className="grid gap-0.5">
@@ -40,27 +40,27 @@ export function HrShell({ children }: { children: ReactNode }) {
                 <Icon name={n.icon} size={19} />
                 <span className="hidden xl:inline">{n.label}</span>
                 {n.href === ROUTES.hr.divisions && teamsWithAlerts > 0 && (
-                  <em className="ml-auto hidden rounded-full bg-bad px-[7px] py-px text-[11px] font-bold text-white not-italic xl:inline">{teamsWithAlerts}</em>
+                  <em className="ml-auto hidden rounded-full bg-bad px-[7px] py-px text-[13.5px] font-bold text-white not-italic xl:inline">{teamsWithAlerts}</em>
                 )}
               </Link>
             </div>
           ))}
         </nav>
-        <div className="mt-auto flex items-center gap-1.5 px-2.5 text-xs text-muted">
+        <div className="mt-auto flex items-center gap-1.5 px-2.5 text-[14px] text-muted">
           <Icon name="lock" size={14} /><span className="hidden xl:inline">Anonim, min. 5 orang</span>
         </div>
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 bg-ink print:hidden px-4 py-2 text-[13px] text-white sm:px-7">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 bg-ink print:hidden px-4 py-2 text-[15.5px] text-white sm:px-7">
           <span>{demo
             ? <>Mode demo: perusahaan dan angka contoh, perubahan tersimpan di peramban ini saja. <Link href={ROUTES.signup} className="underline">Daftarkan perusahaan</Link></>
             : "Grafik memakai angka contoh sampai data karyawan cukup. Pengaturan, catatan, dan permintaan konseling tersimpan di akun perusahaan."}</span>
         </div>
         <header className="sticky top-0 z-20 print:hidden flex flex-wrap items-center gap-2.5 border-b border-line bg-canvas/90 px-4 py-2.5 backdrop-blur sm:flex-nowrap sm:gap-4 sm:px-7 sm:py-3">
           <div>
-            <b className="block text-sm">{m.COMPANY.name}</b>
-            <small className="hidden text-xs text-muted sm:inline">{m.COMPANY.employees} karyawan terdaftar</small>
+            <b className="block text-[16px]">{m.COMPANY.name}</b>
+            <small className="hidden text-[14px] text-muted sm:inline">{m.COMPANY.employees} karyawan terdaftar</small>
           </div>
           {showScope && (
             <label className="order-3 w-full sm:order-none sm:w-auto">
@@ -80,9 +80,9 @@ export function HrShell({ children }: { children: ReactNode }) {
               </button>
               {bellOpen && (
                 <div className="absolute top-[46px] right-0 z-40 grid w-[min(320px,calc(100vw-32px))] gap-0.5 rounded-[14px] border border-line bg-white p-2 shadow-xl">
-                  <b className="px-2.5 py-1.5 text-[13px]">Notifikasi</b>
-                  {al.length === 0 ? <span className="p-2.5 text-[13px] text-muted">Belum ada notifikasi.</span> : al.slice(0, 5).map((a) => (
-                    <Link key={a.id} href={ROUTES.hr.division(a.team)} onClick={() => setBellOpen(false)} className="flex items-start gap-2 rounded-[10px] px-2.5 py-2 text-[13px] hover:bg-[#f1f3f6]">
+                  <b className="px-2.5 py-1.5 text-[15.5px]">Notifikasi</b>
+                  {al.length === 0 ? <span className="p-2.5 text-[15.5px] text-muted">Belum ada notifikasi.</span> : al.slice(0, 5).map((a) => (
+                    <Link key={a.id} href={ROUTES.hr.division(a.team)} onClick={() => setBellOpen(false)} className="flex items-start gap-2 rounded-[10px] px-2.5 py-2 text-[15.5px] hover:bg-[#f1f3f6]">
                       <Icon name="flag" size={14} className="mt-0.5 shrink-0 text-bad" />{a.text}
                     </Link>
                   ))}
@@ -91,13 +91,13 @@ export function HrShell({ children }: { children: ReactNode }) {
             </div>
             <div className="relative">
               <button type="button" onClick={() => setUserOpen(!userOpen)} aria-label="Menu akun" aria-expanded={userOpen}
-                className="inline-flex size-9 items-center justify-center rounded-full bg-brand text-[13px] font-bold text-white">{initials}</button>
+                className="inline-flex size-9 items-center justify-center rounded-full bg-brand text-[15.5px] font-bold text-white">{initials}</button>
               {userOpen && (
                 <div className="absolute top-[46px] right-0 z-40 grid w-[240px] gap-0.5 rounded-[14px] border border-line bg-white p-2 shadow-xl">
-                  <div className="px-2.5 py-1.5"><b className="block text-[13px]">{m.ds.user.name}</b><small className="block truncate text-muted">{m.ds.user.email}</small></div>
-                  <Link href={ROUTES.hr.settings} onClick={() => setUserOpen(false)} className="flex items-center gap-2 rounded-[10px] px-2.5 py-2 text-[13px] hover:bg-[#f1f3f6]"><Icon name="cog" size={15} />Pengaturan</Link>
+                  <div className="px-2.5 py-1.5"><b className="block text-[15.5px]">{m.ds.user.name}</b><small className="block truncate text-muted">{m.ds.user.email}</small></div>
+                  <Link href={ROUTES.hr.settings} onClick={() => setUserOpen(false)} className="flex items-center gap-2 rounded-[10px] px-2.5 py-2 text-[15.5px] hover:bg-[#f1f3f6]"><Icon name="cog" size={15} />Pengaturan</Link>
                   <form action={logout}>
-                    <button type="submit" className="flex w-full items-center gap-2 rounded-[10px] px-2.5 py-2 text-left text-[13px] hover:bg-[#f1f3f6]"><Icon name="logout" size={15} />Keluar</button>
+                    <button type="submit" className="flex w-full items-center gap-2 rounded-[10px] px-2.5 py-2 text-left text-[15.5px] hover:bg-[#f1f3f6]"><Icon name="logout" size={15} />Keluar</button>
                   </form>
                 </div>
               )}
@@ -113,11 +113,11 @@ export function HrShell({ children }: { children: ReactNode }) {
       {/* Phone navigation */}
       <nav className="fixed inset-x-0 bottom-0 z-30 print:hidden grid grid-cols-5 border-t border-line bg-white px-1 pt-1.5 pb-[calc(6px+env(safe-area-inset-bottom))] sm:hidden">
         {HR_NAV.slice(0, 4).map((n) => (
-          <Link key={n.href} href={n.href} className={cn("grid justify-items-center gap-0.5 py-1 text-[10.5px] font-semibold", isActive(pathname, n.href) ? "text-brand" : "text-muted")}>
+          <Link key={n.href} href={n.href} className={cn("grid justify-items-center gap-0.5 py-1 text-[13px] font-semibold", isActive(pathname, n.href) ? "text-brand" : "text-muted")}>
             <Icon name={n.icon} size={20} /><span>{n.label}</span>
           </Link>
         ))}
-        <button type="button" onClick={() => setMoreOpen(!moreOpen)} className={cn("grid justify-items-center gap-0.5 py-1 text-[10.5px] font-semibold", moreOpen ? "text-brand" : "text-muted")}>
+        <button type="button" onClick={() => setMoreOpen(!moreOpen)} className={cn("grid justify-items-center gap-0.5 py-1 text-[13px] font-semibold", moreOpen ? "text-brand" : "text-muted")}>
           <Icon name="more" size={20} /><span>Lainnya</span>
         </button>
       </nav>

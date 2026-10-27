@@ -20,7 +20,7 @@ export function LiveSummary() {
     : `Rata-rata minggu ini: mood ${decimal(s.avgMood)}/5, tidur ${decimal(s.avgSleep ?? 0)} jam.`;
   return (
     <Card title="Data asli perusahaan Anda" sub="Dari database Sikutaki. Grafik di bawah masih memakai angka contoh sampai data cukup untuk dirata-rata.">
-      <p className="text-[14px] text-body">
+      <p className="text-[16.5px] text-body">
         <b className="text-ink">{s.employees}</b> karyawan bergabung · <b className="text-ink">{s.checkins}</b> check-in minggu ini · <b className="text-ink">{s.loggers}</b> orang mencatat mood minggu ini. {avg}
       </p>
     </Card>

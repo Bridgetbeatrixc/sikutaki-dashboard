@@ -49,7 +49,7 @@ export function BreathPlayer({ practice, session }: { practice: BreathPractice; 
           big ? "scale-100" : "scale-[.62]",
         )} style={{ transitionDuration: `${seconds}s` }} />
         <b className="relative self-end text-xl text-app-dark">{label}</b>
-        <small className="relative mt-1 self-start text-[13px] text-app-dark">{left} detik</small>
+        <small className="relative mt-1 self-start text-[15.5px] text-app-dark">{left} detik</small>
       </div>
       <Lead className="text-center">Ikuti lingkaran sekitar {practice.minutes} menit, atau sampai napasmu terasa lebih pelan.</Lead>
       <div className="grid grid-cols-[1fr_1.4fr] gap-2.5">

@@ -21,7 +21,7 @@ type Message = ChatTurn & { error?: boolean };
 const STARTERS = ["Aku cuma mau cerita", "Aku susah tidur belakangan ini", "Aku cuma punya 3 menit"];
 /** The conversation stays in this tab only. */
 const CHAT_KEY = "sikutaki:asisten";
-const input = "w-full rounded-[14px] border-[1.5px] border-line bg-white px-3.5 py-3 text-[15px] text-ink focus:border-app focus:outline-none";
+const input = "w-full rounded-[14px] border-[1.5px] border-line bg-white px-3.5 py-3 text-[17.5px] text-ink focus:border-app focus:outline-none";
 
 export function AssistantScreen() {
   const emp = useEmployee();
@@ -97,14 +97,14 @@ export function AssistantScreen() {
     <div className="mx-auto flex min-h-full w-full max-w-[900px] flex-col px-[22px] pt-3.5 pb-[104px] md:px-8 md:pt-6 md:pb-8">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <h1 className="mt-2.5 text-[26px] font-semibold text-ink">Asisten AI</h1>
-          <p className="text-sm leading-relaxed text-body">Teman bicara untuk memahami hasilmu, memilih latihan yang cocok, dan menengok lagi perkembanganmu.</p>
+          <h1 className="mt-2.5 text-[28px] font-semibold text-ink">Asisten AI</h1>
+          <p className="text-[16px] leading-relaxed text-body">Teman bicara untuk memahami hasilmu, memilih latihan yang cocok, dan menengok lagi perkembanganmu.</p>
         </div>
       </div>
 
-      {demo && <p className="mt-3 rounded-2xl bg-[#fdf6e7] px-3.5 py-2.5 text-[13px] leading-normal text-body">Asisten AI hanya untuk akun karyawan. <Link href={ROUTES.join()} className="font-semibold underline">Buat akun</Link> atau <Link href={ROUTES.login} className="font-semibold underline">masuk</Link> untuk memakainya.</p>}
+      {demo && <p className="mt-3 rounded-2xl bg-[#fdf6e7] px-3.5 py-2.5 text-[15.5px] leading-normal text-body">Asisten AI hanya untuk akun karyawan. <Link href={ROUTES.join()} className="font-semibold underline">Buat akun</Link> atau <Link href={ROUTES.login} className="font-semibold underline">masuk</Link> untuk memakainya.</p>}
 
-      <p className="mt-3 flex gap-2 rounded-2xl bg-soft px-3.5 py-2.5 text-[12px] leading-normal text-body">
+      <p className="mt-3 flex gap-2 rounded-2xl bg-soft px-3.5 py-2.5 text-[14.5px] leading-normal text-body">
         <Icon name="info" size={15} className="mt-px shrink-0 text-app" />
         <span>Pesanmu, beserta ringkasan mood, tidur, dan check-in minggu ini, dikirim lewat server Sikutaki ke Google Gemini untuk dijawab dan tidak disimpan. Jangan menulis nama lengkap atau data pribadi. Asisten bukan psikolog dan tidak mendiagnosis.</span>
       </p>
@@ -113,24 +113,24 @@ export function AssistantScreen() {
       <div className="mt-4 grid flex-1 content-start gap-3" aria-live="polite">
         {messages.length === 0 && !busy && (
           <div className="grid gap-3">
-            {!demo && <div className="max-w-[90%] rounded-[18px] rounded-bl-md bg-soft px-3.5 py-2.5 text-[14px] leading-normal text-ink">{follow.opener}</div>}
-            <small className="text-xs font-semibold text-muted">Balas dengan:</small>
+            {!demo && <div className="max-w-[90%] rounded-[18px] rounded-bl-md bg-soft px-3.5 py-2.5 text-[16.5px] leading-normal text-ink">{follow.opener}</div>}
+            <small className="text-[14px] font-semibold text-muted">Balas dengan:</small>
             <div className="flex flex-wrap gap-2">
               {[...follow.starters, ...STARTERS].slice(0, 5).map((s) => (
                 <button key={s} type="button" onClick={() => send(s)} disabled={busy}
-                  className="rounded-full bg-soft px-3.5 py-2 text-left text-[13px] text-body hover:bg-mint">{s}</button>
+                  className="rounded-full bg-soft px-3.5 py-2 text-left text-[15.5px] text-body hover:bg-mint">{s}</button>
               ))}
             </div>
           </div>
         )}
         {messages.map((m, i) => m.role === "user" ? (
-          <div key={i} className="max-w-[85%] justify-self-end rounded-[18px] rounded-br-md bg-app px-3.5 py-2.5 text-[14px] leading-normal whitespace-pre-wrap text-white">{m.text}</div>
+          <div key={i} className="max-w-[85%] justify-self-end rounded-[18px] rounded-br-md bg-app px-3.5 py-2.5 text-[16.5px] leading-normal whitespace-pre-wrap text-white">{m.text}</div>
         ) : m.error ? (
-          <div key={i} className="max-w-[90%] rounded-[18px] rounded-bl-md border border-[#f1c9c9] bg-[#fdf0f2] px-3.5 py-2.5 text-[13.5px] leading-normal text-[#6b2b39]">{m.text}</div>
+          <div key={i} className="max-w-[90%] rounded-[18px] rounded-bl-md border border-[#f1c9c9] bg-[#fdf0f2] px-3.5 py-2.5 text-[16px] leading-normal text-[#6b2b39]">{m.text}</div>
         ) : (
           <div key={i} className="grid max-w-[90%] gap-2"><Reply pieces={parseReply(m.text)} /></div>
         ))}
-        {busy && <div className="w-fit rounded-[18px] rounded-bl-md bg-soft px-4 py-3 text-[13px] text-muted">Asisten sedang menulis...</div>}
+        {busy && <div className="w-fit rounded-[18px] rounded-bl-md bg-soft px-4 py-3 text-[15.5px] text-muted">Asisten sedang menulis...</div>}
         <div ref={end} />
       </div>
 
@@ -144,7 +144,7 @@ export function AssistantScreen() {
         </button>
       </form>
       {messages.length > 0 && (
-        <button type="button" onClick={() => setMessages([])} className="mt-2 justify-self-center text-xs text-muted underline underline-offset-2">Hapus percakapan</button>
+        <button type="button" onClick={() => setMessages([])} className="mt-2 justify-self-center text-[14px] text-muted underline underline-offset-2">Hapus percakapan</button>
       )}
     </div>
   );
@@ -155,7 +155,7 @@ function Reply({ pieces }: { pieces: Piece[] }) {
   return (
     <>
       {pieces.map((p, i) => {
-        if (p.kind === "text") return <div key={i} className="rounded-[18px] rounded-bl-md bg-soft px-3.5 py-2.5 text-[14px] leading-normal whitespace-pre-wrap text-ink">{bold(p.text)}</div>;
+        if (p.kind === "text") return <div key={i} className="rounded-[18px] rounded-bl-md bg-soft px-3.5 py-2.5 text-[16.5px] leading-normal whitespace-pre-wrap text-ink">{bold(p.text)}</div>;
         if (p.kind === "practice") {
           const x = practiceById(p.id)!;
           return <Card key={i} href={ROUTES.employee.exercise(x.id)} title={x.title} meta={`Latihan · ${x.minutes} menit`} art={practiceArt(x)} />;
@@ -182,7 +182,7 @@ function Card({ href, title, meta, art }: { href: string; title: string; meta: s
   return (
     <Link href={href} className="grid grid-cols-[42px_1fr_auto] items-center gap-3 rounded-2xl border-[1.5px] border-line bg-white py-2 pr-3 pl-2 text-ink hover:border-app/50">
       <span className="size-[42px] rounded-xl" style={{ background: art }} />
-      <span className="min-w-0"><b className="block text-[13.5px] font-semibold">{title}</b><small className="text-[11.5px] text-muted">{meta}</small></span>
+      <span className="min-w-0"><b className="block text-[16px] font-semibold">{title}</b><small className="text-[14px] text-muted">{meta}</small></span>
       <Icon name="chevron" size={16} className="text-app" />
     </Link>
   );
@@ -241,13 +241,13 @@ function ActionCard({ action, id }: { action: Action; id: string }) {
   return (
     <div className="grid grid-cols-[42px_1fr] items-center gap-x-3 gap-y-2 rounded-2xl border-[1.5px] border-app/40 bg-white py-2 pr-2 pl-2 text-ink">
       <span className="size-[42px] rounded-xl" style={{ background: art }} />
-      <span className="min-w-0"><b className="block text-[13.5px] font-semibold">{title}</b><small className="text-[11.5px] text-muted">{meta}</small></span>
+      <span className="min-w-0"><b className="block text-[16px] font-semibold">{title}</b><small className="text-[14px] text-muted">{meta}</small></span>
       <div className="col-span-full">
-        {missing ? <small className="text-xs text-muted">Program ini tidak sedang berjalan.</small>
-          : done ? <span className="inline-flex items-center gap-1 text-[12.5px] font-semibold text-app"><Icon name="check" size={14} />{state === "done" ? ACTION_TEXT[action].done : "Sudah"}</span>
+        {missing ? <small className="text-[14px] text-muted">Program ini tidak sedang berjalan.</small>
+          : done ? <span className="inline-flex items-center gap-1 text-[15px] font-semibold text-app"><Icon name="check" size={14} />{state === "done" ? ACTION_TEXT[action].done : "Sudah"}</span>
           : (
             <button type="button" disabled={busy} onClick={run}
-              className={cn("w-full rounded-xl px-3 py-2 text-[13px] font-semibold disabled:opacity-50", action === "hentikan" ? "bg-[#fdf0f2] text-[#8a2b3d]" : "bg-app text-white")}>
+              className={cn("w-full rounded-xl px-3 py-2 text-[15.5px] font-semibold disabled:opacity-50", action === "hentikan" ? "bg-[#fdf0f2] text-[#8a2b3d]" : "bg-app text-white")}>
               {state === "confirm" ? "Ya, hentikan. Kemajuannya tidak bisa dilanjutkan" : ACTION_TEXT[action].label}
             </button>
           )}
@@ -258,7 +258,7 @@ function ActionCard({ action, id }: { action: Action; id: string }) {
 
 function Crisis() {
   return (
-    <div className="mt-3 grid gap-1 rounded-2xl bg-[#fdf0f2] px-3.5 py-3 text-[13px] leading-normal text-[#6b2b39]">
+    <div className="mt-3 grid gap-1 rounded-2xl bg-[#fdf0f2] px-3.5 py-3 text-[15.5px] leading-normal text-[#6b2b39]">
       <b>Kamu tidak sendirian. Hubungi bantuan sekarang.</b>
       <span>Healing119 Kemenkes: telepon <a href="tel:119" className="font-semibold underline">119</a> ekstensi 8. Keadaan darurat: <a href="tel:112" className="font-semibold underline">112</a>.</span>
       <Link href={ROUTES.employee.counseling} className="font-semibold underline underline-offset-2">Hubungi psikolog mitra</Link>

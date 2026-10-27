@@ -14,7 +14,7 @@ import { appButton, linkText } from "./ui";
  */
 export function Recommendation({ answers, className }: { answers: Record<string, number>; className?: string }) {
   const { programs } = useEmployee();
-  const box = cn("grid gap-1.5 rounded-[18px] px-3.5 py-3 text-left text-[13.5px] leading-normal", className);
+  const box = cn("grid gap-1.5 rounded-[18px] px-3.5 py-3 text-left text-[16px] leading-normal", className);
   const s = suggestionFromCheckin(answers);
 
   if (dangerSigns(answers)) {
@@ -23,7 +23,7 @@ export function Recommendation({ answers, className }: { answers: Record<string,
         <b>Beberapa jawabanmu minggu ini cukup berat</b>
         <span>Mulai dengan bercerita ke Asisten: ia akan membantu memahami hasilmu dan memilih latihan yang cocok. Bila ingin, psikolog mitra juga tersedia dan sesinya rahasia.</span>
         <Link href={ROUTES.employee.ask("Bantu aku memahami hasil check-in minggu ini")} className={appButton("primary", true)}>Bahas dengan Asisten</Link>
-        <span className="text-[12.5px]">Bila butuh bantuan sekarang: Healing119 di 119 ekstensi 8, atau 112 dalam keadaan darurat. <Link href={ROUTES.employee.counseling} className="font-bold underline underline-offset-2">Kontak psikolog</Link></span>
+        <span className="text-[15px]">Bila butuh bantuan sekarang: Healing119 di 119 ekstensi 8, atau 112 dalam keadaan darurat. <Link href={ROUTES.employee.counseling} className="font-bold underline underline-offset-2">Kontak psikolog</Link></span>
       </div>
     );
   }
