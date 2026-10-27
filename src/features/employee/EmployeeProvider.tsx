@@ -48,7 +48,7 @@ export function EmployeeProvider({ children }: { children: ReactNode }) {
     return () => { live = false; };
   }, []);
   if (error) return <AppLoadError message={error} />;
-  if (!data) return <div className="grid min-h-dvh place-items-center text-sm text-muted">Memuat...</div>;
+  if (!data) return <div className="grid min-h-dvh place-items-center text-[16px] text-muted">Memuat...</div>;
   return <EmployeeState data={data}>{children}</EmployeeState>;
 }
 

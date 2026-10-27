@@ -71,7 +71,7 @@ export function OverviewPage() {
         <Card title="Mood harian minggu ini" sub="Dari check-in mood harian di aplikasi karyawan">
           {mood === null ? <HiddenNote text={`Tampil setelah minimal ${m.MIN_GROUP} karyawan mencatat mood minggu ini`} /> : (
             <>
-              <div className="flex items-baseline gap-2.5"><b className="num text-[40px] font-bold text-head">{decimal(mood)}</b><span className="text-[13px] text-muted">rata-rata dari 5</span></div>
+              <div className="flex items-baseline gap-2.5"><b className="num text-[40px] font-bold text-head">{decimal(mood)}</b><span className="text-[15.5px] text-muted">rata-rata dari 5</span></div>
               <MoodBar pct={m.moodDist("all") ?? [0, 0, 0, 0, 0]} />
             </>
           )}
@@ -82,9 +82,9 @@ export function OverviewPage() {
         sub={<span className="block px-3.5 sm:px-5">Area yang paling perlu perhatian di tiap divisi, penyebab menurut karyawan, dan catatan HR terakhir</span>}
         action={<Link href={ROUTES.hr.divisions} className="mt-3.5 mr-3.5 inline-flex items-center gap-1 font-semibold whitespace-nowrap text-brand sm:mt-[18px] sm:mr-5">Semua divisi <Icon name="arrow" size={14} /></Link>}>
         <div className="overflow-x-auto">
-          <table className="w-full border-collapse">
+          <table className="w-full table-fixed border-collapse md:table-auto">
             <thead className="hidden md:table-header-group">
-              <tr className="border-y border-line bg-[#fafbfc] text-left text-xs text-muted">
+              <tr className="border-y border-line bg-[#fafbfc] text-left text-[14px] text-muted">
                 {["Divisi", "Wellbeing", "Fokus utama", "Penyebab teratas", "Catatan HR terakhir", ""].map((h) => <th key={h} className="px-4 py-3 font-semibold whitespace-nowrap">{h}</th>)}
               </tr>
             </thead>
@@ -104,7 +104,7 @@ export function OverviewPage() {
                         : <span className="text-muted">Tidak ada, semua area baik</span>}</td>
                       <td>{r.cause ? <>{r.cause.cause.label} <span className="num text-muted">{r.cause.pct}%</span></> : <span className="text-muted">-</span>}</td>
                       <td className="col-span-2">{r.last
-                        ? <><Tag tone={NOTE_TONE[r.last.type]}>{NOTE_LABEL[r.last.type]}</Tag><span className="mt-1 line-clamp-2 max-w-xs text-[12.5px] text-body">{r.last.text}</span></>
+                        ? <><Tag tone={NOTE_TONE[r.last.type]}>{NOTE_LABEL[r.last.type]}</Tag><span className="mt-1 line-clamp-2 max-w-xs text-[15px] text-body">{r.last.text}</span></>
                         : <span className="text-muted">Belum ada catatan</span>}</td>
                     </>
                   )}
@@ -125,7 +125,7 @@ export function OverviewPage() {
         <Card title="Area tertinggi di perusahaan" sub="Skor 0 sampai 100 = rata-rata seberapa sering dialami (50 = kadang-kadang, 75 = sering). Makin tinggi makin perlu perhatian. Perubahan dibanding 4 minggu lalu."
           action={<Link href={ROUTES.hr.areas} className="inline-flex items-center gap-1 font-semibold whitespace-nowrap text-brand">{AREA_COUNT} area <Icon name="arrow" size={14} /></Link>}>
           <CompareBars onSelect={(id) => router.push(ROUTES.hr.area(id))} items={top.map((x) => ({ id: x.area.id, label: x.area.name, color: groupOf(x.area.group).color, v: x.v }))} />
-          <ul className="flex flex-wrap gap-x-3.5 gap-y-1.5 text-[12.5px] text-muted">{top.map((x) => <li key={x.area.id}>{x.area.name} {x.d === null ? <span className="text-muted">baru diukur</span> : <Delta d={x.d} />}</li>)}</ul>
+          <ul className="flex flex-wrap gap-x-3.5 gap-y-1.5 text-[15px] text-muted">{top.map((x) => <li key={x.area.id}>{x.area.name} {x.d === null ? <span className="text-muted">baru diukur</span> : <Delta d={x.d} />}</li>)}</ul>
         </Card>
       </div>
 

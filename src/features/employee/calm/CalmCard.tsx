@@ -12,8 +12,8 @@ export function CalmCard({ className }: { className?: string }) {
         <Icon name="lotus" size={24} />
       </span>
       <span>
-        <b className="block text-[14px] font-semibold">Lagi cemas atau panik?</b>
-        <small className="mt-0.5 block text-[12px] text-white/85">Latihan napas terpandu, langsung mulai</small>
+        <b className="block text-[16.5px] font-semibold">Lagi cemas atau panik?</b>
+        <small className="mt-0.5 block text-[14.5px] text-white/85">Latihan napas terpandu, langsung mulai</small>
       </span>
       <Icon name="chevron" size={18} />
     </Link>

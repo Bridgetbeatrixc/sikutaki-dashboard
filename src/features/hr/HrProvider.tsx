@@ -36,7 +36,7 @@ export function HrProvider({ children }: { children: ReactNode }) {
     return () => { live = false; };
   }, []);
   if (error) return <AppLoadError message={error} />;
-  if (!dataset) return <div className="grid min-h-dvh place-items-center text-sm text-muted">Memuat dashboard...</div>;
+  if (!dataset) return <div className="grid min-h-dvh place-items-center text-[16px] text-muted">Memuat dashboard...</div>;
   return <HrState dataset={dataset} reload={() => setDataset(localDataset())}>{children}</HrState>;
 }
 

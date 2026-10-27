@@ -22,9 +22,9 @@ export function FocusCard({ team, focus, onIdea }: { team: string; focus: Focus;
     <article className="grid gap-3.5 rounded-card border border-l-4 border-line bg-white px-5 py-[18px]" style={{ borderLeftColor: group.color }}>
       <header className="flex flex-col items-start justify-between gap-[18px] sm:flex-row">
         <div>
-          <span className={cn("text-[11px] font-extrabold tracking-wider uppercase", REASON[focus.reason].cls)}>{REASON[focus.reason].label}</span>
+          <span className={cn("text-[13.5px] font-extrabold tracking-wider uppercase", REASON[focus.reason].cls)}>{REASON[focus.reason].label}</span>
           <h3 className="mt-1 mb-0.5 text-lg font-bold">{area.name}</h3>
-          <small className="block max-w-xl text-[12.5px] text-muted">{area.desc}</small>
+          <small className="block max-w-xl text-[15px] text-muted">{area.desc}</small>
         </div>
         <div className="flex shrink-0 items-center gap-2.5">
           <b className="num text-[32px] font-bold text-head">{focus.v}</b>
@@ -34,11 +34,11 @@ export function FocusCard({ team, focus, onIdea }: { team: string; focus: Focus;
       </header>
       <div className="grid gap-6 border-t border-line pt-3.5 xl:grid-cols-[1.3fr_1fr]">
         <div className="grid content-start gap-2">
-          <span className="text-xs font-bold tracking-wider text-muted uppercase">Penyebab menurut karyawan</span>
+          <span className="text-[14px] font-bold tracking-wider text-muted uppercase">Penyebab menurut karyawan</span>
           {shares.n < m.MIN_GROUP ? <HiddenNote text={`Tampil setelah minimal ${m.MIN_GROUP} orang menjawab pertanyaan lanjutan`} /> : (
             <ul className="grid gap-2.5">
               {shares.rows.slice(0, 4).map((row, i) => (
-                <li key={row.cause.id} className="grid grid-cols-[1fr_40px] items-center gap-x-2.5 gap-y-1 text-[13px] sm:grid-cols-[minmax(140px,220px)_1fr_40px]">
+                <li key={row.cause.id} className="grid grid-cols-[1fr_40px] items-center gap-x-2.5 gap-y-1 text-[15.5px] sm:grid-cols-[minmax(140px,220px)_1fr_40px]">
                   <span className={cn(i === 0 && "font-bold")}>{row.cause.label}</span>
                   <span className="col-span-2 row-start-2 h-2.5 overflow-hidden rounded-full bg-track sm:col-span-1 sm:row-start-auto">
                     <i className={cn("block h-full rounded-full", i === 0 ? "bg-brand" : "bg-[#9faab9]")} style={{ width: `${row.pct}%` }} />
@@ -48,15 +48,15 @@ export function FocusCard({ team, focus, onIdea }: { team: string; focus: Focus;
               ))}
             </ul>
           )}
-          <small className="text-xs text-muted">&ldquo;{shares.question}&rdquo; {shares.n >= m.MIN_GROUP ? `Dijawab ${shares.n} orang, boleh pilih lebih dari satu.` : "Ditanyakan ke karyawan yang skornya sedang atau tinggi."}</small>
+          <small className="text-[14px] text-muted">&ldquo;{shares.question}&rdquo; {shares.n >= m.MIN_GROUP ? `Dijawab ${shares.n} orang, boleh pilih lebih dari satu.` : "Ditanyakan ke karyawan yang skornya sedang atau tinggi."}</small>
         </div>
         <div className="grid content-start gap-2">
-          <span className="text-xs font-bold tracking-wider text-muted uppercase">Ide langkah</span>
+          <span className="text-[14px] font-bold tracking-wider text-muted uppercase">Ide langkah</span>
           <ul className="grid gap-2.5">
             {(shares.rows.length ? shares.rows.slice(0, 2) : causesFor(focus.area).slice(0, 2).map((id) => ({ cause: CAUSES[id], pct: 0 }))).map((row) => (
-              <li key={row.cause.id} className="grid gap-1 rounded-[10px] bg-[#f6f7fa] px-3 py-2.5 text-[13.5px]">
+              <li key={row.cause.id} className="grid gap-1 rounded-[10px] bg-[#f6f7fa] px-3 py-2.5 text-[16px]">
                 <span>{row.cause.idea}</span>
-                <button type="button" onClick={() => onIdea(row.cause.idea, focus.area)} className="justify-self-start text-[12.5px] font-semibold text-brand hover:underline">Jadikan catatan</button>
+                <button type="button" onClick={() => onIdea(row.cause.idea, focus.area)} className="justify-self-start text-[15px] font-semibold text-brand hover:underline">Jadikan catatan</button>
               </li>
             ))}
           </ul>

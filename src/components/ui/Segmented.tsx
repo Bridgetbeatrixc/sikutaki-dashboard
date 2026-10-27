@@ -8,7 +8,7 @@ export function Pills<T extends string>({ options, value, onChange, label }: {
     <div className="flex flex-wrap gap-1.5" role="radiogroup" aria-label={label}>
       {options.map((o) => (
         <button key={o.value} type="button" role="radio" aria-checked={value === o.value} onClick={() => onChange(o.value)}
-          className={cn("rounded-full border px-3 py-1 text-[12.5px] font-medium", value === o.value ? "border-brand bg-brand text-white" : "border-line bg-white")}>
+          className={cn("rounded-full border px-3 py-1 text-[15px] font-medium", value === o.value ? "border-brand bg-brand text-white" : "border-line bg-white")}>
           {o.label}
         </button>
       ))}

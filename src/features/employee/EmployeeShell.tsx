@@ -30,32 +30,32 @@ export function EmployeeShell({ children }: { children: ReactNode }) {
   const demo = !currentAccount();
 
   return (
-    <div className="min-h-dvh bg-white text-ink">
-      {demo && <div className="bg-ink px-4 py-2 text-center text-[13px] text-white print:hidden">Mode demo: datamu tersimpan di peramban ini saja. <Link href={ROUTES.join()} className="underline">Buat akun</Link></div>}
+    <div className="min-h-dvh bg-white text-[16px] text-ink">
+      {demo && <div className="bg-ink px-4 py-2 text-center text-[15.5px] text-white print:hidden">Mode demo: datamu tersimpan di peramban ini saja. <Link href={ROUTES.join()} className="underline">Buat akun</Link></div>}
 
       <header className={cn("sticky top-0 z-20 print:hidden border-b border-line bg-white/90 backdrop-blur md:border-0 md:bg-white/70", full && "hidden md:block")}>
         <div className="mx-auto flex h-14 max-w-[1200px] items-center gap-3 px-4 md:h-16 md:px-8">
           <div className="flex items-center gap-2">
             <Logo size={26} href={E.home} />
-            <span className="hidden text-[13px] font-medium whitespace-nowrap text-muted xl:inline">· {company.name}</span>
+            <span className="hidden text-[15.5px] font-medium whitespace-nowrap text-muted xl:inline">· {company.name}</span>
           </div>
           <nav aria-label="Menu aplikasi" className="ml-2 hidden items-center gap-0.5 md:flex lg:ml-6 lg:gap-1">
             {APP_NAV.map((item) => {
               const on = within(path, item.href);
               return (
                 <Link key={item.href} href={item.href} aria-current={on ? "page" : undefined}
-                  className={cn("inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-[14px] font-semibold whitespace-nowrap lg:px-3.5", on ? "bg-app text-white" : "text-[#4b5768] hover:bg-soft")}>
+                  className={cn("inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-[16.5px] font-semibold whitespace-nowrap lg:px-3.5", on ? "bg-app text-white" : "text-[#4b5768] hover:bg-soft")}>
                   <Icon name={item.icon} size={17} />{item.label}
                 </Link>
               );
             })}
           </nav>
           <div className="ml-auto flex items-center gap-2">
-            <Link href={E.calm} aria-label="Saat cemas" className="hidden items-center gap-1.5 rounded-full bg-[#fdf0f2] px-3 py-2 text-[13px] font-semibold whitespace-nowrap text-[#8a2b3d] md:inline-flex lg:px-3.5">
+            <Link href={E.calm} aria-label="Saat cemas" className="hidden items-center gap-1.5 rounded-full bg-[#fdf0f2] px-3 py-2 text-[15.5px] font-semibold whitespace-nowrap text-[#8a2b3d] md:inline-flex lg:px-3.5">
               <Icon name="heart" size={15} /><span className="hidden lg:inline">Saat cemas</span>
             </Link>
             <Link href={E.profile} aria-label="Profil dan akun" aria-current={path === E.profile ? "page" : undefined}
-              className={cn("grid size-9 place-items-center rounded-full bg-[linear-gradient(135deg,#cddaeb,#f1e6c8)] text-[15px] font-bold text-app-dark", path === E.profile && "ring-2 ring-app")}>
+              className={cn("grid size-9 place-items-center rounded-full bg-[linear-gradient(135deg,#cddaeb,#f1e6c8)] text-[17.5px] font-bold text-app-dark", path === E.profile && "ring-2 ring-app")}>
               {initial}
             </Link>
           </div>
@@ -75,7 +75,7 @@ export function EmployeeShell({ children }: { children: ReactNode }) {
       {!full && <BottomNav path={path} />}
 
       {toastMsg && (
-        <div role="status" className="print:hidden animate-fade-up fixed bottom-[calc(96px+env(safe-area-inset-bottom))] left-1/2 z-[70] flex max-w-[calc(100%-32px)] -translate-x-1/2 items-center gap-2 rounded-xl bg-ink px-4 py-[11px] text-sm text-white shadow-2xl md:bottom-8">
+        <div role="status" className="print:hidden animate-fade-up fixed bottom-[calc(96px+env(safe-area-inset-bottom))] left-1/2 z-[70] flex max-w-[calc(100%-32px)] -translate-x-1/2 items-center gap-2 rounded-xl bg-ink px-4 py-[11px] text-[16px] text-white shadow-2xl md:bottom-8">
           <Icon name="info" size={16} />{toastMsg}
         </div>
       )}
@@ -96,7 +96,7 @@ function BottomNav({ path }: { path: string }) {
             <span className={cn("grid h-[30px] w-11 place-items-center rounded-xl transition-colors", on && "bg-app text-white shadow-[0_6px_14px_rgba(8,87,214,.3)]")}>
               <Icon name={item.icon} size={22} />
             </span>
-            <span className="text-[11px] font-semibold">{item.label}</span>
+            <span className="text-[13.5px] font-semibold">{item.label}</span>
           </Link>
         );
       })}

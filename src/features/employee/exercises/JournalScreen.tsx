@@ -49,27 +49,27 @@ export function JournalScreen({ practice, session }: { practice: JournalPractice
 
   return (
     <PracticeFrame practice={practice} session={session}>
-      <p className="text-[14.5px] leading-relaxed text-body">{prompt.intro}</p>
+      <p className="text-[17px] leading-relaxed text-body">{prompt.intro}</p>
       <div className="grid gap-3">
         {prompt.fields.map((label, i) => (
-          <label key={label} className="grid gap-1.5 text-[13px] font-semibold text-body">
+          <label key={label} className="grid gap-1.5 text-[15.5px] font-semibold text-body">
             {label}
             <textarea rows={long ? 10 : 3} value={answers[i]} onChange={(e) => setAnswers(answers.map((a, j) => (j === i ? e.target.value : a)))}
-              className="w-full rounded-[14px] border-[1.5px] border-line bg-white px-3.5 py-3 text-[15px] font-normal text-ink focus:border-app focus:outline-none" />
+              className="w-full rounded-[14px] border-[1.5px] border-line bg-white px-3.5 py-3 text-[17.5px] font-normal text-ink focus:border-app focus:outline-none" />
           </label>
         ))}
       </div>
-      <p className="flex items-center gap-1.5 text-xs text-muted"><Icon name="lock" size={13} />Tersimpan hanya di perangkat ini. Tidak dikirim ke server dan tidak bisa dibaca HR.</p>
+      <p className="flex items-center gap-1.5 text-[14px] text-muted"><Icon name="lock" size={13} />Tersimpan hanya di perangkat ini. Tidak dikirim ke server dan tidak bisa dibaca HR.</p>
       <button type="button" disabled={!filled} className={appButton()} onClick={save}>Simpan dan selesai</button>
 
       {entries.filter((e) => e.day !== today).length > 0 && (
         <details className="rounded-2xl bg-soft p-3.5">
-          <summary className="cursor-pointer text-sm font-semibold text-ink">Tulisan sebelumnya di perangkat ini</summary>
+          <summary className="cursor-pointer text-[16px] font-semibold text-ink">Tulisan sebelumnya di perangkat ini</summary>
           <ul className="mt-2.5 grid gap-2.5">
             {entries.filter((e) => e.day !== today).map((e) => (
-              <li key={e.day} className="rounded-xl bg-white p-3 text-[13px] leading-normal text-body">
+              <li key={e.day} className="rounded-xl bg-white p-3 text-[15.5px] leading-normal text-body">
                 <div className="mb-1 flex justify-between"><b className="text-ink">{shortDate(e.day)}</b>
-                  <button type="button" className="text-xs text-muted underline" onClick={() => remove(e.day)}>Hapus</button></div>
+                  <button type="button" className="text-[14px] text-muted underline" onClick={() => remove(e.day)}>Hapus</button></div>
                 {e.answers.filter(Boolean).map((a, i) => <p key={i} className="whitespace-pre-wrap">{a}</p>)}
               </li>
             ))}

@@ -71,8 +71,8 @@ export function DivisionDetailPage({ id }: { id: string }) {
         <Kpi label="Jam tidur" value={sleep === null ? "-" : decimal(sleep)} unit={sleep === null ? undefined : " jam"} delta={sleep === null || prevSleep === null ? undefined : Math.round((sleep - prevSleep) * 10) / 10} goodWhenUp foot="dibanding 4 minggu lalu" />
       </KpiGrid>
 
-      <h2 className="mt-1.5 flex items-center gap-2 text-[17px] font-bold">
-        Fokus divisi ini <span className="rounded-full bg-[#edeff4] px-2.5 py-0.5 text-xs font-bold text-muted">{focus.length}</span>
+      <h2 className="mt-1.5 flex items-center gap-2 text-[19px] font-bold">
+        Fokus divisi ini <span className="rounded-full bg-[#edeff4] px-2.5 py-0.5 text-[14px] font-bold text-muted">{focus.length}</span>
       </h2>
       {focus.length === 0
         ? <Card><div className="flex items-center gap-2 py-3 font-semibold text-good"><Icon name="check" size={20} />Semua area di divisi ini berada di level baik.</div></Card>
@@ -91,7 +91,7 @@ export function DivisionDetailPage({ id }: { id: string }) {
         <div className="grid items-start gap-x-7 gap-y-[18px] xl:grid-cols-2">
           {GROUPS.map((g) => (
             <div key={g.id} className="grid content-start gap-1">
-              <span className="mt-1 text-xs font-bold tracking-wider uppercase" style={{ color: g.color }}>{g.name}</span>
+              <span className="mt-1 text-[14px] font-bold tracking-wider uppercase" style={{ color: g.color }}>{g.name}</span>
               <CompareBars onSelect={(aid) => router.push(ROUTES.hr.area(aid))}
                 items={AREAS.filter((a) => a.group === g.id).flatMap((a) => {
                   const v = m.areaValue(id, a.id);

@@ -30,7 +30,7 @@ export function InsightScreen() {
       </div>
       <Link href={ROUTES.employee.report} className="mt-5 flex items-center gap-3 rounded-[18px] border-[1.5px] border-line px-3.5 py-3 text-ink hover:bg-soft">
         <span className="grid size-10 place-items-center rounded-xl bg-mint text-app-dark"><Icon name="file" size={18} /></span>
-        <span className="flex-1"><b className="block text-[14px]">Laporan pribadi lengkap</b><small className="text-xs text-muted">Kondisimu, profil 42 area, rencana pribadi, dan perkembangan dari waktu ke waktu</small></span>
+        <span className="flex-1"><b className="block text-[16.5px]">Laporan pribadi lengkap</b><small className="text-[14px] text-muted">Kondisimu, profil 42 area, rencana pribadi, dan perkembangan dari waktu ke waktu</small></span>
         <Icon name="chevron" size={16} className="text-muted" />
       </Link>
     </Screen>
@@ -53,7 +53,7 @@ function SleepAndMood() {
     <section className="mt-1.5">
       <Section>Tidur dan mood minggu ini</Section>
       {good.length > 0 && low.length > 0 && (
-        <p className="mb-2 text-sm leading-normal text-body">
+        <p className="mb-2 text-[16px] leading-normal text-body">
           Di hari mood-mu baik, kamu tidur rata-rata <b>{hours(average(good))}</b>. Di hari yang berat, hanya <b>{hours(average(low))}</b>.
         </p>
       )}
@@ -64,30 +64,30 @@ function SleepAndMood() {
           if (d || slot === today) return null;
           return (
             <div key={slot} className="grid grid-rows-[auto_1fr_auto] justify-items-center gap-1" style={{ order: slots.indexOf(slot) }}>
-              <small className="text-[11px] text-muted">-</small>
+              <small className="text-[13.5px] text-muted">-</small>
               <div className="h-full w-full max-w-[30px] rounded-full bg-track" />
-              <small className="text-[11.5px] text-muted">{DAYS_SHORT[weekday(slot)]}</small>
+              <small className="text-[14px] text-muted">{DAYS_SHORT[weekday(slot)]}</small>
             </div>
           );
         })}
         {week.map((d) => (
           <div key={d.key} style={{ order: slots.indexOf(d.key) }} className="grid grid-rows-[auto_1fr_auto] justify-items-center gap-1">
-            <small className="num text-[11px] text-muted">{decimal(d.sleep)}</small>
+            <small className="num text-[13.5px] text-muted">{decimal(d.sleep)}</small>
             <div className="flex h-full w-full max-w-[30px] items-end overflow-hidden rounded-full bg-track">
               <div className="w-full rounded-full" style={{ height: `${(d.sleep / MAX_SLEEP) * 100}%`, background: MOOD_COLORS[d.mood - 1] }} />
             </div>
-            <small className={cn("text-[11.5px]", d.today ? "font-bold text-ink" : "text-muted")}>{d.day}</small>
+            <small className={cn("text-[14px]", d.today ? "font-bold text-ink" : "text-muted")}>{d.day}</small>
           </div>
         ))}
         {!saved && (
           <Link href={ROUTES.employee.home} aria-label="Catat hari ini di Beranda" style={{ order: 6 }} className="grid grid-rows-[auto_1fr_auto] justify-items-center gap-1">
-            <small className="text-[11px] text-muted">?</small>
+            <small className="text-[13.5px] text-muted">?</small>
             <div className="h-full w-full max-w-[30px] rounded-full bg-[repeating-linear-gradient(135deg,#eef0f3_0_6px,#e1e5ea_6px_12px)] outline-[1.5px] -outline-offset-[1.5px] outline-[#b9c1cc] outline-dashed" />
-            <small className="text-[11.5px] text-muted">{DAYS_SHORT[weekday(today)]}</small>
+            <small className="text-[14px] text-muted">{DAYS_SHORT[weekday(today)]}</small>
           </Link>
         )}
       </div>
-      <ul className="mt-2.5 flex flex-wrap gap-x-3 gap-y-1 text-[11.5px] text-muted">
+      <ul className="mt-2.5 flex flex-wrap gap-x-3 gap-y-1 text-[14px] text-muted">
         {MOODS.map((m, i) => (
           <li key={m.id} className="inline-flex items-center gap-[5px]">
             <i className="size-[9px] rounded-[3px]" style={{ background: MOOD_COLORS[i] }} />{m.label}
@@ -108,7 +108,7 @@ function CheckinResult() {
       <Section>Hasil check-in {shown?.label ?? "minggu ini"}</Section>
       {!week.answers && (
         <div className="mb-3 grid gap-1.5 rounded-2xl bg-soft p-3.5">
-          <p className="text-[13.5px] leading-normal text-body">Belum cukup data minggu ini. Isi check-in mingguan untuk melihat seberapa sering kamu mengalami stres, kelelahan, dan sulit tidur.</p>
+          <p className="text-[16px] leading-normal text-body">Belum cukup data minggu ini. Isi check-in mingguan untuk melihat seberapa sering kamu mengalami stres, kelelahan, dan sulit tidur.</p>
           {week.open && <Link href={ROUTES.employee.checkin} className={appButton("primary", true)}>Mulai check-in · 3 menit</Link>}
         </div>
       )}
@@ -127,9 +127,9 @@ function CheckinLevels({ answers, week }: { answers: Record<string, number>; wee
       <ul className="grid gap-2">
         {areas.map((a) => <AreaRow key={a} area={a} answer={answers[a] ?? 0} date={week} />)}
       </ul>
-      <Note>Ketuk area untuk melihat penjelasan dan langkah yang bisa dicoba. Ini gambaran dari jawabanmu, bukan diagnosis.</Note>
+      <Note>Setiap area disertai penjelasan dan langkah yang bisa dicoba. Ini gambaran dari jawabanmu, bukan diagnosis.</Note>
       {high.length > 0 && !dangerSigns(answers) && (
-        <div className="mt-3 grid gap-1 rounded-2xl border border-[#cfe0f7] bg-[#eef5ff] px-3.5 py-3 text-[13px] leading-normal text-body">
+        <div className="mt-3 grid gap-1 rounded-2xl border border-[#cfe0f7] bg-[#eef5ff] px-3.5 py-3 text-[15.5px] leading-normal text-body">
           <b className="text-ink">{listJoin(high.map((a) => areaById(a).name))} perlu perhatian minggu ini</b>
           <span>Asisten bisa membantumu memahami hasil ini, mencari tahu pemicunya, dan memilih latihan yang cocok.</span>
           <Link href={ROUTES.employee.ask("Bantu aku memahami hasil check-in minggu ini")} className={appButton("primary", true)}>Bahas hasilku dengan Asisten</Link>

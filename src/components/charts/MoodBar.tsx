@@ -11,7 +11,7 @@ export function MoodBar({ pct }: { pct: number[] }) {
       </div>
       <ul className="grid gap-[7px]">
         {MOODS.map((m, i) => (
-          <li key={m} className="grid grid-cols-[12px_1fr_auto] items-center gap-2 text-[13px]">
+          <li key={m} className="grid grid-cols-[12px_1fr_auto] items-center gap-2 text-[15.5px]">
             <i className="size-2.5 rounded-[3px]" style={{ background: MOOD_COLORS[i] }} />{m}<b className="num">{pct[i]}%</b>
           </li>
         ))}

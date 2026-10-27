@@ -10,7 +10,7 @@ type Variant = "primary" | "ghost";
 export function appButton(variant: Variant = "primary", small = false, className?: string) {
   return cn(
     "mt-2 grid w-full place-items-center font-semibold transition-colors disabled:opacity-50",
-    small ? "rounded-[13px] p-[11px] text-sm" : "rounded-2xl p-3.5 text-[15px]",
+    small ? "rounded-[13px] p-[11px] text-[16px]" : "rounded-2xl p-3.5 text-[17.5px]",
     variant === "primary" ? "bg-app text-white hover:bg-app-dark" : "bg-soft text-app-dark",
     className,
   );
@@ -24,30 +24,30 @@ export function Screen({ children, className }: { children: ReactNode; className
 }
 
 export function Title({ children, className }: { children: ReactNode; className?: string }) {
-  return <h1 className={cn("mt-2.5 mb-2 text-[26px] font-semibold text-ink", className)}>{children}</h1>;
+  return <h1 className={cn("mt-2.5 mb-2 text-[28px] font-semibold text-ink", className)}>{children}</h1>;
 }
 
 export function Section({ children }: { children: ReactNode }) {
-  return <h3 className="mt-5 mb-2.5 text-[15px] font-bold text-ink">{children}</h3>;
+  return <h3 className="mt-5 mb-2.5 text-[17.5px] font-bold text-ink">{children}</h3>;
 }
 
 export function Lead({ children, className }: { children: ReactNode; className?: string }) {
-  return <p className={cn("mb-1.5 text-sm leading-relaxed text-body", className)}>{children}</p>;
+  return <p className={cn("mb-1.5 text-[16px] leading-relaxed text-body", className)}>{children}</p>;
 }
 
 export function Note({ children }: { children: ReactNode }) {
-  return <small className="mt-2 block text-xs leading-snug text-muted">{children}</small>;
+  return <small className="mt-2 block text-[14px] leading-snug text-muted">{children}</small>;
 }
 
 /** Top bar of full-screen flows: a close button, a centered title and an optional right slot. */
 export function FlowBar({ closeHref, title, right }: { closeHref: string; title: string; right?: ReactNode }) {
   return (
-    <div className="grid grid-cols-[40px_1fr_40px] items-center text-center text-[15px] font-semibold">
+    <div className="grid grid-cols-[40px_1fr_40px] items-center text-center text-[17.5px] font-semibold">
       <Link href={closeHref} aria-label="Tutup" className="grid size-10 place-items-center rounded-full bg-soft text-ink">
         <Icon name="x" size={18} />
       </Link>
       <span>{title}</span>
-      <span className="text-[13px] font-normal text-muted">{right}</span>
+      <span className="text-[15.5px] font-normal text-muted">{right}</span>
     </div>
   );
 }
@@ -63,7 +63,7 @@ export function CheckCircle({ on }: { on: boolean }) {
 
 export function StartPill() {
   return (
-    <span className="inline-flex items-center gap-0.5 rounded-full bg-app py-1.5 pr-2 pl-3 text-[12.5px] font-bold text-white">
+    <span className="inline-flex items-center gap-0.5 rounded-full bg-app py-1.5 pr-2 pl-3 text-[15px] font-bold text-white">
       Mulai<Icon name="chevron" size={14} />
     </span>
   );
@@ -72,7 +72,7 @@ export function StartPill() {
 export function Chip({ on, onClick, children }: { on: boolean; onClick: () => void; children: string }) {
   return (
     <button type="button" onClick={onClick} aria-pressed={on}
-      className={cn("shrink-0 rounded-full px-3.5 py-[9px] text-[13px] font-medium", on ? "bg-app text-white" : "bg-soft text-body")}>
+      className={cn("shrink-0 rounded-full px-3.5 py-[9px] text-[15.5px] font-medium", on ? "bg-app text-white" : "bg-soft text-body")}>
       {children}
     </button>
   );

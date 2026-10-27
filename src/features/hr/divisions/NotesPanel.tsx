@@ -38,14 +38,14 @@ export function NotesPanel({ notes, draft, setDraft, onSave, onDelete }: {
             const change = m.noteChange(n);
             return (
               <li key={n.id} className="grid gap-1 border-t border-line py-3 first:border-t-0">
-                <div className="flex items-center gap-2 text-xs">
+                <div className="flex items-center gap-2 text-[14px]">
                   <Tag tone={NOTE_TONE[n.type]}>{NOTE_LABEL[n.type]}</Tag>
                   <span className="text-muted">{n.date} · {n.by}</span>
                   {m.live && <button type="button" onClick={() => onDelete(n.id)} aria-label="Hapus catatan" className="ml-auto text-muted hover:text-bad"><Icon name="trash" size={14} /></button>}
                 </div>
-                <p className="text-[13.5px] leading-normal">{n.text}</p>
+                <p className="text-[16px] leading-normal">{n.text}</p>
                 {change && n.area && (
-                  <small className="flex flex-wrap items-center gap-1.5 text-[12.5px] text-muted">
+                  <small className="flex flex-wrap items-center gap-1.5 text-[15px] text-muted">
                     {areaById(n.area).name} sejak catatan ini: <b className="num">{change.before}</b> ke <b className="num">{change.now}</b> <Delta d={change.now - change.before} />
                   </small>
                 )}

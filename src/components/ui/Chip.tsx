@@ -13,7 +13,7 @@ const STATUS_STYLE: Record<Status, { cls: string; icon: IconName }> = {
 export function StatusChip({ s, small = false }: { s: Status; small?: boolean }) {
   const st = STATUS_STYLE[s];
   return (
-    <span className={cn("inline-flex items-center gap-1 whitespace-nowrap rounded-full font-semibold", st.cls, small ? "py-0.5 pr-2 pl-1.5 text-[11.5px]" : "py-[3px] pr-2.5 pl-2 text-[12.5px]")}>
+    <span className={cn("inline-flex items-center gap-1 whitespace-nowrap rounded-full font-semibold", st.cls, small ? "py-0.5 pr-2 pl-1.5 text-[14px]" : "py-[3px] pr-2.5 pl-2 text-[15px]")}>
       <Icon name={st.icon} size={small ? 12 : 14} stroke={2.2} />
       {STATUS_LABEL[s]}
     </span>
@@ -31,7 +31,7 @@ const TONE: Record<Tone, string> = {
 };
 
 export function Tag({ tone = "neutral", children, className }: { tone?: Tone; children: ReactNode; className?: string }) {
-  return <span className={cn("inline-block whitespace-nowrap rounded-full px-2 py-0.5 text-[11.5px] font-semibold", TONE[tone], className)}>{children}</span>;
+  return <span className={cn("inline-block whitespace-nowrap rounded-full px-2 py-0.5 text-[14px] font-semibold", TONE[tone], className)}>{children}</span>;
 }
 
 /** Colored dot used next to an area name; the color is the area's group. */

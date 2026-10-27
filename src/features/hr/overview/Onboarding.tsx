@@ -32,7 +32,7 @@ export function Onboarding() {
             <ol className="grid">
               {steps.map((s, i) => (
                 <li key={s.t} className="grid grid-cols-[30px_1fr_auto] items-center gap-3 border-t border-line py-2.5 first:border-t-0">
-                  <span className={cn("inline-flex size-7 items-center justify-center rounded-full border-2 text-xs font-bold", s.done ? "border-brand-2 bg-brand-2 text-white" : "border-[#d2d2d7] bg-white text-muted")}>
+                  <span className={cn("inline-flex size-7 items-center justify-center rounded-full border-2 text-[14px] font-bold", s.done ? "border-brand-2 bg-brand-2 text-white" : "border-[#d2d2d7] bg-white text-muted")}>
                     {s.done ? <Icon name="check" size={14} stroke={2.6} /> : i + 1}
                   </span>
                   <div className="min-w-0"><b className={cn(s.done && "text-muted")}>{s.t}</b><small className="block text-muted">{s.d}</small></div>

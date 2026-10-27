@@ -39,10 +39,10 @@ export function SilenceScreen({ practice, session }: { practice: SilencePractice
       <div className="relative mx-auto mt-3 grid size-[230px] place-items-center rounded-full bg-[radial-gradient(circle_at_35%_30%,#fff,#d9dee7_60%,#eceae3)]">
         <div className="text-center">
           <b className="num block text-[34px] font-semibold text-ink">{clock(left ?? minutes * 60)}</b>
-          <small className="text-[13px] text-body">{ended ? "Waktu hening selesai" : left !== null ? "Hening" : "Siap"}</small>
+          <small className="text-[15.5px] text-body">{ended ? "Waktu hening selesai" : left !== null ? "Hening" : "Siap"}</small>
         </div>
       </div>
-      <p className="text-center text-sm leading-relaxed text-body">Gunakan waktu ini untuk berdoa, berzikir, bermeditasi, atau sekadar diam, sesuai keyakinanmu.</p>
+      <p className="text-center text-[16px] leading-relaxed text-body">Gunakan waktu ini untuk berdoa, berzikir, bermeditasi, atau sekadar diam, sesuai keyakinanmu.</p>
       {left === null && (
         <>
           <div className="flex justify-center gap-2">

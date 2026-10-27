@@ -59,12 +59,12 @@ export function ReportsPage() {
             <Button onClick={() => window.print()}><Icon name="download" size={16} />Simpan sebagai PDF</Button>
           </div>
         } /></div>
-      <div className="grid gap-6 rounded-[20px] border border-line bg-white p-4 shadow-lg shadow-ink/5 sm:p-7 print:border-0 print:p-0 print:shadow-none">
+      <div className="grid gap-6 rounded-[20px] border border-line bg-white p-4 shadow-lg shadow-ink/5 sm:p-7 print:block print:space-y-6 print:border-0 print:p-0 print:shadow-none">
         <div className="flex items-center justify-between gap-3 border-b-2 border-brand pb-3.5">
           <div>
             <small className="text-muted">Laporan kesehatan mental karyawan</small>
-            <h2 className="text-[22px] font-bold">{m.COMPANY.name} · {p.label}</h2>
-            <p className="mt-1 text-[12.5px] text-muted">
+            <h2 className="text-[24px] font-bold">{m.COMPANY.name} · {p.label}</h2>
+            <p className="mt-1 text-[15px] text-muted">
               Periode laporan: check-in {shortDate(first)} sampai {shortDate(last)} ({p.weeks.length} minggu).
               {p.prev ? ` Pembanding: ${p.prev.label} (check-in terakhir ${shortDate(m.WEEKS[p.prev.w].start)}).` : " Belum ada bulan pembanding."}
             </p>
@@ -73,7 +73,7 @@ export function ReportsPage() {
           <img src={asset("/logo.png")} alt="" width={36} height={36} />
         </div>
         <nav className="flex flex-wrap gap-1.5 print:hidden" aria-label="Isi laporan">
-          {PARTS.map((x, i) => <a key={x.id} href={`#${x.id}`} className="rounded-full bg-canvas px-3 py-1.5 text-[12px] font-semibold text-body hover:bg-mint hover:text-brand">{i + 1}. {x.title}</a>)}
+          {PARTS.map((x, i) => <a key={x.id} href={`#${x.id}`} className="rounded-full bg-canvas px-3 py-1.5 text-[14.5px] font-semibold text-body hover:bg-mint hover:text-brand">{i + 1}. {x.title}</a>)}
         </nav>
         <Executive m={m} p={p} />
         <AreaMap m={m} p={p} />
@@ -95,10 +95,10 @@ const PARTS = [
 function Part({ id, sub, children }: { id: string; sub?: string; children: ReactNode }) {
   const i = PARTS.findIndex((x) => x.id === id);
   return (
-    <Reveal as="section" className="grid gap-3.5">
+    <Reveal as="section" className="grid gap-3.5 print:block print:space-y-3.5">
       <header id={id} className="scroll-mt-24 border-b border-line pb-2">
-        <h2 className="text-[18px] font-bold"><span className="text-brand">{i + 1}.</span> {PARTS[i].title}</h2>
-        {sub && <p className="mt-0.5 text-[12.5px] text-muted">{sub}</p>}
+        <h2 className="text-[20px] font-bold"><span className="text-brand">{i + 1}.</span> {PARTS[i].title}</h2>
+        {sub && <p className="mt-0.5 text-[15px] text-muted">{sub}</p>}
       </header>
       {children}
     </Reveal>
@@ -108,7 +108,7 @@ function Part({ id, sub, children }: { id: string; sub?: string; children: React
 /** "Belum cukup data" with what to do about it; never a zero. */
 function NotEnough({ children, href, cta }: { children: ReactNode; href?: string; cta?: string }) {
   return (
-    <div className="grid gap-1.5 rounded-[12px] border border-dashed border-[#c9d6ea] bg-[#f8fafd] px-3 py-2.5 text-[12.5px] text-body">
+    <div className="grid gap-1.5 rounded-[12px] border border-dashed border-[#c9d6ea] bg-[#f8fafd] px-3 py-2.5 text-[15px] text-body">
       <span><b className="text-ink">Belum cukup data.</b> {children}</span>
       {href && cta && <Link href={href} className="w-fit font-semibold text-brand print:hidden">{cta} →</Link>}
     </div>
@@ -157,7 +157,7 @@ function Executive({ m, p }: { m: Model; p: Period }) {
       <div className="grid gap-4 lg:grid-cols-[auto_1fr]">
         <div className="grid justify-items-center gap-2 rounded-[16px] bg-canvas px-5 py-4">
           <ScoreRing value={wb} color={band ? STATUS_COLOR[band.status] : "#c3c8d0"} label="indeks wellbeing" />
-          {band ? <><StatusChip s={band.status} small /><b className="text-[13px]">{band.label}</b><small className="max-w-[210px] text-center text-[12px] leading-snug text-muted">{band.text}</small></>
+          {band ? <><StatusChip s={band.status} small /><b className="text-[15.5px]">{band.label}</b><small className="max-w-[210px] text-center text-[14.5px] leading-snug text-muted">{band.text}</small></>
             : <NotEnough href={ROUTES.hr.checkin} cta="Atur check-in">Indeks muncul setelah minimal {m.MIN_GROUP} orang mengisi check-in.</NotEnough>}
         </div>
         <div className="grid content-start gap-3">
@@ -169,14 +169,14 @@ function Executive({ m, p }: { m: Model; p: Period }) {
               foot={change ? change.label : "belum ada pembanding"} tone={change?.level === "bermakna" ? (wb! > prev! ? "good" : "bad") : undefined} />
             <Stat label="Kontak psikolog" value={contacts.n ?? "-"} foot={contacts.n === null ? "belum cukup data" : `${contacts.rate} per 100 karyawan`} />
           </div>
-          {change && <p className="rounded-[12px] bg-canvas px-3 py-2 text-[12.5px] text-body"><b>Arti perubahan:</b> {change.text}</p>}
+          {change && <p className="rounded-[12px] bg-canvas px-3 py-2 text-[15px] text-body"><b>Arti perubahan:</b> {change.text}</p>}
         </div>
       </div>
       <div className="grid gap-3.5 xl:grid-cols-2">
         <Card title="Tiga temuan utama" sub="Temuan dari data, belum penjelasan penyebabnya">
           <ol className="grid gap-2">
             {findings.slice(0, 3).map((f, i) => (
-              <li key={i} className="grid grid-cols-[24px_1fr] gap-2 text-[13px] leading-normal"><span className="grid size-6 place-items-center rounded-full bg-mint text-[12px] font-bold text-brand">{i + 1}</span><span>{f.text}</span></li>
+              <li key={i} className="grid grid-cols-[24px_1fr] gap-2 text-[15.5px] leading-normal"><span className="grid size-6 place-items-center rounded-full bg-mint text-[14.5px] font-bold text-brand">{i + 1}</span><span>{f.text}</span></li>
             ))}
             {findings.length === 0 && <NotEnough>Belum ada temuan yang menonjol bulan ini.</NotEnough>}
           </ol>
@@ -184,12 +184,12 @@ function Executive({ m, p }: { m: Model; p: Period }) {
         <Card title="Tiga prioritas tindakan" sub="Rincian, PIC, dan ukuran keberhasilan ada di bagian 3">
           <ol className="grid gap-2">
             {priorities(actions).map((x, i) => (
-              <li key={x.a.id} className="grid grid-cols-[24px_1fr] gap-2 text-[13px] leading-normal">
-                <span className="grid size-6 place-items-center rounded-full bg-[#fdf1dc] text-[12px] font-bold text-warn">{i + 1}</span>
+              <li key={x.a.id} className="grid grid-cols-[24px_1fr] gap-2 text-[15.5px] leading-normal">
+                <span className="grid size-6 place-items-center rounded-full bg-[#fdf1dc] text-[14.5px] font-bold text-warn">{i + 1}</span>
                 <span><b>{x.team.name}: {x.area.name}.</b> {x.idea}.</span>
               </li>
             ))}
-            {actions.length === 0 && <li className="text-[13px] text-muted">Tidak ada divisi dengan peringatan. Pertahankan program yang berjalan.</li>}
+            {actions.length === 0 && <li className="text-[15.5px] text-muted">Tidak ada divisi dengan peringatan. Pertahankan program yang berjalan.</li>}
           </ol>
         </Card>
       </div>
@@ -214,9 +214,9 @@ function priorities(actions: ReturnType<typeof topActions>) {
 function Stat({ label, value, unit, foot, tone }: { label: string; value: ReactNode; unit?: string; foot: string; tone?: "good" | "bad" }) {
   return (
     <div className="grid min-w-0 content-start gap-0.5 rounded-[14px] bg-canvas p-3">
-      <small className="text-xs text-muted">{label}</small>
-      <b className="num text-[24px] leading-tight text-head">{typeof value === "number" ? <CountUp value={value} /> : value}{unit && <small className="text-[13px] font-medium text-muted">{unit}</small>}</b>
-      <em className={cn("text-[11.5px] leading-snug not-italic", tone === "good" ? "font-semibold text-good" : tone === "bad" ? "font-semibold text-bad" : "text-muted")}>{foot}</em>
+      <small className="text-[14px] text-muted">{label}</small>
+      <b className="num text-[26px] leading-tight text-head">{typeof value === "number" ? <CountUp value={value} /> : value}{unit && <small className="text-[15.5px] font-medium text-muted">{unit}</small>}</b>
+      <em className={cn("text-[14px] leading-snug not-italic", tone === "good" ? "font-semibold text-good" : tone === "bad" ? "font-semibold text-bad" : "text-muted")}>{foot}</em>
     </div>
   );
 }
@@ -233,8 +233,8 @@ function BandScale({ value }: { value: number | null }) {
         })}
         {value !== null && <span className="absolute top-[-3px] h-[18px] w-[3px] rounded bg-ink transition-[left] duration-700" style={{ left: `calc(${value}% - 1.5px)` }} />}
       </div>
-      <div className="flex text-[10.5px] text-muted">
-        {bands.map((b, i) => <span key={b.label} style={{ width: `${(bands[i + 1]?.min ?? 100) - b.min}%` }} className="truncate">{b.label} {b.min}</span>)}
+      <div className="flex overflow-hidden text-[13px] text-muted">
+        {bands.map((b, i) => <span key={b.label} style={{ width: `${(bands[i + 1]?.min ?? 100) - b.min}%` }} className="min-w-0 truncate">{b.label} {b.min}</span>)}
       </div>
     </div>
   );
@@ -259,36 +259,32 @@ const heat = (v: number) => {
 function AreaMap({ m, p }: { m: Model; p: Period }) {
   const w = p.w;
   const teams = m.TEAMS;
-  const [open, setOpen] = useState<string | null>("mind");
   return (
     <Part id="peta" sub="Skor 0 sampai 100 = rata-rata seberapa sering dialami (makin tinggi makin perlu perhatian). Arah = perubahan dalam 4 minggu.">
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[12px] text-muted">
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[14.5px] text-muted">
         <span className="flex items-center gap-1.5"><i className="size-3 rounded" style={{ background: heat(35) }} />Baik (di bawah 52)</span>
         <span className="flex items-center gap-1.5"><i className="size-3 rounded" style={{ background: heat(56) }} />Waspada (52 sampai 61)</span>
         <span className="flex items-center gap-1.5"><i className="size-3 rounded" style={{ background: heat(70) }} />Perlu perhatian (62 ke atas)</span>
         <span className="flex items-center gap-1.5"><i className="bg-hatch size-3 rounded" />Disembunyikan, kurang dari {m.MIN_GROUP} orang</span>
         <span className="flex items-center gap-1.5"><i className="size-3 rounded border border-dashed border-[#b9c1cc]" />Belum cukup data</span>
       </div>
-      <div className="grid gap-2.5">
+      <div className="grid gap-2.5 print:block print:space-y-2.5">
         {GROUPS.map((g) => {
           const list = AREAS.filter((a) => a.group === g.id);
           const scored = list.map((a) => m.areaValue("all", a.id, w)).filter((v): v is number => v !== null);
           const worst = Math.max(0, ...scored);
-          const isOpen = open === g.id;
           return (
             <div key={g.id} className="overflow-hidden rounded-[14px] border border-line print:break-inside-avoid">
-              <button type="button" onClick={() => setOpen(isOpen ? null : g.id)} aria-expanded={isOpen}
-                className="flex w-full items-center justify-between gap-3 bg-[#fafbfc] px-3.5 py-2.5 text-left print:pointer-events-none">
+              <div className="flex w-full items-center justify-between gap-3 bg-[#fafbfc] px-3.5 py-2.5 text-left">
                 <span className="flex items-center gap-2 font-bold" style={{ color: g.color }}><Dot color={g.color} className="size-2.5" />{g.name}<small className="font-medium text-muted">{list.length} area</small></span>
                 <span className="flex items-center gap-2">
                   {scored.length ? <StatusChip s={areaStatus(worst)} small /> : <Tag>Belum cukup data</Tag>}
-                  <Icon name="chevron" size={14} className={cn("text-muted transition-transform print:hidden", isOpen ? "-rotate-90" : "rotate-90")} />
                 </span>
-              </button>
-              <div className={cn("overflow-x-auto", !isOpen && "hidden print:block")}>
-                <table className="w-full min-w-[760px] border-collapse text-[12.5px]">
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full min-w-[760px] border-collapse text-[15px] print:min-w-0 print:text-[11px]">
                   <thead>
-                    <tr className="text-left text-[11.5px] text-muted">
+                    <tr className="text-left text-[14px] text-muted">
                       <th className="px-3 py-2 font-semibold">Area</th>
                       <th className="px-2 py-2 font-semibold">Perusahaan</th>
                       <th className="px-2 py-2 font-semibold">Arah</th>
@@ -303,19 +299,19 @@ function AreaMap({ m, p }: { m: Model; p: Period }) {
                         <tr key={a.id} className="border-t border-line align-top">
                           <td className="px-3 py-2">
                             <Link href={ROUTES.hr.area(a.id)} className="font-semibold hover:text-brand">{a.name}</Link>
-                            <small className="block max-w-[260px] text-[11.5px] leading-snug text-muted">{a.desc}</small>
+                            <small className="block max-w-[260px] text-[14px] leading-snug text-muted">{a.desc}</small>
                           </td>
                           <td className="px-2 py-2">
-                            {v === null ? <span className="text-muted">Belum cukup data</span> : <><b className="num">{v}</b><small className="block text-[11px] leading-tight text-muted">{scoreMeaning(v)}</small></>}
+                            {v === null ? <span className="text-muted">Belum cukup data</span> : <><b className="num">{v}</b><small className="block text-[13.5px] leading-tight text-muted">{scoreMeaning(v)}</small></>}
                           </td>
-                          <td className="px-2 py-2 whitespace-nowrap">{d === null ? <span className="text-muted">-</span> : <><Delta d={d} /><small className="block text-[11px] text-muted">{ch!.label}</small></>}</td>
+                          <td className="px-2 py-2 whitespace-nowrap">{d === null ? <span className="text-muted">-</span> : <><Delta d={d} /><small className="block text-[13.5px] text-muted">{ch!.label}</small></>}</td>
                           {teams.map((t) => {
                             if (m.isHidden(t.id, w)) return <td key={t.id} className="p-0.5"><span className="bg-hatch block h-8 rounded-md" title="Kurang dari 5 orang" /></td>;
                             const tv = m.areaValue(t.id, a.id, w);
                             return (
                               <td key={t.id} className="p-0.5">
                                 {tv === null ? <span className="block h-8 rounded-md border border-dashed border-[#c9d0da]" title="Belum cukup data" />
-                                  : <span className="num grid h-8 place-items-center rounded-md text-[12px] font-semibold text-ink" style={{ background: heat(tv) }} title={`${t.name}: ${tv}`}>{tv}</span>}
+                                  : <span className="num grid h-8 place-items-center rounded-md text-[14.5px] font-semibold text-ink" style={{ background: heat(tv) }} title={`${t.name}: ${tv}`}>{tv}</span>}
                               </td>
                             );
                           })}
@@ -345,9 +341,9 @@ function Analysis({ m, p }: { m: Model; p: Period }) {
       <Card title="Prioritas perhatian per divisi" sub="Urut dari indeks wellbeing terendah">
         <ul className="grid gap-1.5">
           {ranked.map(({ t, hidden, st, wb, top }, i) => (
-            <li key={t.id} className="grid grid-cols-[110px_1fr_auto] items-center gap-3 text-[12.5px] sm:grid-cols-[150px_1fr_220px]">
+            <li key={t.id} className="grid grid-cols-[110px_1fr_auto] items-center gap-3 text-[15px] sm:grid-cols-[150px_1fr_220px]">
               <Link href={ROUTES.hr.division(t.id)} className="truncate font-semibold hover:text-brand">{t.name}</Link>
-              {hidden ? <span className="bg-hatch rounded-md px-2 py-1 text-[11.5px] text-muted">Disembunyikan, kurang dari {m.MIN_GROUP} orang</span>
+              {hidden ? <span className="bg-hatch rounded-md px-2 py-1 text-[14px] text-muted">Disembunyikan, kurang dari {m.MIN_GROUP} orang</span>
                 : wb === null ? <span className="text-muted">Belum cukup data</span>
                 : <span className="flex items-center gap-2"><GrowBar pct={wb} color={STATUS_COLOR[st]} className="flex-1" delay={i * 60} /><b className="num w-7 text-right">{wb}</b></span>}
               <span className="hidden truncate text-muted sm:block">{!hidden && top ? <>{top.area.name} <b className="num text-ink">{top.v}</b> <StatusChip s={areaStatus(top.v)} small /></> : ""}</span>
@@ -365,7 +361,7 @@ function Analysis({ m, p }: { m: Model; p: Period }) {
             return (
               <Reveal key={x.a.id} delay={i * 80} className="grid content-start gap-2 rounded-card border border-line bg-white p-3.5 sm:p-4">
                 <div className="flex items-start justify-between gap-2">
-                  <b className="text-[14.5px]"><Dot color={groupOf(x.area.group).color} className="mr-1.5" />{x.area.name} · {x.team.name}</b>
+                  <b className="text-[17px]"><Dot color={groupOf(x.area.group).color} className="mr-1.5" />{x.area.name} · {x.team.name}</b>
                   <StatusChip s={areaStatus(x.a.value)} small />
                 </div>
                 <PlanRow label="Temuan" tag={<Tag tone="info">Data</Tag>}>
@@ -381,7 +377,7 @@ function Analysis({ m, p }: { m: Model; p: Period }) {
                 <PlanRow label="Saran tindakan">
                   {x.top[0] ? CAUSES[x.top[0].cause.id].idea : "Bahas beban kerja dan waktu istirahat bersama lead divisi"}. Tawarkan latihan {practice?.title ?? "mandiri"} di aplikasi kepada karyawan divisi ini.
                 </PlanRow>
-                <dl className="grid grid-cols-3 gap-2 rounded-[12px] bg-canvas p-2.5 text-[12px]">
+                <dl className="grid grid-cols-3 gap-2 rounded-[12px] bg-canvas p-2.5 text-[14.5px]">
                   <div><dt className="text-muted">PIC</dt><dd className="font-semibold">HR dan {x.team.lead ? `lead ${x.team.name} (${x.team.lead})` : `lead ${x.team.name}`}</dd></div>
                   <div><dt className="text-muted">Waktu</dt><dd className="font-semibold">2 minggu berikutnya</dd></div>
                   <div><dt className="text-muted">Ukuran keberhasilan</dt><dd className="font-semibold">Tindakan selesai, partisipasi tetap 60%+, {x.area.name} turun ke {target} atau lebih rendah</dd></div>
@@ -398,8 +394,8 @@ function Analysis({ m, p }: { m: Model; p: Period }) {
 
 function PlanRow({ label, tag, children }: { label: string; tag?: ReactNode; children: ReactNode }) {
   return (
-    <div className="grid gap-0.5 text-[12.5px] leading-normal">
-      <span className="flex items-center gap-1.5 text-[11.5px] font-semibold tracking-wide text-muted uppercase">{label}{tag}</span>
+    <div className="grid gap-0.5 text-[15px] leading-normal">
+      <span className="flex items-center gap-1.5 text-[14px] font-semibold tracking-wide text-muted uppercase">{label}{tag}</span>
       <span className="text-body">{children}</span>
     </div>
   );
@@ -427,7 +423,7 @@ function Evaluation({ m, p }: { m: Model; p: Period }) {
                 const before = n.area ? m.areaValue(n.team, n.area, Math.max(0, n.week - 1)) : null, now = n.area ? m.areaValue(n.team, n.area, w) : null;
                 const d = before !== null && now !== null && n.week < w ? now - before : null;
                 return (
-                  <li key={n.id} className="grid gap-1 border-t border-line pt-2 text-[12.5px] first:border-t-0 first:pt-0">
+                  <li key={n.id} className="grid gap-1 border-t border-line pt-2 text-[15px] first:border-t-0 first:pt-0">
                     <span className="flex flex-wrap items-center gap-1.5"><Tag tone={NOTE_TONE[n.type]}>{NOTE_LABEL[n.type]}</Tag><b>{m.teamById(n.team)?.name}</b>{n.area && <span className="text-muted">· {areaById(n.area).name}</span>}<span className="text-muted">· {n.date}</span></span>
                     <span className="text-body">{n.text}</span>
                     {n.area && (d === null ? <small className="text-muted">Perubahan skor: belum cukup data sejak dicatat.</small>
@@ -446,7 +442,7 @@ function Evaluation({ m, p }: { m: Model; p: Period }) {
                 const enough = u.before !== null && u.after !== null && u.paired >= m.MIN_GROUP;
                 const d = enough ? u.after! - u.before! : null;
                 return (
-                  <li key={`${u.team}-${u.program}`} className="grid gap-1.5 text-[12.5px]">
+                  <li key={`${u.team}-${u.program}`} className="grid gap-1.5 text-[15px]">
                     <b>{prog?.title ?? u.program} · {team?.name}</b>
                     <Funnel label="Diajak" n={u.invited} of={u.invited} color="#b8c9e6" delay={i * 90} />
                     <Funnel label="Mulai" n={u.started} of={u.invited} color="#6f9be0" delay={i * 90 + 80} />
@@ -466,16 +462,16 @@ function Evaluation({ m, p }: { m: Model; p: Period }) {
             <div className="flex h-[120px] items-end gap-4 pt-2">
               {values.map((v, i) => (
                 <div key={months[i]} className="grid justify-items-center gap-1">
-                  <b className="num text-[12.5px]">{v}</b>
+                  <b className="num text-[15px]">{v}</b>
                   <span className="block w-[34px] origin-bottom animate-[rise_.7s_ease-out_both] rounded-t-md rounded-b-sm print:animate-none" style={{ height: `${(v / maxRef) * 64 + 4}px`, background: i === values.length - 1 ? "#0A66F5" : "#CFD8E3", animationDelay: `${i * 90}ms` }} />
-                  <em className="text-xs text-muted not-italic">{months[i]}</em>
+                  <em className="text-[14px] text-muted not-italic">{months[i]}</em>
                 </div>
               ))}
             </div>
           )}
         </Card>
         <Card title="Cara membaca kontak psikolog" sub="Bukan ukuran keberhasilan tunggal">
-          <ul className="grid list-disc gap-1.5 pl-[18px] text-[12.5px] leading-normal text-body">
+          <ul className="grid list-disc gap-1.5 pl-[18px] text-[15px] leading-normal text-body">
             {contacts.n !== null && <li>Bulan ini {contacts.n} kontak ({contacts.rate} per 100 karyawan){contacts.prev !== null ? `, bulan sebelumnya ${contacts.prev}` : ""}.</li>}
             <li>Kenaikan bisa berarti kondisi memburuk, tetapi juga bisa berarti karyawan makin tahu dan berani memakai layanan. Penurunan belum tentu berarti kondisi membaik.</li>
             <li>Baca bersama indeks wellbeing{wbNow !== null && wbPrev !== null ? ` (${wbPrev} → ${wbNow}, ${changeMeaning(wbNow - wbPrev).label.toLowerCase()})` : ""} dan partisipasi check-in: kontak naik saat wellbeing stabil lebih mungkin menandakan akses yang membaik.</li>
@@ -484,8 +480,8 @@ function Evaluation({ m, p }: { m: Model; p: Period }) {
         </Card>
       </div>
       <Card title="Prioritas periode berikutnya">
-        {next.length === 0 ? <p className="text-[13px] text-muted">Pertahankan program yang berjalan dan lakukan pengukuran ulang bulan depan.</p> : (
-          <ul className="grid list-disc gap-1.5 pl-[18px] text-[13px]">
+        {next.length === 0 ? <p className="text-[15.5px] text-muted">Pertahankan program yang berjalan dan lakukan pengukuran ulang bulan depan.</p> : (
+          <ul className="grid list-disc gap-1.5 pl-[18px] text-[15.5px]">
             {next.map((x) => <li key={x.a.id}>Ukur ulang {x.area.name} di {x.team.name} setelah tindakan berjalan 2 minggu, dan catat statusnya.</li>)}
             {m.TEAMS.some((t) => !m.isHidden(t.id, w) && m.part(t.id, w) < 60) && <li>Naikkan partisipasi check-in di divisi yang di bawah 60% agar skornya mewakili.</li>}
           </ul>
@@ -509,8 +505,8 @@ function Funnel({ label, n, of, color, delay }: { label: string; n: number; of: 
 
 function Basis({ m }: { m: Model }) {
   return (
-    <section className="grid gap-2 rounded-[14px] bg-canvas p-3.5 text-[12px] leading-normal text-body">
-      <b className="text-[13px] text-ink">Dasar interpretasi skor</b>
+    <section className="grid gap-2 rounded-[14px] bg-canvas p-3.5 text-[14.5px] leading-normal text-body">
+      <b className="text-[15.5px] text-ink">Dasar interpretasi skor</b>
       <ul className="grid list-disc gap-1 pl-[18px]">{SCORE_BASIS.map((t) => <li key={t}>{t}</li>)}</ul>
       <p>Kategori indeks: {WELLBEING_BANDS.map((b) => `${b.label} ${b.min}+`).join(", ")}. Status area: {STATUS_LABEL.baik} di bawah 52, {STATUS_LABEL.waspada} 52 sampai 61, {STATUS_LABEL.perhatian} 62 ke atas.</p>
       <p className="text-muted">Semua angka adalah agregat kelompok minimal {m.MIN_GROUP} orang. Data kosong ditampilkan sebagai &ldquo;belum cukup data&rdquo;, bukan nol. Skor area adalah sinyal skrining, bukan diagnosis.{!m.live && " Perusahaan dan angka di demo ini adalah contoh."}</p>

@@ -7,14 +7,14 @@ export function Kpi({ label, value, unit, delta, goodWhenUp, foot }: {
 }) {
   return (
     <div className="grid min-w-0 gap-1.5 rounded-card border border-line bg-white px-3.5 py-3 sm:px-[18px] sm:py-4">
-      <span className="text-[12.5px] font-medium text-muted">{label}</span>
+      <span className="text-[15px] font-medium text-muted">{label}</span>
       <div className="flex items-center gap-2.5">
         <b className="num text-2xl leading-tight font-bold tracking-tight text-head sm:text-[30px]">
-          {value}{unit && <small className="ml-px text-sm font-medium text-muted">{unit}</small>}
+          {value}{unit && <small className="ml-px text-[16px] font-medium text-muted">{unit}</small>}
         </b>
         {delta !== undefined && <Delta d={delta} goodWhenUp={goodWhenUp} />}
       </div>
-      {foot && <span className="text-xs text-muted">{foot}</span>}
+      {foot && <span className="text-[14px] text-muted">{foot}</span>}
     </div>
   );
 }

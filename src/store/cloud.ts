@@ -4,6 +4,7 @@ import { supabase } from "@/lib/supabase/client";
 import { DEMO_COOKIE, supabaseReady } from "@/lib/supabase/config";
 import { addDays, monthKey, today } from "@/lib/week";
 import type { CounselRequest } from "./counseling";
+import { seedDemoEmployee } from "./demo";
 import { loadEmployeeLocal, type EmployeeLocal } from "./employee";
 import { loadHr, type HrLocal } from "./hr";
 import { clearLocal, fail, KEYS, read, write, type Result } from "./local";
@@ -24,11 +25,16 @@ export const currentAccount = () => account;
 const cookieDemo = () => typeof document !== "undefined" && document.cookie.split("; ").includes(`${DEMO_COOKIE}=1`);
 export const clearDemo = () => { document.cookie = `${DEMO_COOKIE}=; Max-Age=0; path=/`; };
 
-/** The browser copy belongs to one account (or the demo); another one starts from a clean copy. */
+/** The browser copy belongs to one account (or the demo); another one starts from a clean copy. Says whether it did. */
 function claimLocal(owner: string) {
-  if (read<string | null>(KEYS.owner, null) !== owner) clearLocal();
+  const fresh = read<string | null>(KEYS.owner, null) !== owner;
+  if (fresh) clearLocal();
   write(KEYS.owner, owner);
+  return fresh;
 }
+
+// Bumped when the demo data changes, so browsers that opened an older demo get the new one.
+const DEMO_OWNER = "demo-lengkap";
 
 const base = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 export const go = (path: string) => window.location.assign(`${base}${path}`);
@@ -40,7 +46,7 @@ export const go = (path: string) => window.location.assign(`${base}${path}`);
 export async function startApp(want: Role): Promise<{ ready: boolean; error?: string }> {
   if (cookieDemo() || !supabaseReady) {
     account = null;
-    claimLocal("demo");
+    if (claimLocal(DEMO_OWNER)) seedDemoEmployee();
     return { ready: true };
   }
   const sb = supabase();

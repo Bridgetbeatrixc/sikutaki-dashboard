@@ -96,7 +96,7 @@ function OrganisationTab() {
               ) : (
                 <>
                   <span className="flex-1 font-medium">{t.name}</span>
-                  <span className="num text-[13px] text-muted">{t.size} orang</span>
+                  <span className="num text-[15.5px] text-muted">{t.size} orang</span>
                   {m.live && (
                     <>
                       <Button size="sm" variant="link" onClick={() => setEditing({ id: t.id, name: t.name })}>Ubah</Button>
@@ -139,12 +139,12 @@ function EmployeesTab() {
             <input type="email" required aria-label="Email karyawan" placeholder="email@perusahaan.com" className={cn(inputClass, "min-w-0 flex-1")} value={email} onChange={(e) => setEmail(e.target.value)} />
             <Button type="submit" disabled={pending}>Kirim email</Button>
           </form>
-          {sentTo && <p className="rounded-xl bg-mint p-3 text-[13px]">Bila {sentTo} terdaftar, tautan sudah dikirim ke email itu. Tautan hanya bisa dipakai sekali.</p>}
+          {sentTo && <p className="rounded-xl bg-mint p-3 text-[15.5px]">Bila {sentTo} terdaftar, tautan sudah dikirim ke email itu. Tautan hanya bisa dipakai sekali.</p>}
         </Card>
       </div>
       <Card title="Jumlah per divisi" sub="Hanya jumlah. Status per orang tidak ditampilkan.">
         <table className="w-full text-left">
-          <thead><tr className="text-xs text-muted"><th className="py-2 font-semibold">Divisi</th><th className="py-2 text-right font-semibold">Terdaftar</th></tr></thead>
+          <thead><tr className="text-[14px] text-muted"><th className="py-2 font-semibold">Divisi</th><th className="py-2 text-right font-semibold">Terdaftar</th></tr></thead>
           <tbody>{m.TEAMS.map((t) => <tr key={t.id} className="border-t border-line"><td className="py-2">{t.name}</td><td className="num py-2 text-right">{t.size}</td></tr>)}</tbody>
           <tfoot><tr className="border-t border-line font-bold"><td className="py-2">Total</td><td className="num py-2 text-right">{m.COMPANY.employees}</td></tr></tfoot>
         </table>
@@ -186,11 +186,11 @@ function EnergyCard() {
   const on = m.COMPANY.energySection;
   return (
     <Card title="Latihan Energi di aplikasi karyawan" sub="Suara mangkuk bernyanyi dan gong, merasakan energi tubuh, dan latihan prana mandiri.">
-      <p className="text-[13.5px] leading-normal text-body">
+      <p className="text-[16px] leading-normal text-body">
         Bila diizinkan, setiap karyawan tetap memilih sendiri untuk menyalakannya di profil. Setiap latihan diberi label: <i>{ENERGY_NOTE}</i>
       </p>
       <div className="flex flex-wrap items-center gap-3">
-        <span className={cn("rounded-full px-2.5 py-1 text-xs font-bold", on ? "bg-mint text-brand" : "bg-soft text-muted")}>{on ? "Diizinkan" : "Tidak ditampilkan"}</span>
+        <span className={cn("rounded-full px-2.5 py-1 text-[14px] font-bold", on ? "bg-mint text-brand" : "bg-soft text-muted")}>{on ? "Diizinkan" : "Tidak ditampilkan"}</span>
         <Button size="sm" variant="soft" disabled={pending}
           onClick={() => run(() => saveEnergySection(!on), on ? "Latihan Energi disembunyikan dari aplikasi karyawan" : "Latihan Energi diizinkan")}>
           {on ? "Sembunyikan untuk semua karyawan" : "Izinkan"}
@@ -238,7 +238,7 @@ function PartnersTab() {
           <div role="radiogroup" aria-label="Jenis mitra" className="grid grid-cols-2 gap-2">
             {([["psikolog", "Psikolog"], ["komplementer", "Praktisi komplementer"]] as const).map(([k, label]) => (
               <button key={k} type="button" role="radio" aria-checked={form.kind === k} onClick={() => setForm({ ...form, kind: k })}
-                className={cn("rounded-xl border-[1.5px] px-3 py-2.5 text-[13.5px] font-semibold", form.kind === k ? "border-brand bg-mint text-brand" : "border-line text-body")}>
+                className={cn("rounded-xl border-[1.5px] px-3 py-2.5 text-[16px] font-semibold", form.kind === k ? "border-brand bg-mint text-brand" : "border-line text-body")}>
                 {label}
               </button>
             ))}
@@ -261,11 +261,11 @@ function PartnersTab() {
                 <input required className={inputClass} value={form.credential} onChange={set("credential")} placeholder="Nomor sertifikat, lembaga, atau surat terdaftar" />
                 {form.practice && <small className="text-muted">Syarat: {practitionerType(form.practice)?.requirement}.</small>}
               </label>
-              <div className="grid gap-1.5 rounded-xl bg-soft p-3 text-[13px]">
+              <div className="grid gap-1.5 rounded-xl bg-soft p-3 text-[15.5px]">
                 <b>Kode etik praktisi</b>
                 <ul className="grid list-disc gap-0.5 pl-5 text-body">{PRACTITIONER_CODE.map((c) => <li key={c}>{c}</li>)}</ul>
               </div>
-              <label className="flex items-start gap-2 text-[13px] text-body">
+              <label className="flex items-start gap-2 text-[15.5px] text-body">
                 <input type="checkbox" className="mt-0.5 accent-brand" checked={form.confirmed} onChange={(e) => setForm({ ...form, confirmed: e.target.checked })} />
                 Saya sudah memeriksa kredensial ini dan praktisi menyetujui kode etik di atas.
               </label>
@@ -287,7 +287,7 @@ function PartnerRow({ p }: { p: Dataset["partners"][number] }) {
       <span className="inline-flex size-11 items-center justify-center rounded-xl bg-mint text-brand"><Icon name={p.kind === "psikolog" ? "chat" : "lotus"} size={18} /></span>
       <div className="min-w-0">
         <b>{p.name}</b>
-        {p.suspended && <span className="ml-2 rounded-full bg-bad-bg px-2 py-0.5 text-[11px] font-bold text-bad">Ditangguhkan</span>}
+        {p.suspended && <span className="ml-2 rounded-full bg-bad-bg px-2 py-0.5 text-[13.5px] font-bold text-bad">Ditangguhkan</span>}
         <small className="block truncate text-muted">{[type?.label, p.focus, p.schedule].filter(Boolean).join(" · ")}</small>
         {p.kind === "komplementer" && <small className="block truncate text-muted">Kredensial: {p.credential}{p.verifiedBy && `, diperiksa ${p.verifiedBy}`}</small>}
         {p.suspended && (

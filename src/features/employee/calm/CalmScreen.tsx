@@ -58,13 +58,13 @@ function Check({ onAgain }: { onAgain: () => void }) {
 
   return (
     <div className="grid content-start gap-3 animate-rise">
-      <h1 className="mt-4 text-[26px] font-semibold text-ink">Bagaimana rasanya sekarang?</h1>
+      <h1 className="mt-4 text-[28px] font-semibold text-ink">Bagaimana rasanya sekarang?</h1>
       <Lead>Tidak ada jawaban yang salah. Rasa cemas bisa turun pelan-pelan, tidak harus hilang sekaligus.</Lead>
       <div className="grid gap-2" role="radiogroup" aria-label="Perasaanmu sekarang">
         {FEELINGS.map((f) => (
           <button key={f.id} type="button" role="radio" aria-checked={feeling === f.id} onClick={() => setFeeling(f.id)}
             className={cn(
-              "rounded-2xl px-4 py-3.5 text-left text-[15px] font-semibold transition-colors",
+              "rounded-2xl px-4 py-3.5 text-left text-[17.5px] font-semibold transition-colors",
               feeling === f.id ? "bg-app text-white" : "bg-soft text-ink",
             )}>
             {f.label}
@@ -74,16 +74,16 @@ function Check({ onAgain }: { onAgain: () => void }) {
 
       {feeling === "better" && (
         <div className="mt-1 rounded-[18px] bg-white p-4 shadow-[0_6px_20px_rgba(10,102,245,.1)] animate-rise">
-          <b className="block text-[15px]">Kamu berhasil melewatinya.</b>
-          <p className="mt-1 text-[13.5px] leading-relaxed text-body">Ambil beberapa menit lagi sebelum kembali bekerja. Minum air dan regangkan bahu.</p>
+          <b className="block text-[17.5px]">Kamu berhasil melewatinya.</b>
+          <p className="mt-1 text-[16px] leading-relaxed text-body">Ambil beberapa menit lagi sebelum kembali bekerja. Minum air dan regangkan bahu.</p>
           <Link href={ROUTES.employee.home} className={appButton()}>Kembali ke Beranda</Link>
         </div>
       )}
 
       {feeling === "bit" && (
         <div className="mt-1 rounded-[18px] bg-white p-4 shadow-[0_6px_20px_rgba(10,102,245,.1)] animate-rise">
-          <b className="block text-[15px]">Itu sudah kemajuan.</b>
-          <p className="mt-1 text-[13.5px] leading-relaxed text-body">Satu sampai dua menit napas lagi biasanya membantu tubuh ikut tenang.</p>
+          <b className="block text-[17.5px]">Itu sudah kemajuan.</b>
+          <p className="mt-1 text-[16px] leading-relaxed text-body">Satu sampai dua menit napas lagi biasanya membantu tubuh ikut tenang.</p>
           <button type="button" className={appButton()} onClick={onAgain}>Ulangi latihan napas</button>
           <Link href={ROUTES.employee.home} className={appButton("ghost")}>Kembali ke Beranda</Link>
         </div>
@@ -91,15 +91,15 @@ function Check({ onAgain }: { onAgain: () => void }) {
 
       {feeling === "still" && (
         <div className="mt-1 rounded-[18px] bg-white p-4 shadow-[0_6px_20px_rgba(10,102,245,.1)] animate-rise">
-          <b className="block text-[15px]">Kamu tidak harus menghadapinya sendiri.</b>
-          <p className="mt-1 text-[13.5px] leading-relaxed text-body">
+          <b className="block text-[17.5px]">Kamu tidak harus menghadapinya sendiri.</b>
+          <p className="mt-1 text-[16px] leading-relaxed text-body">
             Bicara dengan seseorang sekarang bisa membantu. Healing119 adalah layanan dukungan psikologis Kemenkes: telepon 119, lalu tekan 8.
           </p>
           <a href="tel:119" className={appButton()}>
             <span className="inline-flex items-center gap-2"><Icon name="phone" size={17} />Telepon Healing119</span>
           </a>
           <Link href={ROUTES.employee.counseling} className={appButton("ghost")}>Pesan sesi psikolog</Link>
-          <button type="button" className={cn(linkText, "mt-3 block text-sm")} onClick={onAgain}>Atau ulangi latihan napas</button>
+          <button type="button" className={cn(linkText, "mt-3 block text-[16px]")} onClick={onAgain}>Atau ulangi latihan napas</button>
         </div>
       )}
     </div>
@@ -109,7 +109,7 @@ function Check({ onAgain }: { onAgain: () => void }) {
 /** Always on screen: where to get urgent help. Sikutaki is not a crisis or medical service. */
 function CrisisBar() {
   return (
-    <p className="rounded-2xl bg-white/80 px-3.5 py-2.5 text-[12px] leading-snug text-body shadow-[inset_0_0_0_1px_var(--color-line)]">
+    <p className="rounded-2xl bg-white/80 px-3.5 py-2.5 text-[14.5px] leading-snug text-body shadow-[inset_0_0_0_1px_var(--color-line)]">
       Nyeri dada atau sesak tak membaik? Telepon <a href="tel:112" className="font-semibold text-app-dark underline underline-offset-2">112</a>.
       {" "}Teman bicara: <a href="tel:119" className="font-semibold text-app-dark underline underline-offset-2">Healing119</a> (119, tekan 8).
       {" "}Latihan relaksasi, bukan pengganti perawatan medis.

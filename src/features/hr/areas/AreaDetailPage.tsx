@@ -64,8 +64,8 @@ export function AreaDetailPage({ id }: { id: string }) {
       <div className="grid items-start gap-[18px] xl:grid-cols-2">
         <div className="grid min-w-0 gap-[18px]">
           <Card title="Apa yang diukur">
-            <p className="text-[15px]">{area.desc}</p>
-            <div className="grid gap-1.5 rounded-[12px] bg-canvas px-3 py-2.5 text-[13px] leading-normal text-body">
+            <p className="text-[17.5px]">{area.desc}</p>
+            <div className="grid gap-1.5 rounded-[12px] bg-canvas px-3 py-2.5 text-[15.5px] leading-normal text-body">
               <span><b className="text-ink">Cara membaca skor.</b> Skor 0 sampai 100 adalah rata-rata seberapa sering penjawab mengalaminya: 0 tidak pernah, 25 jarang, 50 kadang-kadang, 75 sering, 100 hampir selalu. Skor tinggi selalu berarti lebih sering dialami dan perlu perhatian.</span>
               {v !== null && <span><b className="text-ink">Saat ini {v}:</b> {scoreMeaning(v)}.{d4 !== null && ` Dalam 4 minggu: ${changeMeaning(d4, m.respondents(scope)).text}`}</span>}
             </div>

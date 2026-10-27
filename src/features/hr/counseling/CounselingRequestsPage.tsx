@@ -49,13 +49,13 @@ export function CounselingRequestsPage() {
                 <li key={r.id}>
                   <button type="button" onClick={() => choose(r.id)} className={cn("grid w-full gap-1 px-4 py-3 text-left hover:bg-canvas", sel === r.id && "bg-mint")}>
                     <span className="flex items-center justify-between gap-2">
-                      <b className="text-[14px]">{r.name ?? `Tanpa nama · ${r.code}`}</b>
+                      <b className="text-[16.5px]">{r.name ?? `Tanpa nama · ${r.code}`}</b>
                       <span className="flex items-center gap-1.5">
                         {r.unreadHr && <i className="size-2 rounded-full bg-brand" aria-label="Pesan baru" />}
-                        <span className={cn("rounded-full px-2 py-0.5 text-[11.5px] font-semibold", STATUS_CLASS[r.status])}>{STATUS_LABEL[r.status]}</span>
+                        <span className={cn("rounded-full px-2 py-0.5 text-[14px] font-semibold", STATUS_CLASS[r.status])}>{STATUS_LABEL[r.status]}</span>
                       </span>
                     </span>
-                    <small className="text-xs text-muted">{team(r.teamId)} · {r.mode} · {r.times.join(", ")}{r.via === "asisten" && " · lewat Asisten AI"}</small>
+                    <small className="text-[14px] text-muted">{team(r.teamId)} · {r.mode} · {r.times.join(", ")}{r.via === "asisten" && " · lewat Asisten AI"}</small>
                   </button>
                 </li>
               ))}
@@ -93,14 +93,14 @@ function Detail({ r, team, partnerName, onChange, toast }: {
     <div className="grid gap-3.5">
       <Card title={r.name ?? `Tanpa nama · ${r.code}`} sub={`${team} · diajukan ${longDate(r.createdAt.slice(0, 10))}${r.via === "asisten" ? " lewat Asisten AI" : ""}`}
         action={active ? <Button variant="soft" size="sm" onClick={() => onChange(setStatus(r.id, "selesai", "hr"))}>Tandai selesai</Button> : undefined}>
-        <dl className="grid gap-x-6 gap-y-2 text-[13.5px] sm:grid-cols-2">
+        <dl className="grid gap-x-6 gap-y-2 text-[16px] sm:grid-cols-2">
           <div><dt className="text-muted">Psikolog yang diminta</dt><dd className="font-semibold">{partnerName}</dd></div>
           <div><dt className="text-muted">Cara bertemu</dt><dd className="font-semibold capitalize">{r.mode}</dd></div>
           <div><dt className="text-muted">Waktu yang cocok</dt><dd className="font-semibold">{r.times.join(", ")}</dd></div>
           <div><dt className="text-muted">Hari yang cocok</dt><dd className="font-semibold">{r.days || "Tidak diisi"}</dd></div>
         </dl>
         {r.schedule && r.status === "dijadwalkan" && (
-          <p className="flex items-center gap-2 rounded-[10px] bg-good-bg px-3 py-2 text-[13px] text-good">
+          <p className="flex items-center gap-2 rounded-[10px] bg-good-bg px-3 py-2 text-[15.5px] text-good">
             <Icon name="calendar" size={16} />Terjadwal {longDate(r.schedule.date)}, {r.schedule.time} · {r.schedule.place}
           </p>
         )}
@@ -108,10 +108,10 @@ function Detail({ r, team, partnerName, onChange, toast }: {
 
       <Card title="Percakapan" sub="Balas karyawan untuk menyepakati waktu">
         <ul className="grid max-h-72 gap-2 overflow-y-auto">
-          {r.messages.length === 0 && <li className="text-[13px] text-muted">Belum ada pesan.</li>}
+          {r.messages.length === 0 && <li className="text-[15.5px] text-muted">Belum ada pesan.</li>}
           {r.messages.map((msg, i) => (
-            <li key={i} className={cn("max-w-[80%] rounded-2xl px-3 py-2 text-[13.5px] leading-snug", msg.from === "hr" ? "justify-self-end bg-brand text-white" : "justify-self-start bg-canvas text-ink")}>
-              {msg.from === "karyawan" && <b className="block text-[11px] text-muted">Karyawan</b>}{msg.text}
+            <li key={i} className={cn("max-w-[80%] rounded-2xl px-3 py-2 text-[16px] leading-snug", msg.from === "hr" ? "justify-self-end bg-brand text-white" : "justify-self-start bg-canvas text-ink")}>
+              {msg.from === "karyawan" && <b className="block text-[13.5px] text-muted">Karyawan</b>}{msg.text}
             </li>
           ))}
         </ul>

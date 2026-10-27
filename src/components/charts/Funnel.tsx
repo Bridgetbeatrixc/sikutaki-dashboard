@@ -8,7 +8,7 @@ export function Funnel({ steps }: { steps: { label: string; v: number }[] }) {
           <span>{s.label}</span>
           <span className="block h-[26px] overflow-hidden rounded-lg bg-track"><span className="block h-full rounded-lg bg-[#2f6bd8]" style={{ width: `${(s.v / max) * 100}%` }} /></span>
           <b className="num text-right">{s.v}</b>
-          <em className="num text-xs text-muted not-italic">{i ? `${Math.round((s.v / steps[i - 1].v) * 100)}%` : ""}</em>
+          <em className="num text-[14px] text-muted not-italic">{i ? `${Math.round((s.v / steps[i - 1].v) * 100)}%` : ""}</em>
         </div>
       ))}
     </div>

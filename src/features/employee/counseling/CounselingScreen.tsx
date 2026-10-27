@@ -31,7 +31,7 @@ export function CounselingScreen() {
 
       <Section>Psikolog mitra</Section>
       {psych.length === 0 ? (
-        <div className="rounded-2xl bg-soft p-3.5 text-[13.5px] leading-normal text-body">
+        <div className="rounded-2xl bg-soft p-3.5 text-[16px] leading-normal text-body">
           Perusahaanmu belum menambahkan psikolog mitra. Untuk sekarang, kamu bisa memakai layanan gratis Healing119 dari Kemenkes di bawah.
         </div>
       ) : (
@@ -44,11 +44,11 @@ export function CounselingScreen() {
       {compl.length > 0 && (
         <section className="mt-2">
           <Section>Praktisi komplementer</Section>
-          <p className="-mt-1 mb-2.5 rounded-xl bg-[#fff7ec] px-3 py-2 text-[12.5px] leading-normal text-[#5b4520]">
+          <p className="-mt-1 mb-2.5 rounded-xl bg-[#fff7ec] px-3 py-2 text-[15px] leading-normal text-[#5b4520]">
             <b>Praktisi komplementer, bukan dokter atau psikolog.</b> Untuk relaksasi dan kebiasaan sehat. Bila kamu sedang menjalani perawatan medis atau psikologis, tetap lanjutkan.
           </p>
           <ul className="grid gap-2.5 md:grid-cols-2 xl:grid-cols-3">{compl.map((p) => <PartnerCard key={p.id} p={p} />)}</ul>
-          <details className="mt-2.5 rounded-2xl bg-soft p-3.5 text-[13px]">
+          <details className="mt-2.5 rounded-2xl bg-soft p-3.5 text-[15.5px]">
             <summary className="cursor-pointer font-semibold text-ink">Kode etik praktisi</summary>
             <ul className="mt-2 grid list-disc gap-0.5 pl-5 text-body">{PRACTITIONER_CODE.map((c) => <li key={c}>{c}</li>)}</ul>
             <p className="mt-2 text-muted">Bila praktisi melanggar, laporkan lewat tombol di kartunya. Praktisi langsung disembunyikan sampai HR meninjau. Namamu tidak ikut dikirim.</p>
@@ -61,7 +61,7 @@ export function CounselingScreen() {
 
 function CrisisBox({ className }: { className?: string }) {
   return (
-    <div className={cn("grid gap-1 rounded-2xl bg-[#fdf0f2] px-3.5 py-3 text-[13px] leading-normal text-[#6b2b39]", className)}>
+    <div className={cn("grid gap-1 rounded-2xl bg-[#fdf0f2] px-3.5 py-3 text-[15.5px] leading-normal text-[#6b2b39]", className)}>
       <b>Butuh bantuan sekarang?</b>
       <span>
         Layanan dukungan psikologis Kemenkes (Healing119): telepon 119 ekstensi 8 atau buka{" "}
@@ -81,8 +81,8 @@ function PartnerCard({ p }: { p: Partner }) {
       <div className="grid grid-cols-[44px_1fr] items-center gap-3">
         <span className="grid size-11 place-items-center rounded-full bg-white text-app"><Icon name={comp ? "lotus" : "chat"} size={20} /></span>
         <div className="min-w-0">
-          <b className="block text-[14.5px]">{p.name}</b>
-          <small className="mt-0.5 block text-xs text-muted">{sub}</small>
+          <b className="block text-[17px]">{p.name}</b>
+          <small className="mt-0.5 block text-[14px] text-muted">{sub}</small>
         </div>
       </div>
       {p.contact ? (
@@ -108,12 +108,12 @@ function Report({ partner }: { partner: Partner }) {
     if (await reportPartner(partner.id, reason)) toast("Laporan terkirim. Praktisi disembunyikan sampai HR meninjau.");
     setBusy(false);
   };
-  if (!open) return <button type="button" className="justify-self-start text-xs text-muted underline underline-offset-2" onClick={() => setOpen(true)}>Laporkan praktisi ini</button>;
+  if (!open) return <button type="button" className="justify-self-start text-[14px] text-muted underline underline-offset-2" onClick={() => setOpen(true)}>Laporkan praktisi ini</button>;
   return (
     <Choice title="Apa yang terjadi?" onCancel={() => setOpen(false)}>
       {REPORT_REASONS.map((r) => (
         <button key={r} type="button" disabled={busy} onClick={() => send(r)}
-          className="rounded-xl border-[1.5px] border-line bg-white px-3 py-2.5 text-left text-[13px] text-ink hover:border-app/50">{r}</button>
+          className="rounded-xl border-[1.5px] border-line bg-white px-3 py-2.5 text-left text-[15.5px] text-ink hover:border-app/50">{r}</button>
       ))}
     </Choice>
   );
@@ -122,10 +122,10 @@ function Report({ partner }: { partner: Partner }) {
 function Choice({ title, onCancel, children }: { title: string; onCancel: () => void; children: ReactNode }) {
   return (
     <div className="grid gap-2 rounded-2xl bg-white p-3">
-      <div className="flex items-center justify-between"><b className="text-[13px]">{title}</b>
+      <div className="flex items-center justify-between"><b className="text-[15.5px]">{title}</b>
         <button type="button" aria-label="Batal" className="text-muted" onClick={onCancel}><Icon name="x" size={16} /></button></div>
       {children}
-      <small className="text-[11.5px] text-muted">Namamu tidak dikirim bersama laporan.</small>
+      <small className="text-[14px] text-muted">Namamu tidak dikirim bersama laporan.</small>
     </div>
   );
 }
