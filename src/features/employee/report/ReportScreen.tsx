@@ -68,10 +68,16 @@ export function ReportScreen() {
         {PERIODS.map((p) => <Chip key={p} on={period === p} onClick={() => setPeriod(p)}>{`${p} hari`}</Chip>)}
       </div>
 
-      <Hero name={user.name} sub={`${company.name}${team ? ` · ${team}` : ""}`} ctx={ctx} checkinsCount={checkins.length} />
-      <p className="mt-3 text-[15px] leading-normal text-body">
-        Disusun dari catatan yang kamu isi sendiri. Hanya kamu yang melihatnya, kecuali kamu memilih membagikannya. Ini gambaran untuk memahami diri, bukan diagnosis.
-      </p>
+      <Hero name={user.name} sub={`${company.name}${team ? ` · ${team}` : ""}`} ctx={ctx} />
+      <aside className="mt-4 flex gap-2.5 rounded-2xl border border-[#f1d9a6] bg-warn-bg px-4 py-3.5 text-[15.5px] leading-normal text-body break-inside-avoid">
+        <Icon name="info" size={20} className="mt-0.5 shrink-0 text-[#8a5300]" />
+        <p>
+          <b className="text-ink">Penting dibaca.</b> Laporan ini disusun dari jawaban yang kamu isi sendiri dan hanya membantu kamu memahami kondisimu.
+          Laporan ini <b>bukan diagnosis</b> dan <b>tidak menggantikan pemeriksaan atau penilaian dari tenaga profesional</b>, seperti dokter, psikiater,
+          psikolog, atau terapis komplementer. Bila keluhan terasa berat, menetap, atau mengganggu kegiatan sehari-hari, konsultasikan dengan tenaga profesional.
+          Hanya kamu yang melihat laporan ini, kecuali kamu memilih membagikannya.
+        </p>
+      </aside>
       <nav className="mt-3 flex flex-wrap gap-1.5 print:hidden" aria-label="Isi laporan">
         {SECTIONS.map((s, i) => <a key={s.id} href={`#${s.id}`} className="rounded-full bg-soft px-3 py-1.5 text-[14.5px] font-semibold text-app-dark hover:bg-mint">{i + 1}. {s.title}</a>)}
       </nav>
@@ -143,7 +149,14 @@ function Empty({ children, href, cta }: { children: ReactNode; href?: string; ct
 
 /* ---------- Header ---------- */
 
-function Hero({ name, sub, ctx, checkinsCount }: { name: string; sub: string; ctx: Ctx; checkinsCount: number }) {
+/** When the report was made, in WIB: "Rabu, 28 Oktober 2026, pukul 16.52 WIB". */
+function madeAt() {
+  const t = new Date(Date.now() + 7 * 3600 * 1000);
+  const hm = `${String(t.getUTCHours()).padStart(2, "0")}.${String(t.getUTCMinutes()).padStart(2, "0")}`;
+  return `${longDate(t.toISOString().slice(0, 10))} ${t.getUTCFullYear()}, pukul ${hm} WIB`;
+}
+
+function Hero({ name, sub, ctx }: { name: string; sub: string; ctx: Ctx }) {
   const band = ctx.index === null ? null : wellbeingBand(ctx.index);
   return (
     <header className="relative mt-4 overflow-hidden rounded-[24px] bg-[linear-gradient(135deg,#0a4fc0,#0a66f5_55%,#3b8ef7)] px-5 py-5 text-white print:mt-0 print:rounded-xl md:px-7 md:py-6">
@@ -155,25 +168,12 @@ function Hero({ name, sub, ctx, checkinsCount }: { name: string; sub: string; ct
           <small className="text-[14px] font-semibold tracking-wide uppercase opacity-85">Laporan pribadi · Sikutaki</small>
           <h1 className="mt-1 text-[26px] leading-tight font-bold text-white">{name}</h1>
           <p className="mt-0.5 text-[15.5px] opacity-90">{sub}</p>
-          <p className="mt-2 text-[15.5px] opacity-90">{longDate(ctx.from)} sampai {longDate(ctx.today)} ({ctx.period} hari)</p>
+          <p className="mt-2 text-[15.5px] opacity-90">Dibuat {madeAt()}</p>
+          <p className="mt-0.5 text-[14px] opacity-80">Data {ctx.period} hari terakhir: {longDate(ctx.from)} sampai {longDate(ctx.today)}</p>
           {band && <p className="mt-2 inline-block rounded-full bg-white/18 px-3 py-1 text-[15px] font-semibold backdrop-blur">{band.label}: {band.text}</p>}
         </div>
       </div>
-      <div className="relative mt-5 grid grid-cols-3 gap-2">
-        <HeroStat value={ctx.days.length} label={`dari ${ctx.period} hari tercatat`} />
-        <HeroStat value={checkinsCount} label="check-in mingguan" />
-        <HeroStat value={ctx.practices} label="latihan selesai" />
-      </div>
     </header>
-  );
-}
-
-function HeroStat({ value, label }: { value: number; label: string }) {
-  return (
-    <div className="rounded-2xl bg-white/14 px-3 py-2.5 backdrop-blur-sm">
-      <b className="block text-[24px] leading-tight font-bold"><CountUp value={value} /></b>
-      <small className="text-[14px] leading-tight opacity-85">{label}</small>
-    </div>
   );
 }
 
