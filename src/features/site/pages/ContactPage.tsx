@@ -49,7 +49,7 @@ export function ContactPage() {
               <span className="inline-flex size-11 shrink-0 items-center justify-center rounded-[14px] bg-white text-bad"><Icon name="phone" size={22} /></span>
               <div className="grid gap-1">
                 <b className="text-[17px] font-semibold text-ink">Butuh bantuan segera?</b>
-                <p className="text-[15px] leading-relaxed text-body">Sikutaki bukan layanan krisis. Hubungi Healing119 di 119 ekstensi 8, atau 112 dalam keadaan darurat.</p>
+                <p className="text-[15px] leading-relaxed text-body">Teduh Jiwa bukan layanan krisis. Hubungi Healing119 di 119 ekstensi 8, atau 112 dalam keadaan darurat.</p>
               </div>
             </div>
           </div>

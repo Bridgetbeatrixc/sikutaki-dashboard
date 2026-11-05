@@ -106,7 +106,7 @@ export function AssistantScreen() {
 
       <p className="mt-3 flex gap-2 rounded-2xl bg-soft px-3.5 py-2.5 text-[14.5px] leading-normal text-body">
         <Icon name="info" size={15} className="mt-px shrink-0 text-app" />
-        <span>Pesanmu, beserta ringkasan mood, tidur, dan check-in minggu ini, dikirim lewat server Sikutaki ke Google Gemini untuk dijawab dan tidak disimpan. Jangan menulis nama lengkap atau data pribadi. Asisten bukan psikolog dan tidak mendiagnosis.</span>
+        <span>Pesanmu, beserta ringkasan mood, tidur, dan check-in minggu ini, dikirim lewat server Teduh Jiwa ke Google Gemini untuk dijawab dan tidak disimpan. Jangan menulis nama lengkap atau data pribadi. Asisten bukan psikolog dan tidak mendiagnosis.</span>
       </p>
       {crisisShown && <Crisis />}
 

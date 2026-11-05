@@ -22,7 +22,7 @@ export function Why() {
 
   return (
     <section id="kenapa" className={`${container} pt-[70px] pb-[30px] sm:pt-[110px] sm:pb-[60px]`}>
-      <SectionHead title="Kenapa Sikutaki?" />
+      <SectionHead title="Kenapa Teduh Jiwa?" />
       <div className="grid items-center gap-14 lg:grid-cols-2">
         <div className="relative grid min-h-[300px] place-items-center sm:min-h-[380px]">
           <div className="absolute top-1/2 left-1/2 size-[290px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle_at_40%_40%,#fff_0%,#e3efff_55%,#c9defd_100%)] sm:size-[380px]" />

@@ -21,7 +21,7 @@ const screenBg = "bg-[linear-gradient(180deg,#e4e9f4_0%,#f6f8fb_34%,#f6f8fb_100%
 
 /** Static picture of the employee app inside a phone frame. */
 export function PhoneMock({ screen = "home" }: { screen?: "home" | "checkin" }) {
-  const label = screen === "home" ? "Contoh tampilan aplikasi karyawan Sikutaki" : "Contoh layar check-in Sikutaki";
+  const label = screen === "home" ? "Contoh tampilan aplikasi karyawan Teduh Jiwa" : "Contoh layar check-in Teduh Jiwa";
   return (
     <div role="img" aria-label={label}
       className="relative w-[300px] rounded-[46px] bg-[#1d1d1f] p-[11px] text-left shadow-[0_40px_80px_rgba(0,0,0,.28),inset_0_0_0_2px_#3a3a3c]">

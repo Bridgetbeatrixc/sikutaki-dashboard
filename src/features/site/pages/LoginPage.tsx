@@ -21,7 +21,7 @@ const NOTICES: Record<LoginNotice, { tone: "good" | "bad"; text: string }> = {
 export function LoginPage({ next, notice }: { next?: string; notice?: LoginNotice }) {
   const [state, action, pending] = useActionState<FormState, FormData>(login, undefined);
   return (
-    <AuthCard title="Masuk ke Sikutaki" text="Untuk HR dan karyawan."
+    <AuthCard title="Masuk ke Teduh Jiwa" text="Untuk HR dan karyawan."
       photo={{ src: "/img/auth/masuk.jpg", alt: "Karyawan tersenyum saat bekerja dengan laptop" }}
       footer={
         <div className="grid gap-2">

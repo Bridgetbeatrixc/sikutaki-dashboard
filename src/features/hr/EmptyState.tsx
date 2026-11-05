@@ -12,7 +12,7 @@ export function EmptyState() {
       <span className="grid size-[60px] place-items-center rounded-[18px] bg-mint text-brand"><Icon name="calendar" size={26} /></span>
       <h1 className="text-2xl font-bold">Halaman ini muncul setelah check-in pertama</h1>
       <p className="leading-relaxed text-muted">
-        Sikutaki baru menampilkan angka bila minimal {m.MIN_GROUP} karyawan mengisi check-in dalam satu minggu. Saat ini {m.COMPANY.employees} karyawan sudah bergabung.
+        Teduh Jiwa baru menampilkan angka bila minimal {m.MIN_GROUP} karyawan mengisi check-in dalam satu minggu. Saat ini {m.COMPANY.employees} karyawan sudah bergabung.
       </p>
       <div className="mt-1.5 flex flex-wrap justify-center gap-2.5">
         <ButtonLink href={ROUTES.hr.root}>Lihat langkah awal</ButtonLink>

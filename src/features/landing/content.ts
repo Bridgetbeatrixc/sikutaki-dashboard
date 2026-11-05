@@ -68,4 +68,4 @@ export const STATS: { icon: IconName; value: string; text: string; source: numbe
   { icon: "chat", value: "2,6%", text: "remaja Indonesia dengan masalah kesehatan mental yang mengakses layanan", source: 2, halo: "bg-[radial-gradient(circle,#f4a26b_0_38%,#f9d3b8_39%_52%,#fdeee3_53%_100%)]" },
 ];
 
-export const DEMO_EMAIL = "halo@sikutaki.com";
+export const DEMO_EMAIL = "halo@teduhjiwa.id";

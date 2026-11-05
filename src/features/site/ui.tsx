@@ -6,7 +6,7 @@ import { container } from "@/features/landing/components/ui";
 
 /* Building blocks for the company pages: one hero, bands, cards and a closing call to action. */
 
-/** Blue rounded tile with a white icon, in the gradient of the Sikutaki logo. */
+/** Blue rounded tile with a white icon, in the gradient of the Teduh Jiwa logo. */
 export function GradientIcon({ name, size = "md", className }: { name: IconName; size?: "md" | "lg"; className?: string }) {
   return (
     <span className={cn("inline-flex shrink-0 items-center justify-center bg-[linear-gradient(145deg,#6cb8fa,var(--color-brand))] text-white shadow-[0_8px_20px_rgba(10,102,245,.25)]",

@@ -145,7 +145,7 @@ function companyWeek(w: number): WeekAgg {
 
 const NOTES: Note[] = [
   { id: "n1", team: "tech", week: 4, date: WEEKS[4].label, type: "dilakukan", area: "stres", text: "Uji coba jam kerja fleksibel 8 minggu, jam inti 10.00 sampai 15.00. Disepakati bersama lead divisi.", by: "Rina A." },
-  { id: "n2", team: "sales", week: 9, date: WEEKS[9].label, type: "dilakukan", area: "anxiety", text: "Kelas kelola stres 4 minggu di aplikasi Sikutaki dibuka untuk divisi ini. Sesi kelompok dengan psikolog setiap Rabu.", by: "Rina A." },
+  { id: "n2", team: "sales", week: 9, date: WEEKS[9].label, type: "dilakukan", area: "anxiety", text: "Kelas kelola stres 4 minggu di aplikasi Teduh Jiwa dibuka untuk divisi ini. Sesi kelompok dengan psikolog setiap Rabu.", by: "Rina A." },
   { id: "n3", team: "ops", week: 1, date: WEEKS[1].label, type: "dilakukan", area: "burnout", text: "Workshop pemulihan burnout 90 menit bersama psikolog.", by: "Rina A." },
   { id: "n4", team: "cs", week: 10, date: WEEKS[10].label, type: "pantau", area: "burnout", text: "Volume komplain naik sejak promo September. Pantau dua minggu lagi sebelum mengubah jadwal shift.", by: "Rina A." },
 ];

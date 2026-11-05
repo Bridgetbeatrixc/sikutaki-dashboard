@@ -57,7 +57,7 @@ export function SilenceScreen({ practice, session }: { practice: SilencePractice
           <button type="button" className={appButton()} onClick={finish}>Selesai</button>
         </div>
       )}
-      <Note>Lonceng lembut berbunyi saat mulai dan selesai. Sikutaki tidak mencatat agama atau keyakinanmu.</Note>
+      <Note>Lonceng lembut berbunyi saat mulai dan selesai. Teduh Jiwa tidak mencatat agama atau keyakinanmu.</Note>
     </PracticeFrame>
   );
 }

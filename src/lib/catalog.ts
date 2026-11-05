@@ -1,4 +1,4 @@
-// What Sikutaki measures: 42 areas in 7 groups, the weekly question rotation, the follow-up causes,
+// What Teduh Jiwa measures: 42 areas in 7 groups, the weekly question rotation, the follow-up causes,
 // status thresholds and HR note types. Shared by the HR dashboard, the employee app and the server.
 
 export type GroupId = "mood" | "mind" | "energy" | "self" | "habit" | "trait" | "clinical";
@@ -132,7 +132,7 @@ export const SCORE_BASIS = [
   "Skor area 0 sampai 100 adalah rata-rata frekuensi jawaban: 0 Tidak pernah, 25 Jarang, 50 Kadang-kadang, 75 Sering, 100 Hampir selalu. Makin tinggi makin perlu perhatian.",
   "Indeks wellbeing = 100 dikurangi rata-rata skor area (stres, burnout, dan tidur berbobot 3x karena ditanyakan setiap minggu). Makin tinggi makin baik. Cara mengubah skala ke 0 sampai 100 mengikuti WHO-5 Well-Being Index (Topp dkk., 2015, Psychotherapy and Psychosomatics 84:167-176).",
   "Perubahan 10 poin atau lebih dianggap bermakna, mengikuti ambang perubahan WHO-5 (Topp dkk., 2015) dan aturan setengah simpangan baku (Norman, Sloan & Wyrwich, 2003, Medical Care 41:582-592). Perubahan di bawah 5 poin dianggap naik-turun biasa.",
-  "Indeks Sikutaki belum divalidasi secara klinis seperti WHO-5. Pakai sebagai alat pantau tren, bukan diagnosis.",
+  "Indeks Teduh Jiwa belum divalidasi secara klinis seperti WHO-5. Pakai sebagai alat pantau tren, bukan diagnosis.",
 ];
 
 /* ---------- Weekly question rotation ---------- */

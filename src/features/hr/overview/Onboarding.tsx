@@ -24,7 +24,7 @@ export function Onboarding() {
   const n = steps.filter((s) => s.done).length;
   return (
     <>
-      <PageHeader title="Selamat datang di Sikutaki" sub={`${c.name} · belum ada hasil check-in`} />
+      <PageHeader title="Selamat datang di Teduh Jiwa" sub={`${c.name} · belum ada hasil check-in`} />
       <div className="grid items-start gap-[18px] xl:grid-cols-[1.6fr_1fr]">
         <div className="grid min-w-0 gap-[18px]">
           <Card title="Persiapan" sub={`${n} dari ${steps.length} langkah selesai`}>

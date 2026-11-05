@@ -6,15 +6,15 @@ import { Band, BandHead, CtaBand, FeatureCard, PageHero } from "../ui";
 
 const RULES = [
   { icon: "eye", title: "Jawaban pribadi tetap pribadi", text: "Catatan harian dan insight hanya terlihat oleh karyawan sendiri. Perusahaan tidak menerima jawaban per orang." },
-  { icon: "heart", title: "Bukan alat diagnosis", text: "Sikutaki adalah skrining dan pemantauan. Hasil yang perlu perhatian diarahkan ke psikolog, tidak diberi label penyakit." },
+  { icon: "heart", title: "Bukan alat diagnosis", text: "Teduh Jiwa adalah skrining dan pemantauan. Hasil yang perlu perhatian diarahkan ke psikolog, tidak diberi label penyakit." },
   { icon: "shield", title: "Data kesehatan dilindungi", text: "Data kesehatan termasuk data pribadi spesifik menurut UU No. 27 Tahun 2022 tentang Pelindungan Data Pribadi." },
-  { icon: "check", title: "Ikut serta secara sukarela", text: "Karyawan bisa berhenti kapan saja, dan data Sikutaki tidak boleh dipakai untuk menilai kinerja." },
+  { icon: "check", title: "Ikut serta secara sukarela", text: "Karyawan bisa berhenti kapan saja, dan data Teduh Jiwa tidak boleh dipakai untuk menilai kinerja." },
 ] as const;
 
 const WHO = [
   { who: "Karyawan", sees: "Mood harian, jam tidur, hasil check-in, dan insight pribadinya sendiri", not: "jawaban rekan kerja" },
   { who: "HR", sees: "Rata-rata per divisi untuk 42 area, mood, dan tidur, bila timnya minimal 5 orang", not: "jawaban atau nama per orang" },
-  { who: "Psikolog mitra", sees: "Hanya yang karyawan sampaikan sendiri saat menghubungi mereka", not: "data apa pun dari Sikutaki" },
+  { who: "Psikolog mitra", sees: "Hanya yang karyawan sampaikan sendiri saat menghubungi mereka", not: "data apa pun dari Teduh Jiwa" },
 ];
 
 const NOW = [
@@ -120,7 +120,7 @@ export function SecurityPage() {
             <h2 className="text-[28px] font-semibold">Butuh bantuan sekarang?</h2>
             <p className="text-[17px] leading-relaxed text-body">
               Hubungi layanan dukungan psikologis Kemenkes, Healing119, di telepon <b className="font-semibold text-ink">119 ekstensi 8</b>.
-              Dalam keadaan darurat, hubungi <b className="font-semibold text-ink">112</b>. Sikutaki tidak menggantikan layanan krisis.
+              Dalam keadaan darurat, hubungi <b className="font-semibold text-ink">112</b>. Teduh Jiwa tidak menggantikan layanan krisis.
             </p>
             <Link href={ROUTES.privacy} className="inline-flex items-center gap-1 justify-self-start text-[15px] font-medium text-brand hover:underline">
               Baca kebijakan privasi <Icon name="chevron" size={15} />

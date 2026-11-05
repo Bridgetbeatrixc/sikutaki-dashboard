@@ -16,7 +16,7 @@ const PRIVACY: Section[] = [
   { title: "Siapa yang bisa melihat apa", body: [
     "Karyawan melihat catatan dan insight pribadinya sendiri.",
     "HR hanya melihat rata-rata divisi yang berisi minimal 5 orang. Jawaban perorangan tidak pernah ditampilkan ke perusahaan.",
-    "Sikutaki tidak mengirim data apa pun ke psikolog mitra. Karyawan menghubungi mitra sendiri, dan HR hanya melihat jumlah karyawan yang menghubungi mitra per bulan.",
+    "Teduh Jiwa tidak mengirim data apa pun ke psikolog mitra. Karyawan menghubungi mitra sendiri, dan HR hanya melihat jumlah karyawan yang menghubungi mitra per bulan.",
   ] },
   { title: "Dasar hukum", body: [
     "Data kesehatan diperlakukan sebagai data pribadi spesifik sesuai UU No. 27 Tahun 2022 tentang Pelindungan Data Pribadi, dan hanya diproses dengan persetujuan karyawan.",
@@ -33,13 +33,13 @@ const PRIVACY: Section[] = [
 
 const TERMS: Section[] = [
   { title: "Tentang layanan", body: [
-    "Sikutaki adalah alat skrining dan pemantauan kesehatan mental untuk tim. Sikutaki bukan alat diagnosis medis dan tidak menggantikan psikolog, psikiater, atau layanan darurat.",
+    "Teduh Jiwa adalah alat skrining dan pemantauan kesehatan mental untuk tim. Teduh Jiwa bukan alat diagnosis medis dan tidak menggantikan psikolog, psikiater, atau layanan darurat.",
   ] },
   { title: "Akun perusahaan", body: [
     "Perusahaan bertanggung jawab atas akun HR dan undangan ke karyawan. Karyawan ikut serta secara sukarela dan bisa berhenti kapan saja.",
   ] },
   { title: "Penggunaan yang tidak diizinkan", body: [
-    "Data Sikutaki tidak boleh dipakai untuk menilai kinerja, menentukan promosi, atau mengambil keputusan tentang karyawan tertentu.",
+    "Data Teduh Jiwa tidak boleh dipakai untuk menilai kinerja, menentukan promosi, atau mengambil keputusan tentang karyawan tertentu.",
   ] },
   { title: "Keadaan darurat", body: [
     "Jika Anda atau orang lain dalam bahaya, hubungi 112. Untuk dukungan psikologis, hubungi Healing119 di 119 ekstensi 8.",

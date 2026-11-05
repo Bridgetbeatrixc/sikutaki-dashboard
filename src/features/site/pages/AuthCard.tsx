@@ -18,7 +18,7 @@ export function AuthCard({ title, text, photo, children, footer }: { title: stri
         <img src={asset(photo.src)} alt={photo.alt} className="absolute inset-0 size-full object-cover object-[50%_35%]" />
         <div aria-hidden className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,72,194,.10)_0%,rgba(8,72,194,0)_30%,rgba(8,60,170,.55)_58%,rgba(6,48,140,.92)_100%)]" />
         <Link href={ROUTES.home} className="relative inline-flex items-center gap-2.5 self-start rounded-full bg-white py-1.5 pr-4 pl-2 text-[17px] font-semibold tracking-[-0.02em] text-ink shadow-[0_8px_24px_rgba(0,0,0,.12)]">
-          <img src={asset("/logo.png")} alt="" width={28} height={28} />Sikutaki
+          <img src={asset("/logo.png")} alt="" width={28} height={28} />Teduh Jiwa
         </Link>
         <div className="relative mt-auto grid max-w-[460px] gap-6">
           <h2 className="text-[40px] leading-[1.05] font-semibold tracking-[-0.035em] text-white xl:text-[44px]">Kesehatan mental tim, terukur setiap minggu.</h2>
@@ -29,7 +29,7 @@ export function AuthCard({ title, text, photo, children, footer }: { title: stri
               </li>
             ))}
           </ul>
-          <p className="text-[13px] text-white/70">Sikutaki bukan layanan krisis. Dalam keadaan darurat, hubungi 112.</p>
+          <p className="text-[13px] text-white/70">Teduh Jiwa bukan layanan krisis. Dalam keadaan darurat, hubungi 112.</p>
         </div>
       </aside>
 

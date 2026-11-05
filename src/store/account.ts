@@ -24,7 +24,7 @@ function authError(message: string): string {
   const m = message.toLowerCase();
   if (m.includes("fetch") || m.includes("network")) return OFFLINE;
   if (m.includes("invalid login credentials")) return "Email atau kata sandi salah.";
-  if (m.includes("email not confirmed")) return "Email belum dikonfirmasi. Buka tautan di email dari Sikutaki dulu.";
+  if (m.includes("email not confirmed")) return "Email belum dikonfirmasi. Buka tautan di email dari Teduh Jiwa dulu.";
   if (m.includes("already registered") || m.includes("already been registered")) return "Email ini sudah terdaftar. Silakan masuk.";
   if (m.includes("password")) return `Kata sandi belum memenuhi syarat: ${message}`;
   if (m.includes("rate limit")) return "Terlalu banyak percobaan. Tunggu beberapa menit lalu coba lagi.";
