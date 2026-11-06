@@ -8,8 +8,6 @@ import { field, fieldInput, fieldLabel, submitButton } from "../form";
 import { Notice } from "../ui";
 import { AuthCard } from "./AuthCard";
 
-const secondary = "inline-flex min-h-11 w-full items-center justify-center rounded-full border border-[#d2d2d7] px-5 text-[15px] font-medium text-ink transition-colors hover:border-brand hover:text-brand";
-
 export type LoginNotice = "sandi" | "kedaluwarsa" | "hapus";
 const NOTICES: Record<LoginNotice, { tone: "good" | "bad"; text: string }> = {
   sandi: { tone: "good", text: "Kata sandi sudah diganti. Silakan masuk dengan kata sandi baru." },
@@ -30,7 +28,7 @@ export function LoginPage({ next, notice }: { next?: string; notice?: LoginNotic
         </div>
       }>
       {notice && <Notice tone={NOTICES[notice].tone}>{NOTICES[notice].text}</Notice>}
-      {!supabaseReady && <Notice>Server belum terhubung ke Supabase, jadi masuk dengan akun belum bisa dipakai. Mode demo di bawah tetap bisa dicoba.</Notice>}
+      {!supabaseReady && <Notice>Server belum terhubung ke Supabase, jadi masuk dengan akun belum bisa dipakai.</Notice>}
       <form action={action} className="grid gap-5">
         {next && <input type="hidden" name="lanjut" value={next} />}
         <label className={field}><span className={fieldLabel}>Email</span>
@@ -46,14 +44,6 @@ export function LoginPage({ next, notice }: { next?: string; notice?: LoginNotic
         {state?.error && <Notice tone="bad">{state.error}</Notice>}
         <button type="submit" disabled={pending} className={submitButton}>{pending ? "Memeriksa..." : "Masuk"}</button>
       </form>
-      <div className="grid gap-2.5 rounded-[20px] bg-canvas p-4">
-        <b className="text-[15px] font-semibold">Ingin melihat dulu?</b>
-        <span className="text-[13.5px] text-muted">Mode demo memakai perusahaan contoh. Isianmu tersimpan di peramban ini saja, tidak dikirim ke server.</span>
-        <div className="grid gap-2 sm:grid-cols-2">
-          <Link href={ROUTES.demo.hr} className={secondary}>Demo dashboard HR</Link>
-          <Link href={ROUTES.demo.employee} className={secondary}>Demo aplikasi karyawan</Link>
-        </div>
-      </div>
     </AuthCard>
   );
 }
