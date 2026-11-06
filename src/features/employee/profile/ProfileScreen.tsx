@@ -10,6 +10,7 @@ import { deleteAccount } from "@/store/employee-actions";
 import { ROUTES } from "@/lib/paths";
 import { appButton, Lead, Note, Screen, Section, Title } from "../components/ui";
 import { useEmployee } from "../EmployeeProvider";
+import { PoweredBy } from "@/components/PoweredBy";
 
 const input = "w-full rounded-[14px] border-[1.5px] border-line bg-white px-3.5 py-3 text-[17.5px] text-ink focus:border-app focus:outline-none";
 const label = "grid gap-1.5 text-[15.5px] font-semibold text-body";
@@ -112,6 +113,7 @@ function EnergySetting() {
           <i className={cn("absolute top-1 size-5 rounded-full bg-white transition-[left]", energy.optIn ? "left-6" : "left-1")} />
         </button>
       </div>
+      <PoweredBy className="mt-4 text-center" />
     </>
   );
 }

@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { Logo } from "@/components/Logo";
 import { Icon } from "@/components/ui/Icon";
 import { asset, ROUTES } from "@/lib/paths";
+import { PoweredBy } from "@/components/PoweredBy";
 
 const POINTS = ["Check-in 3 menit setiap minggu", "Dashboard anonim, minimal 5 orang per tim", "Rujukan rahasia ke psikolog mitra"];
 
@@ -53,6 +54,7 @@ export function AuthCard({ title, text, photo, children, footer }: { title: stri
             </div>
             {children}
             <div className="border-t border-line pt-6 text-[15px] text-muted">{footer}</div>
+            <PoweredBy className="text-center" />
           </div>
         </main>
       </div>
