@@ -31,7 +31,7 @@ export function HrShell({ children }: { children: ReactNode }) {
   return (
     <div className="flex min-h-screen text-[16px]">
       <aside className="sticky top-0 hidden print:hidden h-screen w-[72px] shrink-0 flex-col items-center gap-[18px] border-r border-line bg-white px-2.5 py-4 sm:flex xl:w-[232px] xl:items-stretch xl:px-3 xl:py-[18px]">
-        <Logo href={ROUTES.hr.root} className="px-0 text-lg xl:px-2 [&>span]:hidden xl:[&>span]:inline" />
+        <Logo href={ROUTES.hr.root} className="px-0 text-lg xl:px-2 [&>span]:hidden xl:[&>span]:grid" />
         <nav className="grid gap-0.5">
           {HR_NAV.map((n, i) => (
             <div key={n.href} className={cn(i === NAV_DIVIDER_AFTER && "mb-2.5 border-b border-line pb-2.5")}>
