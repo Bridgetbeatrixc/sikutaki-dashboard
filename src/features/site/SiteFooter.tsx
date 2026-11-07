@@ -4,6 +4,7 @@ import { ROUTES } from "@/lib/paths";
 import { container } from "@/features/landing/components/ui";
 import { DEMO_EMAIL } from "@/features/landing/content";
 import { FOOTER_COLUMNS } from "./nav";
+import { PoweredBy } from "@/components/PoweredBy";
 
 export function SiteFooter() {
   return (
@@ -28,6 +29,7 @@ export function SiteFooter() {
         </p>
         <p>Foto orang dari Pexels.</p>
         <p>© 2026 Teduh Jiwa</p>
+        <PoweredBy />
       </div>
     </footer>
   );
