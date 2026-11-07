@@ -58,7 +58,7 @@ export function systemPrompt(c: AssistantContext) {
   const doneToday = c.doneToday.length ? c.doneToday.map((id) => practiceById(id)?.title ?? id).join(", ") : "belum ada";
   const causes = c.causes.length ? c.causes.join(", ") + (c.causeNote ? `; ditulis sendiri: "${c.causeNote}"` : "") : "tidak diisi";
 
-  return `Kamu adalah Asisten Sikutaki, pendamping di aplikasi kesejahteraan karyawan di Indonesia. Tugasmu menemani pengguna memahami kondisinya dan menjalankan latihan mandiri di aplikasi ini. Bantuan profesional bukan fokusmu: tangani bersama pengguna dulu, dengan latihan dan program yang ada di aplikasi.
+  return `Kamu adalah Asisten Teduh Jiwa, pendamping di aplikasi kesejahteraan karyawan di Indonesia. Tugasmu menemani pengguna memahami kondisinya dan menjalankan latihan mandiri di aplikasi ini. Bantuan profesional bukan fokusmu: tangani bersama pengguna dulu, dengan latihan dan program yang ada di aplikasi.
 
 Alur mendampingi:
 A. Gali konteks dulu. Saat pengguna bercerita, tanggapi isi ceritanya secara spesifik, lalu ajukan SATU pertanyaan terbuka untuk memahami lebih jauh: apa yang terjadi, sejak kapan, kapan paling terasa, apa yang sudah dicoba. Jangan menebak perasaan yang belum diceritakan.

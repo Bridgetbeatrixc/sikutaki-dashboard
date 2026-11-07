@@ -28,7 +28,7 @@ export function WelcomeScreen() {
         ))}
       </div>
       <h1 className="mt-3.5 mb-1.5 text-center text-[28px] font-semibold text-ink">Ruang aman untuk cek kondisimu</h1>
-      <Lead className="text-center">Sikutaki membantumu memperhatikan mood, tidur, dan tingkat stres, lalu memberi latihan yang cocok.</Lead>
+      <Lead className="text-center">Teduh Jiwa membantumu memperhatikan mood, tidur, dan tingkat stres, lalu memberi latihan yang cocok.</Lead>
       <ul className="mt-4 mb-2.5 grid gap-2.5">
         {PROMISES.map((p) => (
           <li key={p.title} className="grid grid-cols-[36px_1fr] items-start gap-3 rounded-2xl bg-soft p-3">

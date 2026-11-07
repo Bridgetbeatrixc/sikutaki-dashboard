@@ -54,12 +54,12 @@ const ROLES: Role[] = [
 const PRINCIPLES = [
   { icon: "eye", title: "Jujur soal yang diukur", text: "Kami mengukur apa yang dirasakan orang, lewat pertanyaan yang mereka jawab sendiri. Tidak ada tebakan dari foto atau wajah." },
   { icon: "lock", title: "Privasi lebih dulu", text: "HR hanya melihat rata-rata tim dengan minimal 5 orang. Jawaban pribadi tetap milik karyawan." },
-  { icon: "heart", title: "Bukan diagnosis", text: "Sikutaki adalah skrining. Kalau hasilnya perlu perhatian, kami arahkan ke psikolog, bukan memberi label." },
+  { icon: "heart", title: "Bukan diagnosis", text: "Teduh Jiwa adalah skrining. Kalau hasilnya perlu perhatian, kami arahkan ke psikolog, bukan memberi label." },
   { icon: "book", title: "Berbasis bukti", text: "Setiap angka di situs ini punya sumber. Data contoh selalu ditandai sebagai contoh." },
 ] as const;
 
 const STORY = [
-  { when: "Awal", text: "Sikutaki mencoba membaca kondisi tubuh, termasuk organ, dari sebuah foto." },
+  { when: "Awal", text: "Teduh Jiwa mencoba membaca kondisi tubuh, termasuk organ, dari sebuah foto." },
   { when: "Titik balik", text: "Organ hanya bisa dilihat lewat pemeriksaan medis seperti MRI. Kami berhenti, karena tidak bisa mempertanggungjawabkannya." },
   { when: "Sekarang", text: "Check-in mingguan yang diisi sendiri, dashboard anonim untuk HR, dan rujukan ke psikolog." },
   { when: "Berikutnya", text: "Pilot 3 bulan bersama satu tim, lalu laporan hasil yang terbuka." },
@@ -69,7 +69,7 @@ export function AboutPage() {
   return (
     <>
       <PageHero icon="people" eyebrow="Tentang kami" title="Satu perusahaan, saling terhubung."
-        text="Sikutaki menghubungkan karyawan, HR, pimpinan tim, dan psikolog mitra dalam satu ritme mingguan, tanpa membuka data pribadi siapa pun." />
+        text="Teduh Jiwa menghubungkan karyawan, HR, pimpinan tim, dan psikolog mitra dalam satu ritme mingguan, tanpa membuka data pribadi siapa pun." />
 
       {/* Mosaic of workplace moments, then the product facts. */}
       <section className="bg-white pb-16 sm:pb-24">

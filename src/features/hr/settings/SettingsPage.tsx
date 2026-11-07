@@ -271,7 +271,7 @@ function PartnersTab() {
               </label>
             </>
           )}
-          <Fine>Karyawan menghubungi mitra langsung lewat kontak ini. Percakapan dan jadwal sesi tidak melewati Sikutaki.</Fine>
+          <Fine>Karyawan menghubungi mitra langsung lewat kontak ini. Percakapan dan jadwal sesi tidak melewati Teduh Jiwa.</Fine>
           <Button type="submit" disabled={pending || (comp && !form.confirmed)} className="justify-self-start"><Icon name="plus" size={15} />Tambah mitra</Button>
         </form>
       </Card>

@@ -4,6 +4,7 @@ import { ROUTES } from "@/lib/paths";
 import { container } from "@/features/landing/components/ui";
 import { DEMO_EMAIL } from "@/features/landing/content";
 import { FOOTER_COLUMNS } from "./nav";
+import { PoweredBy } from "@/components/PoweredBy";
 
 export function SiteFooter() {
   return (
@@ -22,12 +23,13 @@ export function SiteFooter() {
       </div>
       <div className={`${container} mt-10 grid gap-2.5 border-t border-line pt-6 text-[12.5px] text-muted`}>
         <p>
-          Sikutaki adalah alat skrining dan pemantauan kesehatan mental, bukan alat diagnosis medis, dan tidak menggantikan psikolog atau psikiater.
+          Teduh Jiwa adalah alat skrining dan pemantauan kesehatan mental, bukan alat diagnosis medis, dan tidak menggantikan psikolog atau psikiater.
           Butuh bantuan sekarang? Hubungi Healing119 (telepon 119 ekstensi 8). Dalam keadaan darurat, hubungi 112.{" "}
           <Link href={ROUTES.security} className="text-brand hover:underline">Cara kami menjaga data</Link>
         </p>
         <p>Foto orang dari Pexels.</p>
-        <p>© 2026 Sikutaki</p>
+        <p>© 2026 Teduh Jiwa</p>
+        <PoweredBy />
       </div>
     </footer>
   );

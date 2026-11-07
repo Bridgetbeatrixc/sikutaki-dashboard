@@ -95,7 +95,7 @@ export function ReportScreen() {
           Healing119: telepon <b>119 ekstensi 8</b>, 24 jam. Keadaan darurat: <b>112</b>.
         </p>
       </Block>
-      <p className="mt-4 text-[13.5px] text-muted">Dibuat {longDate(today)} dari aplikasi Sikutaki. Sikutaki bukan alat diagnosis dan bukan layanan krisis.</p>
+      <p className="mt-4 text-[13.5px] text-muted">Dibuat {longDate(today)} dari aplikasi Teduh Jiwa. Teduh Jiwa bukan alat diagnosis dan bukan layanan krisis.</p>
 
       <div className="sticky bottom-24 mt-5 grid gap-2 md:static md:max-w-[360px] print:hidden">
         <button type="button" className={appButton("primary", true, "mt-0")} onClick={() => window.print()}>
@@ -165,7 +165,7 @@ function Hero({ name, sub, ctx }: { name: string; sub: string; ctx: Ctx }) {
       <div className="relative flex flex-wrap items-center gap-5">
         <ScoreRing value={ctx.index} color="#ffffff" track="rgba(255,255,255,.22)" textClass="text-white" label="indeks pribadi" />
         <div className="min-w-[200px] flex-1">
-          <small className="text-[14px] font-semibold tracking-wide uppercase opacity-85">Laporan pribadi · Sikutaki</small>
+          <small className="text-[14px] font-semibold tracking-wide uppercase opacity-85">Laporan pribadi · Teduh Jiwa</small>
           <h1 className="mt-1 text-[26px] leading-tight font-bold text-white">{name}</h1>
           <p className="mt-0.5 text-[15.5px] opacity-90">{sub}</p>
           <p className="mt-2 text-[15.5px] opacity-90">Dibuat {madeAt()}</p>

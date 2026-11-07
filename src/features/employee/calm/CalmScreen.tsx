@@ -106,7 +106,7 @@ function Check({ onAgain }: { onAgain: () => void }) {
   );
 }
 
-/** Always on screen: where to get urgent help. Sikutaki is not a crisis or medical service. */
+/** Always on screen: where to get urgent help. Teduh Jiwa is not a crisis or medical service. */
 function CrisisBar() {
   return (
     <p className="rounded-2xl bg-white/80 px-3.5 py-2.5 text-[14.5px] leading-snug text-body shadow-[inset_0_0_0_1px_var(--color-line)]">

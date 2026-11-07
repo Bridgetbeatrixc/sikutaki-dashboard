@@ -11,6 +11,7 @@ import { logout } from "@/store/account";
 import { useHr } from "./HrProvider";
 import { HR_NAV, isActive, NAV_DIVIDER_AFTER } from "./nav";
 import { EmptyState } from "./EmptyState";
+import { PoweredBy } from "@/components/PoweredBy";
 
 /** Frame of the HR dashboard: sidebar (icon rail on tablet), sticky top bar, bottom bar on phones. */
 export function HrShell({ children }: { children: ReactNode }) {
@@ -30,7 +31,7 @@ export function HrShell({ children }: { children: ReactNode }) {
   return (
     <div className="flex min-h-screen text-[16px]">
       <aside className="sticky top-0 hidden print:hidden h-screen w-[72px] shrink-0 flex-col items-center gap-[18px] border-r border-line bg-white px-2.5 py-4 sm:flex xl:w-[232px] xl:items-stretch xl:px-3 xl:py-[18px]">
-        <Logo href={ROUTES.hr.root} className="px-0 text-lg xl:px-2 [&>span]:hidden xl:[&>span]:inline" />
+        <Logo href={ROUTES.hr.root} className="px-0 text-lg xl:px-2 [&>span]:hidden xl:[&>span]:grid" />
         <nav className="grid gap-0.5">
           {HR_NAV.map((n, i) => (
             <div key={n.href} className={cn(i === NAV_DIVIDER_AFTER && "mb-2.5 border-b border-line pb-2.5")}>
@@ -49,6 +50,7 @@ export function HrShell({ children }: { children: ReactNode }) {
         <div className="mt-auto flex items-center gap-1.5 px-2.5 text-[14px] text-muted">
           <Icon name="lock" size={14} /><span className="hidden xl:inline">Anonim, min. 5 orang</span>
         </div>
+        <PoweredBy className="hidden px-2.5 xl:block" />
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">

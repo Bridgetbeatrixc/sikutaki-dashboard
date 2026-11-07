@@ -25,7 +25,7 @@ export function CounselingScreen() {
     <Screen>
       <Title>Bicara dengan psikolog</Title>
       <Lead>
-        Hubungi mitra {company.name} langsung, atau minta HR mengatur jadwalnya. <b>Rahasia:</b> isi sesi tidak melewati Sikutaki. Bila lewat HR, HR hanya membaca permintaan jadwalmu, dan kamu boleh mengajukannya tanpa nama.
+        Hubungi mitra {company.name} langsung, atau minta HR mengatur jadwalnya. <b>Rahasia:</b> isi sesi tidak melewati Teduh Jiwa. Bila lewat HR, HR hanya membaca permintaan jadwalmu, dan kamu boleh mengajukannya tanpa nama.
       </Lead>
       {urgent && <CrisisBox className="mt-3" />}
 

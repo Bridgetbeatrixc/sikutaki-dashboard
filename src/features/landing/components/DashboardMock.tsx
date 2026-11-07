@@ -31,14 +31,14 @@ export function DashboardMock() {
     <div className="mx-auto max-w-[1080px] overflow-hidden rounded-[18px] bg-white text-left text-[13px] shadow-[0_30px_70px_rgba(0,0,0,.16),0_0_0_1px_rgba(0,0,0,.05)]">
       <div className="flex items-center gap-3.5 border-b border-line bg-[#f5f6f8] px-3.5 py-2.5">
         <span className="flex gap-1.5">{["#f2a49a", "#f3d27a", "#9fb8d8"].map((c) => <i key={c} className="size-2.5 rounded-full" style={{ background: c }} />)}</span>
-        <span className="min-w-0 flex-1 truncate rounded-lg border border-line bg-white px-2.5 py-1 font-mono text-[11.5px] text-muted">app.sikutaki.com/dashboard-hr</span>
+        <span className="min-w-0 flex-1 truncate rounded-lg border border-line bg-white px-2.5 py-1 font-mono text-[11.5px] text-muted">teduhjiwa.id/dashboard-hr</span>
         <span className="rounded-full bg-[#fdf0e2] px-2 py-[3px] font-mono text-[10.5px] whitespace-nowrap text-[#9a6b2f]">Data contoh</span>
       </div>
 
       <div className="flex flex-col sm:min-h-[470px] sm:flex-row">
         <aside className="flex shrink-0 gap-1 overflow-x-auto border-b border-line bg-[#f8f9fb] p-2 sm:w-16 sm:flex-col sm:overflow-visible sm:border-r sm:border-b-0 sm:px-2 sm:py-3.5 lg:w-[200px] lg:px-3 lg:py-[18px]">
           <span className="hidden items-center justify-center gap-2 pb-3 text-[15px] font-semibold text-head sm:flex lg:justify-start lg:px-2 lg:pb-3.5">
-            <img src={asset("/logo.png")} alt="" width={26} height={26} /><span className="hidden lg:inline">Sikutaki</span>
+            <img src={asset("/logo.png")} alt="" width={26} height={26} /><span className="hidden lg:inline">Teduh Jiwa</span>
           </span>
           {VIEWS.map((v) => (
             <button key={v.id} type="button" onClick={() => setView(v.id)} aria-pressed={view === v.id}

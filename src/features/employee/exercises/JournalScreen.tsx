@@ -9,7 +9,7 @@ import { PracticeFrame, useFinish, type Session } from "./PracticeFrame";
 
 type Entry = { day: string; answers: string[] };
 
-/* Journal entries stay in this browser only: they are never sent to the server, so neither Sikutaki nor HR can read them. */
+/* Journal entries stay in this browser only: they are never sent to the server, so neither Teduh Jiwa nor HR can read them. */
 const key = (id: string) => `sikutaki:jurnal:${id}`;
 
 function readEntries(id: string): Entry[] {

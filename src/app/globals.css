@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* Design tokens shared by the HR dashboard and the employee app. Blue comes from the Sikutaki logo; neutrals follow Apple-style greys. */
+/* Design tokens shared by the HR dashboard and the employee app. Blue comes from the Teduh Jiwa logo; neutrals follow Apple-style greys. */
 @theme {
   --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "Segoe UI", system-ui, sans-serif;
   --font-mono: "DM Mono", ui-monospace, Menlo, monospace;

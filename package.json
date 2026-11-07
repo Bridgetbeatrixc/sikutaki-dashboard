@@ -2,7 +2,7 @@
   "name": "sikutaki-dashboard",
   "version": "1.0.0",
   "private": true,
-  "description": "Sikutaki: dashboard HR dan aplikasi karyawan untuk memantau kesehatan mental secara anonim, dengan akun Supabase dan Asisten AI Gemini.",
+  "description": "Teduh Jiwa: dashboard HR dan aplikasi karyawan untuk memantau kesehatan mental secara anonim, dengan akun Supabase dan Asisten AI Gemini.",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

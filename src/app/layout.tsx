@@ -2,8 +2,8 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: { default: "Sikutaki", template: "%s · Sikutaki" },
-  description: "Sikutaki: dashboard HR dan aplikasi karyawan untuk memantau kesehatan mental secara anonim.",
+  title: { default: "Teduh Jiwa", template: "%s · Teduh Jiwa" },
+  description: "Teduh Jiwa: dashboard HR dan aplikasi karyawan untuk memantau kesehatan mental secara anonim.",
 };
 
 export const viewport: Viewport = { themeColor: "#ffffff" };

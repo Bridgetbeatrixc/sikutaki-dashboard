@@ -8,7 +8,7 @@ import { Band, BandHead, CtaBand, PageHero, Notice } from "../ui";
 const PLANS = [
   {
     name: "Pilot", tag: "Mulai di sini", price: "3 bulan, satu tim",
-    text: "Untuk mencoba Sikutaki bersama satu tim sebelum memutuskan.",
+    text: "Untuk mencoba Teduh Jiwa bersama satu tim sebelum memutuskan.",
     features: ["Satu divisi, minimal 5 orang", "Check-in mingguan selama 12 minggu", "Dashboard HR dan aplikasi karyawan", "Laporan hasil yang terbuka di akhir"],
     cta: "Ajukan pilot", href: ROUTES.contact, featured: true,
   },
